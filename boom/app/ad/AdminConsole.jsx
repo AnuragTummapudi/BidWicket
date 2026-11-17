@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 const BG = '#06070b';
 const CARD = '#10131a';
 const BORDER = '#232834';
-const GOLD = '#e8b84b';
+const GOLD = '#E8603C';
 const CYAN = '#22d3ee';
 const RED = '#ef4444';
 const GREEN = '#4ade80';
@@ -214,7 +214,7 @@ export default function AdminConsole({ initialAuthenticated }) {
         minHeight: '100vh',
         background: BG,
         color: '#fff',
-        fontFamily: 'Arial, sans-serif',
+        fontFamily: 'var(--font-main), sans-serif',
         padding: '32px 16px 48px',
       }}
     >
@@ -315,7 +315,7 @@ export default function AdminConsole({ initialAuthenticated }) {
               disabled={loading}
               style={{
                 border: 'none',
-                background: `linear-gradient(135deg, ${GOLD}, #b78412)`,
+                background: `#E8603C`,
                 color: '#000',
                 borderRadius: 6,
                 padding: '12px 14px',

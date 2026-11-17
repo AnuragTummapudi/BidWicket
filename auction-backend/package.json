@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "type": "module",
     "scripts": {
-        "start": "node index.js"
+        "start": "node index.js",
+        "dev": "node --env-file=.env index.js"
     },
     "dependencies": {
         "@upstash/redis": "^1.37.0",

@@ -25,6 +25,9 @@ function autoBind(instance) {
 }
 
 function createTextTexture(gl, text, font = 'bold 30px monospace', color = 'black') {
+  // Canvas can't read CSS vars; swap in the real next/font family name.
+  const family = getComputedStyle(document.documentElement).getPropertyValue('--font-main').trim() || 'sans-serif';
+  font = font.replace('var(--font-main)', family);
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
   context.font = font;
@@ -460,7 +463,7 @@ export default function CircularGallery({
   bend = 3,
   textColor = '#ffffff',
   borderRadius = 0.05,
-  font = 'bold 30px Bebas Neue',
+  font = 'bold 30px var(--font-main)',
   scrollSpeed = 2,
   scrollEase = 0.05
 }) {

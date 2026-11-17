@@ -493,8 +493,8 @@ export function GameProvider({ children }) {
 
     const frame = () => {
       if (!active) return;
-      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 0.9 }, colors: ['#D4AF37', '#ffffff', '#a3a9b8'] });
-      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1, y: 0.9 }, colors: ['#D4AF37', '#ffffff', '#a3a9b8'] });
+      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 0.9 }, colors: ['#E8603C', '#ffffff', '#a3a9b8'] });
+      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1, y: 0.9 }, colors: ['#E8603C', '#ffffff', '#a3a9b8'] });
       if (Date.now() < end) frameId = requestAnimationFrame(frame);
     };
 

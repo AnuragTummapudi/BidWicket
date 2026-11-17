@@ -38,7 +38,7 @@ export default function SupportPage() {
           .support-card { background:#0b0d12; border:1px solid #1d2330; border-radius:24px; padding:24px; }
           .support-list { display:grid; gap:12px; margin-top:18px; }
           .support-item { display:flex; align-items:flex-start; gap:10px; color:#cbd5e1; line-height:1.7; }
-          .support-dot { width:10px; height:10px; border-radius:999px; background:#E8B84B; margin-top:8px; flex-shrink:0; }
+          .support-dot { width:10px; height:10px; border-radius:999px; background:#E8603C; margin-top:8px; flex-shrink:0; }
           @media (max-width: 860px) {
             .support-grid { grid-template-columns:1fr; }
             .support-card { border-radius:18px; padding:18px; }
@@ -51,14 +51,14 @@ export default function SupportPage() {
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               <Link href="/" style={{ border: '1px solid #222', color: '#dbe4ee', textDecoration: 'none', borderRadius: 999, padding: '10px 16px', fontWeight: 700, letterSpacing: 1 }}>Home</Link>
               <Link href="/how-to-play" style={{ border: '1px solid #222', color: '#dbe4ee', textDecoration: 'none', borderRadius: 999, padding: '10px 16px', fontWeight: 700, letterSpacing: 1 }}>How to Play</Link>
-              <a href={SUPPORT_URL} target="_blank" rel="noreferrer" style={{ border: 'none', background: '#E8B84B', color: '#000', textDecoration: 'none', borderRadius: 999, padding: '10px 18px', fontWeight: 900, letterSpacing: 1.2 }}>Buy Me a Chai</a>
+              <a href={SUPPORT_URL} target="_blank" rel="noreferrer" style={{ border: 'none', background: '#E8603C', color: '#000', textDecoration: 'none', borderRadius: 999, padding: '10px 18px', fontWeight: 900, letterSpacing: 1.2 }}>Buy Me a Chai</a>
             </div>
           </div>
 
           <div className="support-grid">
             <div className="support-card">
-              <div style={{ color: '#E8B84B', fontSize: 12, letterSpacing: 3, fontWeight: 800, marginBottom: 8 }}>SUPPORT THE PROJECT</div>
-              <h1 style={{ margin: 0, fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(40px, 7vw, 68px)', lineHeight: 0.92, letterSpacing: 2 }}>
+              <div style={{ color: '#E8603C', fontSize: 12, letterSpacing: 3, fontWeight: 800, marginBottom: 8 }}>SUPPORT THE PROJECT</div>
+              <h1 style={{ margin: 0, fontFamily: "var(--font-main), sans-serif", fontSize: 'clamp(40px, 7vw, 68px)', lineHeight: 0.92, letterSpacing: 2 }}>
                 HELP KEEP IPL AUCTION SIMULATOR FAST, FREE, AND ALIVE
               </h1>
               <p style={{ marginTop: 18, color: '#d1d5db', fontSize: '1.08rem', lineHeight: 1.9, maxWidth: 760 }}>
@@ -82,7 +82,7 @@ export default function SupportPage() {
 
             <div style={{ display: 'grid', gap: 18 }}>
               <div className="support-card">
-                <div style={{ color: '#fff', fontFamily: "'Bebas Neue', sans-serif", fontSize: 30, letterSpacing: 1.5 }}>What Your Support Helps With</div>
+                <div style={{ color: '#fff', fontFamily: "var(--font-main), sans-serif", fontSize: 30, letterSpacing: 1.5 }}>What Your Support Helps With</div>
                 <div className="support-list">
                   {promise.map((item) => (
                     <div key={item} className="support-item">
@@ -93,9 +93,9 @@ export default function SupportPage() {
                 </div>
               </div>
 
-              <div className="support-card" style={{ borderColor: 'rgba(232,184,75,0.28)' }}>
-                <div style={{ color: '#E8B84B', fontSize: 12, letterSpacing: 3, fontWeight: 800, marginBottom: 8 }}>DONATE</div>
-                <div style={{ color: '#fff', fontFamily: "'Bebas Neue', sans-serif", fontSize: 34, lineHeight: 1, letterSpacing: 1.5 }}>
+              <div className="support-card" style={{ borderColor: 'rgba(232, 96, 60,0.28)' }}>
+                <div style={{ color: '#E8603C', fontSize: 12, letterSpacing: 3, fontWeight: 800, marginBottom: 8 }}>DONATE</div>
+                <div style={{ color: '#fff', fontFamily: "var(--font-main), sans-serif", fontSize: 34, lineHeight: 1, letterSpacing: 1.5 }}>
                   BUY ME A CHAI
                 </div>
                 <p style={{ marginTop: 14, color: '#cbd5e1', fontSize: '1rem', lineHeight: 1.8 }}>
@@ -106,7 +106,7 @@ export default function SupportPage() {
                   href={SUPPORT_URL}
                   target="_blank"
                   rel="noreferrer"
-                  style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginTop: 10, width: '100%', minHeight: 52, borderRadius: 14, background: '#E8B84B', color: '#000', textDecoration: 'none', fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: '1.1rem', letterSpacing: 1.5, textTransform: 'uppercase' }}
+                  style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginTop: 10, width: '100%', minHeight: 52, borderRadius: 14, background: '#E8603C', color: '#000', textDecoration: 'none', fontFamily: "var(--font-main), sans-serif", fontWeight: 900, fontSize: '1.1rem', letterSpacing: 1.5, textTransform: 'uppercase' }}
                 >
                   Support the Servers
                 </a>

@@ -33,11 +33,6 @@ function stopIplTheme(fadeDuration = 2000) {
   }, 50);
 }
 
-if (typeof document !== "undefined" && !document.getElementById("ipl-gf")) {
-  const l = document.createElement("link"); l.id = "ipl-gf"; l.rel = "stylesheet";
-  l.href = "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap";
-  document.head.appendChild(l);
-}
 
 
 
@@ -413,11 +408,11 @@ export default function App() {
       const frame = () => {
         confetti({
           particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 0.9 },
-          colors: ['#D4AF37', '#ffffff', '#22D3EE']
+          colors: ['#E8603C', '#ffffff', '#22D3EE']
         });
         confetti({
           particleCount: 5, angle: 120, spread: 55, origin: { x: 1, y: 0.9 },
-          colors: ['#D4AF37', '#ffffff', '#22D3EE']
+          colors: ['#E8603C', '#ffffff', '#22D3EE']
         });
         if (Date.now() < end) requestAnimationFrame(frame);
       };
@@ -498,7 +493,7 @@ export default function App() {
   const upcoming = gs.playerQueue.slice(gs.currentIdx + 1, gs.currentIdx + 9);
 
   return (
-    <div style={{ fontFamily: "'Rajdhani',sans-serif", background: BG, color: "#fff", height: "100vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+    <div style={{ fontFamily: "var(--font-main), sans-serif", background: BG, color: "#fff", height: "100vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       <style>{`
         @keyframes sold{0%{transform:scale(0.4);opacity:0}65%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
         @keyframes timerPulse{0%,100%{opacity:1}50%{opacity:.35}}
@@ -528,7 +523,7 @@ export default function App() {
       {/* TOP BAR */}
       <div className="ipl-topbar" style={{ background: "linear-gradient(90deg,#0B0D16 0%,#141008 50%,#0B0D16 100%)", borderBottom: `1px solid ${BORDER}`, padding: "8px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div className="ipl-topbar-title" style={{ fontFamily: "'Bebas Neue'", fontSize: 22, color: GOLD, letterSpacing: 3 }}>BIDWICKET IPL AUCTION</div>
+          <div className="ipl-topbar-title" style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 22, color: GOLD, letterSpacing: 3 }}>BIDWICKET IPL AUCTION</div>
 
           <div style={{ background: `${GOLD}18`, border: `1px solid ${GOLD}30`, borderRadius: 4, padding: "2px 10px", fontSize: 10, color: GOLD, fontWeight: 600, letterSpacing: 1 }}>{gs.currentSetName}</div>
           {isMulti && <div style={{ background: "#22D3EE18", border: "1px solid #22D3EE30", borderRadius: 4, padding: "2px 8px", fontSize: 9, color: "#22D3EE", letterSpacing: 1 }}>LIVE</div>}
@@ -543,7 +538,7 @@ export default function App() {
             <div style={{ display: "flex", gap: 6, marginLeft: 16, borderLeft: `1px solid ${BORDER}`, paddingLeft: 16 }}>
               {isHost && (
                 <>
-                  <button onClick={() => gs.isPaused ? emit("resume-game") : emit("pause-game")} style={{ background: "transparent", border: "1px solid #FFCA28", borderRadius: 4, color: "#FFCA28", padding: "4px 12px", cursor: "pointer", fontWeight: "bold" }}>
+                  <button onClick={() => gs.isPaused ? emit("resume-game") : emit("pause-game")} style={{ background: "transparent", border: "1px solid #E8603C", borderRadius: 4, color: "#E8603C", padding: "4px 12px", cursor: "pointer", fontWeight: "bold" }}>
                     {gs.isPaused ? "RESUME" : "PAUSE"}
                   </button>
                   <button onClick={() => {
@@ -560,14 +555,14 @@ export default function App() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <button onClick={() => { setViewingTeam(effectiveMyTeamId); setShowSquad(true); }} style={{ background: "#22D3EE22", color: "#22D3EE", border: "1px solid #22D3EE55", borderRadius: 6, padding: "6px 16px", cursor: "pointer", fontWeight: "bold", fontFamily: "'Bebas Neue'", fontSize: 16, letterSpacing: 1 }}>
+          <button onClick={() => { setViewingTeam(effectiveMyTeamId); setShowSquad(true); }} style={{ background: "#22D3EE22", color: "#22D3EE", border: "1px solid #22D3EE55", borderRadius: 6, padding: "6px 16px", cursor: "pointer", fontWeight: "bold", fontFamily: "var(--font-main), sans-serif", fontSize: 16, letterSpacing: 1 }}>
             MY SQUAD
           </button>
           <button onClick={() => setShowStats(true)} style={{ background: `${GOLD}11`, border: `1px solid ${GOLD}40`, color: GOLD, padding: "4px 12px", borderRadius: 6, fontSize: 11, fontWeight: 700, letterSpacing: 1, cursor: "pointer" }}>📊 STATS</button>
         </div>
 
         <div className="ipl-topbar-timer" style={{
-          fontFamily: "'Bebas Neue'", fontSize: 40, letterSpacing: 2, minWidth: 56, textAlign: "center", lineHeight: 1,
+          fontFamily: "var(--font-main), sans-serif", fontSize: 40, letterSpacing: 2, minWidth: 56, textAlign: "center", lineHeight: 1,
           color: gs.isPaused ? "#888" : (gs.timer <= 5 ? "#ef4444" : GOLD),
           textShadow: gs.isPaused ? "none" : (gs.timer <= 5 ? "0 0 24px #ef4444" : `0 0 24px ${GOLD}66`),
           animation: !gs.isPaused && gs.timer <= 5 ? "timerPulse .5s infinite" : "none",
@@ -583,7 +578,7 @@ export default function App() {
                   const val = prompt("Set new bid timer duration (5 to 60 seconds):", curr);
                   if (val && !isNaN(val)) emit("set-timer-duration", { duration: parseInt(val) });
                 }}
-                style={{ background: "#111", border: `1px solid #333`, color: "#888", fontSize: 10, padding: "2px 6px", borderRadius: 4, cursor: "pointer", fontFamily: "'Rajdhani', sans-serif", letterSpacing: 1 }}
+                style={{ background: "#111", border: `1px solid #333`, color: "#888", fontSize: 10, padding: "2px 6px", borderRadius: 4, cursor: "pointer", fontFamily: "var(--font-main), sans-serif", letterSpacing: 1 }}
                 title="Edit Timer Length"
               >
                 EDIT TIMER ⏱
@@ -614,17 +609,17 @@ export default function App() {
                 <span style={{ fontSize: 72 }}>{ROLE_EMOJI[player.role]}</span>
               )}
             </div>
-            <div style={{ fontFamily: "'Bebas Neue'", fontSize: 32, color: "#fff", letterSpacing: 2, marginBottom: 8, lineHeight: 1.1 }}>{player.name.toUpperCase()}</div>
+            <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 32, color: "#fff", letterSpacing: 2, marginBottom: 8, lineHeight: 1.1 }}>{player.name.toUpperCase()}</div>
             <div style={{ color: ROLE_C[player.role], fontSize: 13, fontWeight: 700, letterSpacing: 3, marginBottom: 24 }}>{ROLE_L[player.role]} · {player.overseas ? "OVERSEAS" : "INDIAN"}</div>
 
             <div style={{ display: "grid", gap: 12 }}>
               <div style={{ background: `rgba(255,255,255,0.03)`, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "16px 10px" }}>
                 <div style={{ color: "#555", fontSize: 10, letterSpacing: 2, marginBottom: 6 }}>BASE PRICE</div>
-                <div style={{ color: GOLD, fontFamily: "'Bebas Neue'", fontSize: 28 }}>{fmt(player.base)}</div>
+                <div style={{ color: GOLD, fontFamily: "var(--font-main), sans-serif", fontSize: 28 }}>{fmt(player.base)}</div>
               </div>
               <div style={{ background: `rgba(255,255,255,0.03)`, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "16px 10px" }}>
                 <div style={{ color: "#555", fontSize: 10, letterSpacing: 2, marginBottom: 6 }}>CATEGORY</div>
-                <div style={{ color: "#fff", fontFamily: "'Bebas Neue'", fontSize: 22, letterSpacing: 1 }}>{player.setName.toUpperCase()}</div>
+                <div style={{ color: "#fff", fontFamily: "var(--font-main), sans-serif", fontSize: 22, letterSpacing: 1 }}>{player.setName.toUpperCase()}</div>
               </div>
             </div>
 
@@ -635,7 +630,7 @@ export default function App() {
             {/* LIVE BID HISTORY ON LEFT */}
             {gs.bidLog.length > 0 && (
               <div style={{ marginTop: 30, textAlign: "left" }}>
-                <div style={{ fontFamily: "'Bebas Neue'", fontSize: 16, color: "#555", letterSpacing: 3, marginBottom: 12 }}>BID HISTORY</div>
+                <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 16, color: "#555", letterSpacing: 3, marginBottom: 12 }}>BID HISTORY</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {gs.bidLog.map((b, i) => {
                     const t = TEAMS.find(team => team.id === b.teamId);
@@ -653,25 +648,25 @@ export default function App() {
         </div>
 
         <div className="ipl-center" style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, position: "relative" }}>
-          {[260, 400, 540].map(s => <div key={s} style={{ position: "absolute", width: s, height: s, border: "1px solid rgba(212,175,55,0.025)", borderRadius: "50%", pointerEvents: "none" }} />)}
+          {[260, 400, 540].map(s => <div key={s} style={{ position: "absolute", width: s, height: s, border: "1px solid rgba(232, 96, 60,0.025)", borderRadius: "50%", pointerEvents: "none" }} />)}
 
           {gs.phase === "sold" && (
             <div style={{ textAlign: "center", animation: "sold .4s ease-out", zIndex: 2 }}>
-              <div className="ipl-sold-text" style={{ fontFamily: "'Bebas Neue'", fontSize: 86, color: GOLD, letterSpacing: 10, textShadow: `0 0 60px ${GOLD}, 0 0 120px ${GOLD}44`, lineHeight: 0.9 }}>SOLD!</div>
+              <div className="ipl-sold-text" style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 86, color: GOLD, letterSpacing: 10, textShadow: `0 0 60px ${GOLD}, 0 0 120px ${GOLD}44`, lineHeight: 0.9 }}>SOLD!</div>
               <div style={{ color: bidderTeam?.color, fontSize: 20, fontWeight: 700, letterSpacing: 2, marginTop: 10 }}>{bidderTeam?.name}</div>
-              <div style={{ color: GOLD, fontSize: 30, fontFamily: "'Bebas Neue'", letterSpacing: 4, marginTop: 4 }}>{fmt(gs.currentBid)}</div>
+              <div style={{ color: GOLD, fontSize: 30, fontFamily: "var(--font-main), sans-serif", letterSpacing: 4, marginTop: 4 }}>{fmt(gs.currentBid)}</div>
             </div>
           )}
           {gs.phase === "unsold" && (
             <div style={{ textAlign: "center", animation: "sold .4s ease-out", zIndex: 2 }}>
-              <div className="ipl-sold-text" style={{ fontFamily: "'Bebas Neue'", fontSize: 86, color: "#ef4444", letterSpacing: 10, textShadow: "0 0 60px #ef4444", lineHeight: 0.9 }}>UNSOLD</div>
+              <div className="ipl-sold-text" style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 86, color: "#ef4444", letterSpacing: 10, textShadow: "0 0 60px #ef4444", lineHeight: 0.9 }}>UNSOLD</div>
               <div style={{ color: "#555", fontSize: 15, marginTop: 10, letterSpacing: 3 }}>No bids received</div>
             </div>
           )}
 
           {gs.phase === "bidding" && (<>
             <div style={{ color: "#444", fontSize: 10, letterSpacing: 5, marginBottom: 6 }}>CURRENT BID</div>
-            <div className="ipl-bid-amount" style={{ fontFamily: "'Bebas Neue'", fontSize: 72, color: GOLD, letterSpacing: 5, lineHeight: 1, textShadow: `0 0 40px ${GOLD}44` }}>{fmt(gs.currentBid)}</div>
+            <div className="ipl-bid-amount" style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 72, color: GOLD, letterSpacing: 5, lineHeight: 1, textShadow: `0 0 40px ${GOLD}44` }}>{fmt(gs.currentBid)}</div>
 
             {bidderTeam ? (
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, background: `${bidderTeam.color}16`, border: `1px solid ${bidderTeam.color}40`, borderRadius: 20, padding: "6px 18px" }}>
@@ -686,8 +681,8 @@ export default function App() {
                 <div style={{ background: `${myTeam?.color}20`, border: `2px solid ${myTeam?.color}80`, borderRadius: 8, padding: "14px 30px", color: myTeam?.color, fontWeight: 700, fontSize: 15, letterSpacing: 1, textAlign: "center" }}>✓ YOU'RE LEADING — {fmt(gs.currentBid)}</div>
               ) : (
                 <button className="ipl-bid-btn" onClick={humanBid} disabled={!canBid}
-                  style={{ background: canBid ? `linear-gradient(135deg,${myTeam?.color}40,${myTeam?.color}20)` : "#0e0e0e", border: `2px solid ${canBid ? myTeam?.color : "#2a2a2a"}`, borderRadius: 8, padding: "15px 44px", color: canBid ? myTeam?.color : "#3a3a3a", fontSize: 19, fontWeight: 900, cursor: canBid ? "pointer" : "not-allowed", letterSpacing: 2, fontFamily: "'Barlow Condensed'", boxShadow: canBid ? `0 0 28px ${myTeam?.color}44` : "none" }}>
-                  <div style={{ fontFamily: "'Bebas Neue'", fontSize: 24, letterSpacing: 2 }}>
+                  style={{ background: canBid ? `linear-gradient(135deg,${myTeam?.color}40,${myTeam?.color}20)` : "#0e0e0e", border: `2px solid ${canBid ? myTeam?.color : "#2a2a2a"}`, borderRadius: 8, padding: "15px 44px", color: canBid ? myTeam?.color : "#3a3a3a", fontSize: 19, fontWeight: 900, cursor: canBid ? "pointer" : "not-allowed", letterSpacing: 2, fontFamily: "var(--font-main), sans-serif", boxShadow: canBid ? `0 0 28px ${myTeam?.color}44` : "none" }}>
+                  <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 24, letterSpacing: 2 }}>
                     {canBid ? `BID ${fmt(gs.currentBidder === null ? gs.currentBid : nextBid(gs.currentBid))}` :
                       (player.overseas && osCount >= 8 ? "MAX 8 OS" : "INSUFFICIENT")}
                   </div>
@@ -733,7 +728,7 @@ export default function App() {
                       {isMe && <span style={{ fontSize: 10, color: team.color }}>YOU</span>}
                     </div>
                     <div style={{ textAlign: "right" }}>
-                      <div style={{ color: team.color, fontWeight: 900, fontSize: 16, fontFamily: "'Bebas Neue'", letterSpacing: 1 }}>{fmt(gs.purses[team.id])}</div>
+                      <div style={{ color: team.color, fontWeight: 900, fontSize: 16, fontFamily: "var(--font-main), sans-serif", letterSpacing: 1 }}>{fmt(gs.purses[team.id])}</div>
                       <div style={{ fontSize: 9, color: "#666", letterSpacing: 1, fontWeight: 600 }}>{gs.squads[team.id]?.length} PLAYS</div>
                     </div>
                   </div>
@@ -802,18 +797,18 @@ function PlayerCard({ player }) {
         {player.overseas && <div style={{ position: "absolute", top: 8, right: 10, fontSize: 9, background: "#C084FC22", color: "#C084FC", padding: "2px 7px", borderRadius: 4, fontWeight: 700, letterSpacing: 1, zIndex: 10 }}>OS</div>}
       </div>
       <div style={{ padding: "10px 14px" }}>
-        <div style={{ fontFamily: "'Bebas Neue'", fontSize: 20, letterSpacing: 1, lineHeight: 1.1, color: "#f0f0f0" }}>{player.name}</div>
+        <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 20, letterSpacing: 1, lineHeight: 1.1, color: "#f0f0f0" }}>{player.name}</div>
         <div style={{ display: "flex", gap: 7, marginTop: 6, alignItems: "center" }}>
           <span style={{ background: `${rc}1a`, color: rc, padding: "2px 10px", borderRadius: 10, fontSize: 11, fontWeight: 600 }}>{ROLE_L[player.role]}</span>
         </div>
         <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7 }}>
           <div style={{ background: "#07090E", borderRadius: 7, padding: "6px 10px" }}>
             <div style={{ fontSize: 9, color: "#888", letterSpacing: 2 }}>BASE</div>
-            <div style={{ color: GOLD, fontWeight: 700, fontSize: 15, fontFamily: "'Bebas Neue'" }}>{fmt(player.base)}</div>
+            <div style={{ color: GOLD, fontWeight: 700, fontSize: 15, fontFamily: "var(--font-main), sans-serif" }}>{fmt(player.base)}</div>
           </div>
           <div style={{ background: "#07090E", borderRadius: 7, padding: "6px 10px" }}>
             <div style={{ fontSize: 9, color: "#888", letterSpacing: 2 }}>RATING</div>
-            <div style={{ color: rc, fontWeight: 700, fontSize: 15, fontFamily: "'Bebas Neue'" }}>{player.rating || "—"}/100</div>
+            <div style={{ color: rc, fontWeight: 700, fontSize: 15, fontFamily: "var(--font-main), sans-serif" }}>{player.rating || "—"}/100</div>
           </div>
         </div>
       </div>
@@ -831,17 +826,17 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11 }) {
     );
   };
   if (submitted) return (
-    <div style={{ minHeight: "100vh", background: BG, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Rajdhani',sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: BG, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-main), sans-serif" }}>
       <div style={{ textAlign: "center" }}>
-        <div style={{ fontFamily: "'Bebas Neue'", fontSize: 48, color: GOLD, letterSpacing: 6 }}>XI SUBMITTED!</div>
+        <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 48, color: GOLD, letterSpacing: 6 }}>XI SUBMITTED!</div>
         <div style={{ color: "#555", fontSize: 14, marginTop: 12, letterSpacing: 3 }}>WAITING FOR OTHER TEAMS...</div>
       </div>
     </div>
   );
   return (
-    <div style={{ minHeight: "100vh", background: BG, fontFamily: "'Rajdhani',sans-serif", padding: "24px 20px" }}>
+    <div style={{ minHeight: "100vh", background: BG, fontFamily: "var(--font-main), sans-serif", padding: "24px 20px" }}>
       <div style={{ textAlign: "center", marginBottom: 28 }}>
-        <div style={{ fontFamily: "'Bebas Neue'", fontSize: "clamp(28px,4vw,48px)", color: GOLD, letterSpacing: 6 }}>SELECT YOUR PLAYING XI</div>
+        <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: "clamp(28px,4vw,48px)", color: GOLD, letterSpacing: 6 }}>SELECT YOUR PLAYING XI</div>
         <div style={{ color: "#555", fontSize: 12, letterSpacing: 3, marginTop: 6 }}>
           {selected.length}/{playersNeeded} selected — {playersNeeded - selected.length} more needed
         </div>
@@ -853,7 +848,7 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11 }) {
           return (
             <div key={i} onClick={() => toggle(p)}
               style={{ background: sel ? `${rc}18` : CARD, border: `1px solid ${sel ? rc : BORDER}`, borderRadius: 10, padding: "12px", cursor: "pointer", transition: "all .2s", transform: sel ? "translateY(-3px)" : "none", boxShadow: sel ? `0 0 20px ${rc}33` : "none" }}>
-              <div style={{ fontFamily: "'Bebas Neue'", fontSize: 16, color: sel ? rc : "#ddd", letterSpacing: 1 }}>{p.name}</div>
+              <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 16, color: sel ? rc : "#ddd", letterSpacing: 1 }}>{p.name}</div>
               <div style={{ fontSize: 11, color: rc, marginTop: 4, fontWeight: 600 }}>{ROLE_L[p.role]}</div>
               <div style={{ fontSize: 11, color: GOLD, marginTop: 4 }}>₹{p.soldFor?.toFixed(2) || p.base?.toFixed(2)} Cr</div>
               {sel && <div style={{ fontSize: 9, color: rc, marginTop: 6, letterSpacing: 2, fontWeight: 700 }}>✓ SELECTED</div>}
@@ -864,7 +859,7 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11 }) {
       <div style={{ textAlign: "center" }}>
         <button onClick={() => selected.length === playersNeeded && onSubmit(selected)}
           disabled={selected.length !== playersNeeded}
-          style={{ background: selected.length === playersNeeded ? `linear-gradient(135deg, ${GOLD}, #9a7610)` : "#1a1a1a", border: `1px solid ${selected.length === playersNeeded ? GOLD : "#333"}`, borderRadius: 6, padding: "14px 50px", color: selected.length === playersNeeded ? "#000" : "#555", fontWeight: 900, fontSize: 16, letterSpacing: 4, cursor: selected.length === playersNeeded ? "pointer" : "not-allowed", fontFamily: "'Barlow Condensed'" }}>
+          style={{ background: selected.length === playersNeeded ? `#E8603C` : "#1a1a1a", border: `1px solid ${selected.length === playersNeeded ? GOLD : "#333"}`, borderRadius: 6, padding: "14px 50px", color: selected.length === playersNeeded ? "#000" : "#555", fontWeight: 900, fontSize: 16, letterSpacing: 4, cursor: selected.length === playersNeeded ? "pointer" : "not-allowed", fontFamily: "var(--font-main), sans-serif" }}>
           SUBMIT PLAYING XI
         </button>
       </div>
@@ -874,10 +869,10 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11 }) {
 
 function Home({ onPlay, onCreateRoom, onJoinRoom }) {
   return (
-    <div style={{ minHeight: "100vh", background: `radial-gradient(ellipse at 50% 90%, #1c150a 0%, ${BG} 62%)`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Rajdhani',sans-serif", position: "relative", overflow: "hidden" }}>
+    <div style={{ minHeight: "100vh", background: `radial-gradient(ellipse at 50% 90%, #1c150a 0%, ${BG} 62%)`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-main), sans-serif", position: "relative", overflow: "hidden" }}>
       <style>{`.home-title{font-size:clamp(52px,9vw,110px)!important}.home-year{font-size:clamp(28px,4.5vw,58px)!important}.home-stats{gap:clamp(20px,4vw,54px)!important;flex-wrap:wrap!important}.home-btn{padding:14px clamp(28px,5vw,60px)!important;font-size:clamp(13px,1.4vw,17px)!important;margin-top:clamp(28px,4vh,52px)!important}.home-stat-val{font-size:clamp(18px,2.5vw,28px)!important}@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}`}</style>
-      {[300, 500, 700, 900].map(s => <div key={s} style={{ position: "absolute", width: s, height: s, border: "1px solid rgba(212,175,55,0.035)", borderRadius: "50%", pointerEvents: "none" }} />)}
-      <div style={{ position: "absolute", inset: 0, background: "repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(212,175,55,0.015) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(212,175,55,0.015) 40px)", pointerEvents: "none" }} />
+      {[300, 500, 700, 900].map(s => <div key={s} style={{ position: "absolute", width: s, height: s, border: "1px solid rgba(232, 96, 60,0.035)", borderRadius: "50%", pointerEvents: "none" }} />)}
+      <div style={{ position: "absolute", inset: 0, background: "transparent", pointerEvents: "none" }} />
 
       {/* TATA IPL LOGO - top left */}
       <div style={{ position: "absolute", top: 16, left: 20, zIndex: 10 }}>
@@ -886,21 +881,21 @@ function Home({ onPlay, onCreateRoom, onJoinRoom }) {
 
       {/* TOP SHORTCUTS */}
       <div style={{ position: "absolute", top: 20, right: 20, display: "flex", gap: 12, zIndex: 10 }}>
-        <button onClick={onJoinRoom} style={{ background: "transparent", border: `1px solid ${GOLD}40`, borderRadius: 6, padding: "8px 16px", color: GOLD, fontSize: 11, fontWeight: 700, cursor: "pointer", letterSpacing: 2, fontFamily: "'Rajdhani'" }}>JOIN ROOM</button>
-        <button onClick={onCreateRoom} style={{ background: `${GOLD}15`, border: `1px solid ${GOLD}`, borderRadius: 6, padding: "8px 16px", color: GOLD, fontSize: 11, fontWeight: 700, cursor: "pointer", letterSpacing: 2, fontFamily: "'Rajdhani'" }}>CREATE ROOM</button>
+        <button onClick={onJoinRoom} style={{ background: "transparent", border: `1px solid ${GOLD}40`, borderRadius: 6, padding: "8px 16px", color: GOLD, fontSize: 11, fontWeight: 700, cursor: "pointer", letterSpacing: 2, fontFamily: "var(--font-main), sans-serif" }}>JOIN ROOM</button>
+        <button onClick={onCreateRoom} style={{ background: `${GOLD}15`, border: `1px solid ${GOLD}`, borderRadius: 6, padding: "8px 16px", color: GOLD, fontSize: 11, fontWeight: 700, cursor: "pointer", letterSpacing: 2, fontFamily: "var(--font-main), sans-serif" }}>CREATE ROOM</button>
       </div>
 
       <div style={{ textAlign: "center", zIndex: 1, animation: "fadeUp .6s ease-out" }}>
         <div style={{ color: `${GOLD}77`, fontSize: 11, letterSpacing: 8, marginBottom: 22, fontWeight: 600 }}>TATA INDIAN PREMIER LEAGUE</div>
 
-        <div className="home-title" style={{ fontFamily: "'Bebas Neue'", fontSize: 110, lineHeight: 0.85, letterSpacing: 12, color: "#f0f0f0", textShadow: `0 0 100px ${GOLD}18` }}>BIDWICKET IPL<br /><span style={{ color: GOLD, textShadow: `0 0 80px ${GOLD}88, 0 0 160px ${GOLD}33` }}>AUCTION</span></div>
-        <div className="home-year" style={{ fontFamily: "'Bebas Neue'", fontSize: 58, color: "#1e1e1e", letterSpacing: 22, marginTop: 6 }}>2025</div>
+        <div className="home-title" style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 110, lineHeight: 0.85, letterSpacing: 12, color: "#f0f0f0", textShadow: `0 0 100px ${GOLD}18` }}>BIDWICKET IPL<br /><span style={{ color: GOLD, textShadow: `0 0 80px ${GOLD}88, 0 0 160px ${GOLD}33` }}>AUCTION</span></div>
+        <div className="home-year" style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 58, color: "#1e1e1e", letterSpacing: 22, marginTop: 6 }}>2025</div>
         <div style={{ color: "#444", fontSize: 12, marginTop: 22, letterSpacing: 5 }}>THE ULTIMATE BIDDING SIMULATION</div>
-        <button className="home-btn" onClick={onPlay} style={{ marginTop: 52, background: `linear-gradient(135deg, ${GOLD}, #9a7610)`, border: "none", borderRadius: 3, padding: "17px 60px", color: "#000", fontSize: 17, fontWeight: 900, cursor: "pointer", letterSpacing: 5, fontFamily: "'Barlow Condensed'", boxShadow: `0 4px 60px ${GOLD}55, 0 0 0 1px ${GOLD}22` }}>START AUCTION</button>
+        <button className="home-btn" onClick={onPlay} style={{ marginTop: 52, background: `#E8603C`, border: "none", borderRadius: 3, padding: "17px 60px", color: "#000", fontSize: 17, fontWeight: 900, cursor: "pointer", letterSpacing: 5, fontFamily: "var(--font-main), sans-serif", boxShadow: `0 4px 60px ${GOLD}55, 0 0 0 1px ${GOLD}22` }}>START AUCTION</button>
         <div className="home-stats" style={{ marginTop: 54, display: "flex", gap: 54, justifyContent: "center" }}>
           {[["500+", "PLAYERS"], ["10", "TEAMS"], ["₹120Cr", "EACH PURSE"], ["LIVE", "MULTIPLAYER"]].map(([n, l]) => (
             <div key={l} style={{ textAlign: "center" }}>
-              <div className="home-stat-val" style={{ fontFamily: "'Bebas Neue'", fontSize: 28, color: GOLD, letterSpacing: 2 }}>{n}</div>
+              <div className="home-stat-val" style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 28, color: GOLD, letterSpacing: 2 }}>{n}</div>
               <div style={{ fontSize: 10, color: "#3a3a3a", letterSpacing: 3 }}>{l}</div>
             </div>
           ))}
@@ -917,22 +912,22 @@ function ModeSelect({ onSelect }) {
     { id: "mini", title: "BIDWICKET IPL MINI AUCTION", subtitle: "200 Players · Quick Mode", desc: "Quick game with top players from all categories shuffled randomly.", icon: "⚡", players: "200", color: "#22D3EE" },
   ];
   return (
-    <div style={{ minHeight: "100vh", background: BG, fontFamily: "'Rajdhani',sans-serif", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ minHeight: "100vh", background: BG, fontFamily: "var(--font-main), sans-serif", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
       <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}`}</style>
       <div style={{ textAlign: "center", marginBottom: 50, animation: "fadeUp .4s ease-out" }}>
-        <div style={{ fontFamily: "'Bebas Neue'", fontSize: "clamp(32px,5vw,52px)", letterSpacing: 8, color: GOLD }}>SELECT BIDWICKET IPL AUCTION MODE</div>
+        <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: "clamp(32px,5vw,52px)", letterSpacing: 8, color: GOLD }}>SELECT BIDWICKET IPL AUCTION MODE</div>
       </div>
       <div style={{ display: "flex", gap: 24, animation: "fadeUp .5s ease-out", flexWrap: "wrap", justifyContent: "center", padding: "0 20px" }}>
         {modes.map(m => (
           <div key={m.id} onClick={() => onSelect(m.id)} onMouseEnter={() => setHov(m.id)} onMouseLeave={() => setHov(null)}
             style={{ width: 320, background: hov === m.id ? `${m.color}10` : CARD, border: `1px solid ${hov === m.id ? m.color : BORDER}`, borderRadius: 16, padding: "36px 28px", cursor: "pointer", transition: "all .25s", textAlign: "center", boxShadow: hov === m.id ? `0 0 50px ${m.color}22` : "none", transform: hov === m.id ? "translateY(-6px)" : "none" }}>
             <div style={{ fontSize: 56, marginBottom: 16 }}>{m.icon}</div>
-            <div style={{ fontFamily: "'Bebas Neue'", fontSize: 30, color: m.color, letterSpacing: 3 }}>{m.title}</div>
+            <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 30, color: m.color, letterSpacing: 3 }}>{m.title}</div>
             <div style={{ color: "#555", fontSize: 12, marginTop: 10 }}>{m.subtitle}</div>
             <div style={{ color: "#3a3a3a", fontSize: 11, marginTop: 8 }}>{m.desc}</div>
             <div style={{ marginTop: 20, display: "flex", justifyContent: "center", gap: 20 }}>
-              <div><div style={{ fontFamily: "'Bebas Neue'", fontSize: 28, color: m.color }}>{m.players}</div><div style={{ fontSize: 9, color: "#444", letterSpacing: 2 }}>PLAYERS</div></div>
-              <div><div style={{ fontFamily: "'Bebas Neue'", fontSize: 28, color: m.color }}>10</div><div style={{ fontSize: 9, color: "#444", letterSpacing: 2 }}>TEAMS</div></div>
+              <div><div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 28, color: m.color }}>{m.players}</div><div style={{ fontSize: 9, color: "#444", letterSpacing: 2 }}>PLAYERS</div></div>
+              <div><div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 28, color: m.color }}>10</div><div style={{ fontSize: 9, color: "#444", letterSpacing: 2 }}>TEAMS</div></div>
             </div>
           </div>
         ))}
@@ -944,17 +939,17 @@ function ModeSelect({ onSelect }) {
 function TeamSelect({ onSelect, mode }) {
   const [hov, setHov] = useState(null);
   return (
-    <div style={{ minHeight: "100vh", background: BG, fontFamily: "'Rajdhani',sans-serif", padding: "clamp(20px,4vh,38px) clamp(16px,3vw,32px)" }}>
+    <div style={{ minHeight: "100vh", background: BG, fontFamily: "var(--font-main), sans-serif", padding: "clamp(20px,4vh,38px) clamp(16px,3vw,32px)" }}>
       <style>{`.ts-title{font-size:clamp(26px,4vw,46px)!important}.ts-grid{grid-template-columns:repeat(5,1fr)!important}@media(max-width:1000px){.ts-grid{grid-template-columns:repeat(3,1fr)!important}}@media(max-width:600px){.ts-grid{grid-template-columns:repeat(2,1fr)!important}}`}</style>
       <div style={{ textAlign: "center", marginBottom: 38 }}>
-        <div className="ts-title" style={{ fontFamily: "'Bebas Neue'", fontSize: 46, letterSpacing: 8, color: GOLD }}>CHOOSE YOUR FRANCHISE</div>
+        <div className="ts-title" style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 46, letterSpacing: 8, color: GOLD }}>CHOOSE YOUR FRANCHISE</div>
         <div style={{ color: "#444", fontSize: 13, letterSpacing: 3, marginTop: 6 }}>{mode === "mega" ? "MEGA AUCTION — 500+ PLAYERS" : "MINI AUCTION — 200 PLAYERS"}</div>
       </div>
       <div className="ts-grid" style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 14, maxWidth: 880, margin: "0 auto" }}>
         {TEAMS.map(t => (
           <div key={t.id} onClick={() => onSelect(t.id)} onMouseEnter={() => setHov(t.id)} onMouseLeave={() => setHov(null)}
             style={{ background: hov === t.id ? `${t.color}14` : CARD, border: `1px solid ${hov === t.id ? t.color : BORDER}`, borderRadius: 12, padding: "22px 16px", cursor: "pointer", textAlign: "center", transition: "all .2s", boxShadow: hov === t.id ? `0 0 30px ${t.color}33` : "none", transform: hov === t.id ? "translateY(-4px)" : "none" }}>
-            <div style={{ fontFamily: "'Bebas Neue'", fontSize: 34, color: t.color, letterSpacing: 2, lineHeight: 1 }}>{t.short}</div>
+            <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 34, color: t.color, letterSpacing: 2, lineHeight: 1 }}>{t.short}</div>
             <div style={{ fontSize: 11, color: hov === t.id ? "#aaa" : "#555", marginTop: 7, lineHeight: 1.4, fontWeight: 500 }}>{t.name}</div>
             <div style={{ marginTop: 14, fontSize: 12, color: `${t.color}88`, fontWeight: 600, letterSpacing: 1 }}>₹120 Cr purse</div>
           </div>
@@ -1045,7 +1040,7 @@ Rank ALL 10 teams. Be brutally honest and specific about real IPL 2025 condition
   const teamColor = (id) => TEAMS.find(t => t.id === id)?.color || "#888";
 
   return (
-    <div style={{ minHeight: "100vh", background: BG, fontFamily: "'Rajdhani',sans-serif", padding: "clamp(14px,3vh,28px)" }}>
+    <div style={{ minHeight: "100vh", background: BG, fontFamily: "var(--font-main), sans-serif", padding: "clamp(14px,3vh,28px)" }}>
       <style>{`
         @keyframes fadeUpG{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
         @keyframes pulseG{0%,100%{opacity:1}50%{opacity:.35}}
@@ -1058,10 +1053,10 @@ Rank ALL 10 teams. Be brutally honest and specific about real IPL 2025 condition
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28, flexWrap: "wrap", gap: 12, animation: "fadeUpG .4s ease-out" }}>
         <div>
-          <div style={{ fontFamily: "'Bebas Neue'", fontSize: "clamp(26px,4vw,48px)", color: GOLD, letterSpacing: 6, lineHeight: 1 }}>🤖 AI TEAM ANALYSIS</div>
+          <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: "clamp(26px,4vw,48px)", color: GOLD, letterSpacing: 6, lineHeight: 1 }}>🤖 AI TEAM ANALYSIS</div>
           <div style={{ color: "#444", fontSize: 11, letterSpacing: 4, marginTop: 4 }}>POWERED BY ADVANCED AI · IPL 2025 CONDITIONS</div>
         </div>
-        <button onClick={onBack} style={{ background: "transparent", border: `1px solid ${GOLD}50`, borderRadius: 6, padding: "10px 22px", color: GOLD, fontSize: 13, fontWeight: 700, cursor: "pointer", letterSpacing: 2, fontFamily: "'Barlow Condensed'" }}>
+        <button onClick={onBack} style={{ background: "transparent", border: `1px solid ${GOLD}50`, borderRadius: 6, padding: "10px 22px", color: GOLD, fontSize: 13, fontWeight: 700, cursor: "pointer", letterSpacing: 2, fontFamily: "var(--font-main), sans-serif" }}>
           ← BACK TO RESULTS
         </button>
       </div>
@@ -1070,7 +1065,7 @@ Rank ALL 10 teams. Be brutally honest and specific about real IPL 2025 condition
       {status === "loading" && (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: 28 }}>
           <div style={{ width: 70, height: 70, border: `4px solid ${GOLD}22`, borderTop: `4px solid ${GOLD}`, borderRadius: "50%", animation: "spinG 1s linear infinite" }} />
-          <div style={{ fontFamily: "'Bebas Neue'", fontSize: 26, color: GOLD, letterSpacing: 4, animation: "pulseG 1.5s infinite" }}>AI IS ANALYZING YOUR TEAMS...</div>
+          <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 26, color: GOLD, letterSpacing: 4, animation: "pulseG 1.5s infinite" }}>AI IS ANALYZING YOUR TEAMS...</div>
           <div style={{ color: "#444", fontSize: 13, letterSpacing: 2, maxWidth: 420, textAlign: "center" }}>
             Evaluating squad balance, IPL 2025 form, overseas usage, death bowling and powerplay specialists across all 10 franchises...
           </div>
@@ -1086,16 +1081,16 @@ Rank ALL 10 teams. Be brutally honest and specific about real IPL 2025 condition
       {status === "error" && (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: 20, animation: "fadeUpG .4s ease-out" }}>
           <div style={{ fontSize: 52 }}>⚠️</div>
-          <div style={{ fontFamily: "'Bebas Neue'", fontSize: 30, color: "#ef4444", letterSpacing: 4 }}>ANALYSIS FAILED</div>
+          <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 30, color: "#ef4444", letterSpacing: 4 }}>ANALYSIS FAILED</div>
           <div style={{ background: "#0d0d0d", border: "1px solid #ef444428", borderRadius: 12, padding: "18px 28px", maxWidth: 520, textAlign: "center" }}>
             <div style={{ color: "#ef4444", fontSize: 13, lineHeight: 1.7 }}>{errorMsg}</div>
             {!CLAUDE_API_KEY && (
-              <div style={{ marginTop: 14, padding: "10px 16px", background: "#1a1a1a", borderRadius: 8, fontFamily: "monospace", fontSize: 12, color: GOLD, letterSpacing: 1 }}>
+              <div style={{ marginTop: 14, padding: "10px 16px", background: "#1a1a1a", borderRadius: 8, fontFamily: "var(--font-main), sans-serif", fontSize: 12, color: GOLD, letterSpacing: 1 }}>
                 VITE_CLAUDE_API_KEY=your_key_here
               </div>
             )}
           </div>
-          <button onClick={runAnalysis} style={{ background: `linear-gradient(135deg,${GOLD},#9a7610)`, border: "none", borderRadius: 6, padding: "12px 32px", color: "#000", fontWeight: 900, cursor: "pointer", fontSize: 14, letterSpacing: 2, fontFamily: "'Barlow Condensed'" }}>
+          <button onClick={runAnalysis} style={{ background: `#E8603C`, border: "none", borderRadius: 6, padding: "12px 32px", color: "#000", fontWeight: 900, cursor: "pointer", fontSize: 14, letterSpacing: 2, fontFamily: "var(--font-main), sans-serif" }}>
             RETRY ANALYSIS
           </button>
         </div>
@@ -1118,16 +1113,16 @@ Rank ALL 10 teams. Be brutally honest and specific about real IPL 2025 condition
             const champ = analysis.rankings[0];
             const tc = teamColor(champ.teamId);
             return (
-              <div style={{ background: `linear-gradient(135deg,${tc}14,${GOLD}06,${CARD})`, border: `2px solid ${GOLD}`, borderRadius: 16, padding: "26px 30px", maxWidth: 900, margin: "0 auto 24px", boxShadow: `0 0 60px ${GOLD}1a`, animation: "fadeUpG .6s ease-out" }}>
+              <div style={{ background: `${CARD}`, border: `2px solid ${GOLD}`, borderRadius: 16, padding: "26px 30px", maxWidth: 900, margin: "0 auto 24px", boxShadow: `0 0 60px ${GOLD}1a`, animation: "fadeUpG .6s ease-out" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16, flexWrap: "wrap" }}>
-                  <div style={{ fontFamily: "'Bebas Neue'", fontSize: 16, background: `linear-gradient(135deg,${GOLD},#9a7610)`, color: "#000", borderRadius: 6, padding: "4px 16px", letterSpacing: 2 }}>🥇 #1 CHAMPION</div>
-                  <div style={{ fontFamily: "'Bebas Neue'", fontSize: 34, color: GOLD, letterSpacing: 4 }}>{champ.teamName}</div>
+                  <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 16, background: `#E8603C`, color: "#000", borderRadius: 6, padding: "4px 16px", letterSpacing: 2 }}>🥇 #1 CHAMPION</div>
+                  <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 34, color: GOLD, letterSpacing: 4 }}>{champ.teamName}</div>
                   <div style={{ marginLeft: "auto", background: `${GOLD}14`, border: `1px solid ${GOLD}40`, borderRadius: 10, padding: "10px 18px", textAlign: "center" }}>
-                    <div style={{ fontFamily: "'Bebas Neue'", fontSize: 36, color: GOLD }}>{champ.score}</div>
+                    <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 36, color: GOLD }}>{champ.score}</div>
                     <div style={{ fontSize: 9, color: "#888", letterSpacing: 2 }}>SCORE/100</div>
                   </div>
                 </div>
-                <div style={{ color: "#e0c97b", fontSize: 15, fontStyle: "italic", marginBottom: 16, lineHeight: 1.65 }}>"{champ.verdict}"</div>
+                <div style={{ color: "#E8603C", fontSize: 15, fontStyle: "italic", marginBottom: 16, lineHeight: 1.65 }}>"{champ.verdict}"</div>
                 {champ.whyWins && (
                   <div style={{ background: "#ffffff05", borderRadius: 10, padding: "14px 18px", borderLeft: `4px solid ${GOLD}`, marginBottom: 16 }}>
                     <div style={{ fontSize: 10, color: GOLD, letterSpacing: 3, fontWeight: 700, marginBottom: 8 }}>WHY THIS TEAM WINS IPL 2025</div>
@@ -1154,7 +1149,7 @@ Rank ALL 10 teams. Be brutally honest and specific about real IPL 2025 condition
 
           {/* Remaining rankings - click to expand */}
           <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", flexDirection: "column", gap: 8 }}>
-            <div style={{ fontFamily: "'Bebas Neue'", fontSize: 16, color: "#444", letterSpacing: 4, marginBottom: 6 }}>ALL TEAM RANKINGS — CLICK TO EXPAND</div>
+            <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 16, color: "#444", letterSpacing: 4, marginBottom: 6 }}>ALL TEAM RANKINGS — CLICK TO EXPAND</div>
             {analysis.rankings?.map((r, idx) => {
               const tc = teamColor(r.teamId);
               const isOpen = expanded[r.teamId];
@@ -1163,16 +1158,16 @@ Rank ALL 10 teams. Be brutally honest and specific about real IPL 2025 condition
                 <div key={r.teamId} className="gem-card" onClick={() => toggleExpand(r.teamId)}
                   style={{ background: CARD, border: `1px solid ${borderC}`, borderRadius: 12, overflow: "hidden", animation: `rankInG ${0.15 + idx * 0.06}s ease-out both` }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 18px", background: idx === 0 ? `${GOLD}07` : "transparent" }}>
-                    <div style={{ fontFamily: "'Bebas Neue'", fontSize: 26, minWidth: 40, textAlign: "center", lineHeight: 1, color: idx === 0 ? GOLD : idx === 1 ? "#aaa" : idx === 2 ? "#CD7F32" : "#555" }}>
+                    <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 26, minWidth: 40, textAlign: "center", lineHeight: 1, color: idx === 0 ? GOLD : idx === 1 ? "#aaa" : idx === 2 ? "#CD7F32" : "#555" }}>
                       {idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `#${r.rank}`}
                     </div>
                     <div style={{ width: 10, height: 10, borderRadius: "50%", background: tc, boxShadow: `0 0 8px ${tc}`, flexShrink: 0 }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontFamily: "'Bebas Neue'", fontSize: 20, color: tc, letterSpacing: 2, lineHeight: 1 }}>{r.teamName}</div>
+                      <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 20, color: tc, letterSpacing: 2, lineHeight: 1 }}>{r.teamName}</div>
                       <div style={{ color: "#555", fontSize: 12, marginTop: 2, letterSpacing: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.verdict}</div>
                     </div>
                     <div style={{ textAlign: "center", minWidth: 52, flexShrink: 0 }}>
-                      <div style={{ fontFamily: "'Bebas Neue'", fontSize: 26, color: idx === 0 ? GOLD : idx === 1 ? "#aaa" : idx === 2 ? "#CD7F32" : "#555" }}>{r.score}</div>
+                      <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 26, color: idx === 0 ? GOLD : idx === 1 ? "#aaa" : idx === 2 ? "#CD7F32" : "#555" }}>{r.score}</div>
                       <div style={{ fontSize: 8, color: "#444", letterSpacing: 2 }}>/100</div>
                     </div>
                     <div style={{ color: "#444", fontSize: 16, marginLeft: 6, flexShrink: 0 }}>{isOpen ? "▲" : "▼"}</div>
@@ -1246,16 +1241,16 @@ function Results({ gs, myTeamId: mti, onRestart }) {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: BG, fontFamily: "'Rajdhani',sans-serif", padding: "clamp(16px,3vh,28px)" }}>
+    <div style={{ minHeight: "100vh", background: BG, fontFamily: "var(--font-main), sans-serif", padding: "clamp(16px,3vh,28px)" }}>
       <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}.res-squad{grid-template-columns:repeat(2,1fr)!important}@media(max-width:700px){.res-squad{grid-template-columns:1fr!important}}`}</style>
       <div style={{ textAlign: "center", marginBottom: 28 }}>
-        <div style={{ fontFamily: "'Bebas Neue'", fontSize: "clamp(30px,5vw,54px)", color: GOLD, letterSpacing: 8 }}>BIDWICKET IPL AUCTION COMPLETE</div>
+        <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: "clamp(30px,5vw,54px)", color: GOLD, letterSpacing: 8 }}>BIDWICKET IPL AUCTION COMPLETE</div>
 
         <div style={{ color: "#555", fontSize: 12, letterSpacing: 3, marginTop: 4 }}>{soldCount} SOLD · {unsoldCount} UNSOLD</div>
       </div>
       <div style={{ display: "flex", gap: 6, marginBottom: 24, flexWrap: "wrap", justifyContent: "center" }}>
         {TEAMS.map(t => (
-          <button key={t.id} onClick={() => setActiveId(t.id)} style={{ background: activeId === t.id ? t.color : "transparent", border: `1px solid ${t.color}`, borderRadius: 4, padding: "6px 14px", color: activeId === t.id ? "#000" : t.color, cursor: "pointer", fontWeight: 700, fontSize: 13, fontFamily: "'Rajdhani'" }}>
+          <button key={t.id} onClick={() => setActiveId(t.id)} style={{ background: activeId === t.id ? t.color : "transparent", border: `1px solid ${t.color}`, borderRadius: 4, padding: "6px 14px", color: activeId === t.id ? "#000" : t.color, cursor: "pointer", fontWeight: 700, fontSize: 13, fontFamily: "var(--font-main), sans-serif" }}>
             {t.short}{t.id === mti ? " ★" : ""}
           </button>
         ))}
@@ -1265,7 +1260,7 @@ function Results({ gs, myTeamId: mti, onRestart }) {
           {/* PURSE HIGHLIGHT */}
           <div style={{ background: `linear-gradient(135deg, ${CARD}, #0A0D15)`, border: `1px solid ${GOLD}40`, borderRadius: 12, padding: "20px", flex: 1, display: "flex", flexDirection: "column", gap: 10, boxShadow: `0 8px 30px ${GOLD}15` }}>
             <div style={{ fontSize: 13, color: GOLD, letterSpacing: 3, fontWeight: 700 }}>{team?.name}</div>
-            <div style={{ fontFamily: "'Bebas Neue'", fontSize: 38, color: "#fff", letterSpacing: 2 }}>{playingXI.length === 11 ? "FINAL PLAYING XI" : "FULL SQUAD"}</div>
+            <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 38, color: "#fff", letterSpacing: 2 }}>{playingXI.length === 11 ? "FINAL PLAYING XI" : "FULL SQUAD"}</div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px dashed ${BORDER}`, paddingTop: 10, marginTop: 4 }}>
               <span style={{ fontSize: 12, color: "#aaa" }}>REMAINING PURSE</span>
               <strong style={{ color: GOLD, fontSize: 16 }}>{fmt(gs.purses[activeId])}</strong>
@@ -1289,10 +1284,10 @@ function Results({ gs, myTeamId: mti, onRestart }) {
       </div>
 
       <div style={{ textAlign: "center", marginTop: 40, display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
-        <button onClick={() => setShowAnalysis(true)} style={{ background: `linear-gradient(135deg,#6366f1,#4338ca)`, border: "none", borderRadius: 3, padding: "14px 30px", color: "#fff", fontWeight: 900, cursor: "pointer", fontSize: 13, letterSpacing: 2, fontFamily: "'Barlow Condensed'", boxShadow: "0 0 30px #6366f140" }}>🤖 AI TEAM ANALYSIS</button>
-        <button onClick={downloadSheet} style={{ background: "#22D3EE", border: "none", borderRadius: 3, padding: "14px 30px", color: "#000", fontWeight: 900, cursor: "pointer", fontSize: 13, letterSpacing: 2, fontFamily: "'Barlow Condensed'" }}>DOWNLOAD IMAGE ⬇</button>
-        <button onClick={shareWhatsApp} style={{ background: "#25D366", border: "none", borderRadius: 3, padding: "14px 30px", color: "#fff", fontWeight: 900, cursor: "pointer", fontSize: 13, letterSpacing: 2, fontFamily: "'Barlow Condensed'" }}>SHARE ON WHATSAPP 📱</button>
-        <button onClick={onRestart} style={{ background: `linear-gradient(135deg, ${GOLD}, #9a7610)`, border: "none", borderRadius: 3, padding: "14px 36px", color: "#000", fontWeight: 900, cursor: "pointer", fontSize: 13, letterSpacing: 2, fontFamily: "'Barlow Condensed'" }}>PLAY AGAIN 🔄</button>
+        <button onClick={() => setShowAnalysis(true)} style={{ background: `linear-gradient(135deg,#6366f1,#4338ca)`, border: "none", borderRadius: 3, padding: "14px 30px", color: "#fff", fontWeight: 900, cursor: "pointer", fontSize: 13, letterSpacing: 2, fontFamily: "var(--font-main), sans-serif", boxShadow: "0 0 30px #6366f140" }}>🤖 AI TEAM ANALYSIS</button>
+        <button onClick={downloadSheet} style={{ background: "#22D3EE", border: "none", borderRadius: 3, padding: "14px 30px", color: "#000", fontWeight: 900, cursor: "pointer", fontSize: 13, letterSpacing: 2, fontFamily: "var(--font-main), sans-serif" }}>DOWNLOAD IMAGE ⬇</button>
+        <button onClick={shareWhatsApp} style={{ background: "#25D366", border: "none", borderRadius: 3, padding: "14px 30px", color: "#fff", fontWeight: 900, cursor: "pointer", fontSize: 13, letterSpacing: 2, fontFamily: "var(--font-main), sans-serif" }}>SHARE ON WHATSAPP 📱</button>
+        <button onClick={onRestart} style={{ background: `#E8603C`, border: "none", borderRadius: 3, padding: "14px 36px", color: "#000", fontWeight: 900, cursor: "pointer", fontSize: 13, letterSpacing: 2, fontFamily: "var(--font-main), sans-serif" }}>PLAY AGAIN 🔄</button>
       </div>
     </div>
   );

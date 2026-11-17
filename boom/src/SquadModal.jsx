@@ -33,7 +33,7 @@ export function SquadModal({ isOpen, onClose, squads, myTeamId, TEAMS, maxSquad 
     });
 
     return (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, fontFamily: "'Rajdhani', sans-serif" }}>
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, fontFamily: "var(--font-main), sans-serif" }}>
             <style>{`
                 @keyframes slideUp { from {opacity:0; transform:translateY(30px) scale(0.98);} to {opacity:1; transform:none;} }
                 .squad-scroller::-webkit-scrollbar { width: 6px; }
@@ -48,7 +48,7 @@ export function SquadModal({ isOpen, onClose, squads, myTeamId, TEAMS, maxSquad 
                     <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
                         <img src={`/assets/${myTeamId}.png`} style={{ width: 50, height: 50, objectFit: 'contain' }} alt="" />
                         <div>
-                            <div style={{ fontFamily: "'Bebas Neue'", fontSize: 36, color: myTeamInfo?.color || GOLD, letterSpacing: 3, lineHeight: 1 }}>{myTeamInfo?.name || "MY SQUAD"}</div>
+                            <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 36, color: myTeamInfo?.color || GOLD, letterSpacing: 3, lineHeight: 1 }}>{myTeamInfo?.name || "MY SQUAD"}</div>
                             <div style={{ color: "#aaa", fontSize: 13, letterSpacing: 2, marginTop: 4, fontWeight: 600, display: "flex", gap: 15 }}>
                                 <div>PLAYERS: <span style={{ color: "#fff", fontSize: 15 }}>{mySquad.length} <span style={{ color: "#555" }}>/</span> {maxSquad}</span></div>
                                 <div style={{ color: mySquad.filter(p => p.overseas).length >= maxOverseas ? "#ff4d4d" : GOLD }}>
@@ -73,7 +73,7 @@ export function SquadModal({ isOpen, onClose, squads, myTeamId, TEAMS, maxSquad 
                                 return (
                                     <div key={role}>
                                         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-                                            <div style={{ fontFamily: "'Bebas Neue'", fontSize: 22, color: "#fff", letterSpacing: 2 }}>{ROLE_L[role]?.toUpperCase()}S</div>
+                                            <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 22, color: "#fff", letterSpacing: 2 }}>{ROLE_L[role]?.toUpperCase()}S</div>
                                             <div style={{ color: GOLD, fontSize: 12, background: `${GOLD}15`, padding: "2px 8px", borderRadius: 4, fontWeight: 700 }}>{players.length}</div>
                                             <div style={{ flex: 1, height: 1, background: `linear-gradient(to right, ${BORDER}, transparent)` }} />
                                         </div>

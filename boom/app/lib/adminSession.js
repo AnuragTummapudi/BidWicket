@@ -10,7 +10,6 @@ import {
 } from '../../../shared/adminAuth.mjs';
 
 export const ADMIN_COOKIE_NAME = 'ipl_admin_session';
-const RENDER_BACKEND_URL = 'https://iplauction-3x6b.onrender.com';
 
 function normalizeBackendUrl(url) {
   const trimmedUrl = url?.trim();
@@ -24,7 +23,7 @@ function normalizeBackendUrl(url) {
 export function getAdminBackendUrl() {
   return normalizeBackendUrl(process.env.BACKEND_URL)
     || normalizeBackendUrl(process.env.NEXT_PUBLIC_BACKEND_URL)
-    || (process.env.NODE_ENV === 'production' ? RENDER_BACKEND_URL : 'http://127.0.0.1:3001');
+    || 'http://127.0.0.1:3001';
 }
 
 export async function isAdminAuthenticated() {

@@ -9,7 +9,7 @@ export default function manifest() {
     scope: '/',
     display: 'standalone',
     background_color: '#080808',
-    theme_color: '#E8B84B',
+    theme_color: '#E8603C',
     categories: ['games', 'sports', 'entertainment'],
     lang: 'en-IN',
     id: SITE_URL,

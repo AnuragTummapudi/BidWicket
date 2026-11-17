@@ -38,12 +38,12 @@ export default function PlayersPage() {
   const displayedPlayers = filteredPlayers.slice(0, visibleCount);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#000', color: '#fff', fontFamily: "'Rajdhani', sans-serif", minHeight: '100vh', padding: '24px 5vw' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#000', color: '#fff', fontFamily: "var(--font-main), sans-serif", minHeight: '100vh', padding: '24px 5vw' }}>
       <div style={{ width: '100%', margin: '0 auto' }}>
         
         <header style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '24px', gap: '24px' }}>
           <BrandLink compact={true} />
-          <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '3.5rem', margin: 0, letterSpacing: '4px', color: '#E8B84B' }}>
+          <h1 style={{ fontFamily: "var(--font-main), sans-serif", fontSize: '3.5rem', margin: 0, letterSpacing: '4px', color: '#E8603C' }}>
             PLAYER <span style={{ color: '#fff' }}>DIRECTORY</span>
           </h1>
           <div style={{ color: '#9aa4b2', fontSize: '1rem' }}>{filteredPlayers.length} matches / {playersData.length} total</div>
@@ -59,7 +59,7 @@ export default function PlayersPage() {
             value={search}
             onChange={e => { setSearch(e.target.value); setVisibleCount(24); }}
             style={{ width: '100%', backgroundColor: 'rgba(4,7,12,0.94)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff', padding: '16px 20px', fontSize: '1.15rem', borderRadius: '12px', outline: 'none', fontFamily: 'inherit', lineHeight: 1.4 }}
-            onFocus={e => e.target.style.borderColor = '#E8B84B'}
+            onFocus={e => e.target.style.borderColor = '#E8603C'}
             onBlur={e => e.target.style.borderColor = '#333'}
           />
 
@@ -75,13 +75,13 @@ export default function PlayersPage() {
                     padding: '8px 16px',
                     borderRadius: '20px',
                     border: '1px solid',
-                    borderColor: filterRole === role ? '#E8B84B' : 'rgba(255,255,255,0.12)',
-                    backgroundColor: filterRole === role ? '#E8B84B' : 'rgba(4,7,12,0.94)',
+                    borderColor: filterRole === role ? '#E8603C' : 'rgba(255,255,255,0.12)',
+                    backgroundColor: filterRole === role ? '#E8603C' : 'rgba(4,7,12,0.94)',
                     color: filterRole === role ? '#000' : '#fff',
                     cursor: 'pointer',
                     fontWeight: filterRole === role ? '700' : '600',
                     transition: 'all 0.2s',
-                    fontFamily: "'Barlow Condensed', sans-serif",
+                    fontFamily: "var(--font-main), sans-serif",
                     letterSpacing: '0.08em'
                   }}
                 >{role}</button>
@@ -105,7 +105,7 @@ export default function PlayersPage() {
                     cursor: 'pointer',
                     fontWeight: filterNation === nation ? '700' : '600',
                     transition: 'all 0.2s',
-                    fontFamily: "'Barlow Condensed', sans-serif",
+                    fontFamily: "var(--font-main), sans-serif",
                     letterSpacing: '0.08em'
                   }}
                 >{nation}</button>
@@ -136,8 +136,8 @@ export default function PlayersPage() {
               <div style={{ color: '#cbd5e1', fontSize: '1.2rem' }}>No players found matching your criteria.</div>
               <button 
                 onClick={() => { setSearch(''); setFilterRole('ALL'); setFilterNation('ALL'); }}
-                style={{ marginTop: '16px', padding: '10px 24px', background: 'transparent', border: '1px solid #555', color: '#fff', borderRadius: '4px', cursor: 'pointer', fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.08em' }}
-                onMouseOver={e => e.target.style.borderColor = '#E8B84B'}
+                style={{ marginTop: '16px', padding: '10px 24px', background: 'transparent', border: '1px solid #555', color: '#fff', borderRadius: '4px', cursor: 'pointer', fontFamily: "var(--font-main), sans-serif", letterSpacing: '0.08em' }}
+                onMouseOver={e => e.target.style.borderColor = '#E8603C'}
                 onMouseOut={e => e.target.style.borderColor = '#555'}
               >
                 Clear Filters
@@ -163,18 +163,18 @@ export default function PlayersPage() {
                     style={{
                       padding: '16px 40px',
                       backgroundColor: 'transparent',
-                      border: '2px solid #E8B84B',
-                      color: '#E8B84B',
+                      border: '2px solid #E8603C',
+                      color: '#E8603C',
                       fontSize: '1.1rem',
-                      fontFamily: "'Barlow Condensed', sans-serif",
+                      fontFamily: "var(--font-main), sans-serif",
                       letterSpacing: '2px',
                       textTransform: 'uppercase',
                       cursor: 'pointer',
                       borderRadius: '4px',
                       transition: 'all 0.2s',
                     }}
-                    onMouseOver={e => { e.target.style.backgroundColor = '#E8B84B'; e.target.style.color = '#000'; }}
-                    onMouseOut={e => { e.target.style.backgroundColor = 'transparent'; e.target.style.color = '#E8B84B'; }}
+                    onMouseOver={e => { e.target.style.backgroundColor = '#E8603C'; e.target.style.color = '#000'; }}
+                    onMouseOut={e => { e.target.style.backgroundColor = 'transparent'; e.target.style.color = '#E8603C'; }}
                   >
                     LOAD MORE LISTINGS
                   </button>
@@ -185,7 +185,7 @@ export default function PlayersPage() {
         <div style={{ marginTop: '48px', padding: '24px 0', textAlign: 'center', borderTop: '1px solid #111' }}>
           <div style={{ fontSize: '10px', color: '#444', letterSpacing: '1px', lineHeight: '1.6', maxWidth: '700px', margin: '0 auto' }}>
             IPL Auction Online is a fan-made simulator for educational purposes. 
-            Player information and data are attributed to <a href="https://www.iplt20.com" target="_blank" rel="noreferrer" style={{ color: '#E8B84B', textDecoration: 'none' }}>iplt20.com</a> & <a href="https://cricapi.com" target="_blank" rel="noreferrer" style={{ color: '#E8B84B', textDecoration: 'none' }}>CricAPI</a>.
+            Player information and data are attributed to <a href="https://www.iplt20.com" target="_blank" rel="noreferrer" style={{ color: '#E8603C', textDecoration: 'none' }}>iplt20.com</a> & <a href="https://cricapi.com" target="_blank" rel="noreferrer" style={{ color: '#E8603C', textDecoration: 'none' }}>CricAPI</a>.
           </div>
         </div>
       </div>

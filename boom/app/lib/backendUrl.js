@@ -1,9 +1,8 @@
-const RENDER_BACKEND_URL = 'https://iplauction-3x6b.onrender.com';
-
 function getConfiguredBackendUrl() {
   const configuredUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.trim();
   if (!configuredUrl) {
-    return RENDER_BACKEND_URL;
+    // Set NEXT_PUBLIC_BACKEND_URL in production; local dev talks to the backend on :3001.
+    return 'http://localhost:3001';
   }
 
   return configuredUrl.replace(/\/$/, '');

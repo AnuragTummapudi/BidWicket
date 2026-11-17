@@ -216,7 +216,7 @@ export default function ResultsPage() {
     return (
       <div style={{ minHeight: '100vh', background: BG, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24 }}>
         <div className="loading-spinner" style={{ width: 60, height: 60, border: `4px solid ${GOLD}22`, borderTopColor: GOLD, borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-        <div style={{ color: GOLD, fontFamily: "'Bebas Neue'", fontSize: 32, letterSpacing: 6, textAlign: 'center' }}>
+        <div style={{ color: GOLD, fontFamily: "var(--font-main), sans-serif", fontSize: 32, letterSpacing: 6, textAlign: 'center' }}>
           {resolvedGs ? 'CALCULATING FINAL SQUADS...' : 'LOADING RESULTS...'}
         </div>
         <style>{`
@@ -233,17 +233,17 @@ export default function ResultsPage() {
           <BrandLink compact={true} />
           <button
             onClick={() => router.push('/room?action=browse')}
-            style={{ background: `linear-gradient(135deg,${GOLD},#9a7610)`, border: 'none', borderRadius: 6, padding: '10px 20px', color: '#000', fontWeight: 900, cursor: 'pointer', fontSize: 13, letterSpacing: 2, fontFamily: "'Barlow Condensed'" }}
+            style={{ background: `#E8603C`, border: 'none', borderRadius: 6, padding: '10px 20px', color: '#000', fontWeight: 900, cursor: 'pointer', fontSize: 13, letterSpacing: 2, fontFamily: "var(--font-main), sans-serif" }}
           >
             BACK TO ROOMS
           </button>
         </div>
         <div style={{ minHeight: 'calc(100vh - 78px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 18, padding: 24, textAlign: 'center' }}>
-          <div style={{ color: GOLD, fontFamily: "'Bebas Neue'", fontSize: 28, letterSpacing: 4 }}>RESULTS UNAVAILABLE</div>
+          <div style={{ color: GOLD, fontFamily: "var(--font-main), sans-serif", fontSize: 28, letterSpacing: 4 }}>RESULTS UNAVAILABLE</div>
           <div style={{ color: '#777', fontSize: 13, letterSpacing: 1 }}>{loadError || 'We could not load that result snapshot.'}</div>
           <button
             onClick={() => router.push('/room?action=browse')}
-            style={{ background: `linear-gradient(135deg,${GOLD},#9a7610)`, border: 'none', borderRadius: 6, padding: '10px 20px', color: '#000', fontWeight: 900, cursor: 'pointer', fontSize: 13, letterSpacing: 2, fontFamily: "'Barlow Condensed'" }}
+            style={{ background: `#E8603C`, border: 'none', borderRadius: 6, padding: '10px 20px', color: '#000', fontWeight: 900, cursor: 'pointer', fontSize: 13, letterSpacing: 2, fontFamily: "var(--font-main), sans-serif" }}
           >
             BACK TO ROOMS
           </button>
@@ -414,12 +414,12 @@ function Results({ gs, myTeamId: mti, onRestart, mode, isArchived = false, archi
             : '';
 
   return (
-    <div style={{ minHeight: '100vh', background: BG, fontFamily: "'Rajdhani',sans-serif" }}>
+    <div style={{ minHeight: '100vh', background: BG, fontFamily: "var(--font-main), sans-serif" }}>
       <style>{`
         @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
         .res-card{animation:fadeUp .35s ease-out both}
-        .res-tab-btn{transition:all .2s;border-radius:0;font-family:'Barlow Condensed';font-size:13px;letter-spacing:2px;font-weight:700;cursor:pointer;border:none;padding:12px 18px}
-        .res-team-pill{transition:all .2s;border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:700;font-size:13px;font-family:'Rajdhani';white-space:nowrap}
+        .res-tab-btn{transition:all .2s;border-radius:0;font-family:var(--font-main), sans-serif;font-size:13px;letter-spacing:2px;font-weight:700;cursor:pointer;border:none;padding:12px 18px}
+        .res-team-pill{transition:all .2s;border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:700;font-size:13px;font-family:var(--font-main), sans-serif;white-space:nowrap}
         .res-action-btn{transition:background-color .2s,border-color .2s,color .2s}
         .res-action-btn:hover { background:#141922; border-color:#4b5563; color:#fff; }
         .res-shell{max-width:1480px;margin:0 auto}
@@ -429,13 +429,13 @@ function Results({ gs, myTeamId: mti, onRestart, mode, isArchived = false, archi
         .res-metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
         .res-metric{background:#0a0e13;border:1px solid #18202b;border-radius:14px;padding:14px 16px}
         .res-metric-label{color:#6b7280;font-size:10px;letter-spacing:2px;text-transform:uppercase}
-        .res-metric-value{margin-top:8px;color:#fff;font-family:'Bebas Neue';font-size:28px;letter-spacing:1px;line-height:1}
+        .res-metric-value{margin-top:8px;color:#fff;font-family:var(--font-main), sans-serif;font-size:28px;letter-spacing:1px;line-height:1}
         .res-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.95fr);gap:18px;align-items:start}
         .res-players-card{padding:18px}
         .res-side-card{padding:18px}
         .res-player-list{display:grid;gap:10px}
         .res-player-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;background:#0a0e13;border:1px solid #18202b;border-radius:14px;padding:12px 14px}
-        .res-player-index{width:34px;height:34px;border-radius:999px;border:1px solid #202938;display:flex;align-items:center;justify-content:center;color:#8b95a7;font-family:'Bebas Neue';font-size:16px;flex-shrink:0}
+        .res-player-index{width:34px;height:34px;border-radius:999px;border:1px solid #202938;display:flex;align-items:center;justify-content:center;color:#8b95a7;font-family:var(--font-main), sans-serif;font-size:16px;flex-shrink:0}
         .res-player-main{display:flex;align-items:center;gap:12px;min-width:0}
         .res-player-avatar{width:48px;height:48px;border-radius:14px;background:#080b10;border:1px solid #202938;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
         .res-player-name{color:#f3f4f6;font-size:16px;font-weight:700;line-height:1.2}
@@ -446,7 +446,7 @@ function Results({ gs, myTeamId: mti, onRestart, mode, isArchived = false, archi
         .res-player-price{color:#f3f4f6;font-size:15px;font-weight:700}
         .res-player-rating{margin-top:4px;font-size:11px;letter-spacing:1px}
         .res-section-label{color:#7c8799;font-size:10px;letter-spacing:2.4px;text-transform:uppercase}
-        .res-section-title{margin-top:8px;color:#fff;font-family:'Bebas Neue';font-size:34px;letter-spacing:1px;line-height:.95}
+        .res-section-title{margin-top:8px;color:#fff;font-family:var(--font-main), sans-serif;font-size:34px;letter-spacing:1px;line-height:.95}
         .res-section-copy{margin-top:10px;color:#98a3b3;font-size:14px;line-height:1.7}
         .res-checklist{display:grid;gap:10px;margin-top:14px}
         .res-check-item{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 14px;border:1px solid #18202b;border-radius:12px;background:#0a0e13}
@@ -454,22 +454,22 @@ function Results({ gs, myTeamId: mti, onRestart, mode, isArchived = false, archi
         .res-check-value{font-size:12px;font-weight:700;letter-spacing:1px}
         .res-actions-grid{display:grid;gap:10px;margin-top:14px}
         .res-actions-grid .res-action-btn{width:100%;justify-content:center}
-        .res-desktop-support-btn{display:inline-flex;align-items:center;justify-content:center;background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.36);border-radius:10px;padding:10px 18px;color:${GOLD};font-weight:900;font-size:13px;letter-spacing:1.5px;font-family:'Barlow Condensed';text-decoration:none}
+        .res-desktop-support-btn{display:inline-flex;align-items:center;justify-content:center;background:rgba(232, 96, 60,.1);border:1px solid rgba(232, 96, 60,.36);border-radius:10px;padding:10px 18px;color:${GOLD};font-weight:900;font-size:13px;letter-spacing:1.5px;font-family:var(--font-main), sans-serif;text-decoration:none}
         .support-modal-backdrop{position:fixed;inset:0;z-index:2147482000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(3,6,12,.76);backdrop-filter:blur(10px);animation:modalFade .22s ease-out both}
-        .support-modal{width:min(540px,100%);border:1px solid rgba(232,184,75,.35);border-radius:26px;background:radial-gradient(circle at 20% 0%,rgba(232,184,75,.22),transparent 34%),linear-gradient(145deg,#111723 0%,#070a10 58%,#0c1018 100%);box-shadow:0 26px 80px rgba(0,0,0,.56),0 0 50px rgba(232,184,75,.12);padding:clamp(22px,4vw,34px);text-align:center;animation:modalRise .28s ease-out both}
+        .support-modal{width:min(540px,100%);border:1px solid rgba(232, 96, 60,.35);border-radius:26px;background: linear-gradient(145deg,#111723 0%,#070a10 58%,#0c1018 100%);box-shadow:0 26px 80px rgba(0,0,0,.56),0 0 50px rgba(232, 96, 60,.12);padding:clamp(22px,4vw,34px);text-align:center;animation:modalRise .28s ease-out both}
         .support-modal-kicker{color:${GOLD};font-size:12px;font-weight:900;letter-spacing:3px;text-transform:uppercase}
-        .support-modal-title{margin-top:8px;color:#fff;font-family:'Bebas Neue';font-size:clamp(36px,8vw,56px);line-height:.9;letter-spacing:2px}
+        .support-modal-title{margin-top:8px;color:#fff;font-family:var(--font-main), sans-serif;font-size:clamp(36px,8vw,56px);line-height:.9;letter-spacing:2px}
         .support-modal-copy{margin:18px auto 0;max-width:440px;color:#d5dde8;font-size:16px;line-height:1.75}
         .support-modal-actions{display:grid;gap:12px;margin-top:24px}
-        .support-modal-support-btn,.support-modal-pay-btn,.support-modal-close-btn{min-height:52px;border-radius:16px;font-family:'Barlow Condensed';font-size:16px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
-        .support-modal-support-btn{border:0;background:linear-gradient(135deg,${GOLD},#f6d36e);color:#05070b;box-shadow:0 12px 28px rgba(232,184,75,.2)}
+        .support-modal-support-btn,.support-modal-pay-btn,.support-modal-close-btn{min-height:52px;border-radius:16px;font-family:var(--font-main), sans-serif;font-size:16px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+        .support-modal-support-btn{border:0;background:${GOLD};color:#05070b;box-shadow:0 12px 28px rgba(232, 96, 60,.2)}
         .support-modal-support-btn:hover,.support-modal-pay-btn:hover,.support-modal-close-btn:hover{transform:translateY(-1px)}
         .support-modal-mobile-payments{display:grid;grid-template-columns:1fr 1fr;gap:10px}
         .support-modal-pay-btn{border:1px solid #263344;background:#0b1018;color:#eef4fb}
         .support-modal-pay-logo{width:28px;height:28px;object-fit:contain;display:block;flex-shrink:0}
         .support-modal-paytm-mark{color:#00baf2;font-weight:900;letter-spacing:-.02em;text-transform:none}
         .support-modal-paytm-mark span{color:#002970}
-        .support-modal-upi-copy{margin-top:14px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.04);padding:12px 14px;width:100%;color:#eef4fb;font-family:'Rajdhani';cursor:pointer}
+        .support-modal-upi-copy{margin-top:14px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.04);padding:12px 14px;width:100%;color:#eef4fb;font-family:var(--font-main), sans-serif;cursor:pointer}
         .support-modal-upi-label{display:block;color:#8b95a7;font-size:11px;letter-spacing:1.8px;text-transform:uppercase}
         .support-modal-upi-value{display:block;margin-top:6px;font-size:18px;font-weight:700;letter-spacing:.5px}
         .support-modal-upi-hint{display:block;margin-top:6px;color:${GOLD};font-size:12px;letter-spacing:1.1px}
@@ -512,7 +512,7 @@ function Results({ gs, myTeamId: mti, onRestart, mode, isArchived = false, archi
           <div style={{ marginBottom: 14 }}>
             <BrandLink compact={true} />
           </div>
-          <div style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(24px,4vw,42px)', color: GOLD, letterSpacing: 6, lineHeight: 1 }}>IPL AUCTION COMPLETE</div>
+          <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 'clamp(24px,4vw,42px)', color: GOLD, letterSpacing: 6, lineHeight: 1 }}>IPL AUCTION COMPLETE</div>
           <div style={{ color: '#555', fontSize: 11, letterSpacing: 3, marginTop: 3 }}>
             {soldCount} SOLD · {unsoldCount} UNSOLD · {(mode || 'N/A').toUpperCase()} AUCTION{isArchived && archivedRoomCode ? ` · ROOM ${archivedRoomCode}` : ''}
           </div>
@@ -528,7 +528,7 @@ function Results({ gs, myTeamId: mti, onRestart, mode, isArchived = false, archi
             href="https://whatsapp.com/channel/0029VbCeqwJ90x2z9PRli10E"
             target="_blank"
             rel="noreferrer"
-            style={{ background:'#0f141b', border:'1px solid #233041', borderRadius: 10, padding: '10px 18px', color:'#d7dee8', fontWeight: 900, fontSize: 13, letterSpacing: 1.5, fontFamily: "'Barlow Condensed'", textDecoration: 'none' }}
+            style={{ background:'#0f141b', border:'1px solid #233041', borderRadius: 10, padding: '10px 18px', color:'#d7dee8', fontWeight: 900, fontSize: 13, letterSpacing: 1.5, fontFamily: "var(--font-main), sans-serif", textDecoration: 'none' }}
           >
             JOIN WHATSAPP
           </a>
@@ -537,7 +537,7 @@ function Results({ gs, myTeamId: mti, onRestart, mode, isArchived = false, archi
           </a>
           <button
             onClick={onRestart}
-            style={{ background: '#f3c547', border: '1px solid #f3c547', borderRadius: 10, padding: '10px 24px', color: '#05070b', fontWeight: 900, cursor: 'pointer', fontSize: 13, letterSpacing: 2, fontFamily: "'Barlow Condensed'" }}
+            style={{ background: '#E8603C', border: '1px solid #E8603C', borderRadius: 10, padding: '10px 24px', color: '#05070b', fontWeight: 900, cursor: 'pointer', fontSize: 13, letterSpacing: 2, fontFamily: "var(--font-main), sans-serif" }}
           >{isArchived ? 'BACK TO ROOMS' : 'PLAY AGAIN'}</button>
         </div>
       </div>
@@ -660,7 +660,7 @@ function SquadTab({ gs, mti, mode, teams, activeId, setActiveId, team, displayLi
         <div style={{ background: '#1a1113', border: '1px solid #4b1f26', borderRadius: 16, padding: '16px 20px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 16, animation: 'fadeUp 0.4s ease' }}>
           <div style={{ fontSize: 28 }}>🚨</div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: "'Bebas Neue'", fontSize: 24, color: '#ef4444', letterSpacing: 1 }}>SQUAD DISQUALIFIED</div>
+            <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 24, color: '#ef4444', letterSpacing: 1 }}>SQUAD DISQUALIFIED</div>
             <div style={{ color: '#ef4444aa', fontSize: 13, letterSpacing: 1, marginTop: 2 }}>
               {disqualificationReason || 'This team fails the minimum required criteria: 2 Batters, 2 Bowlers, 1 Wicketkeeper.'}
             </div>
@@ -708,7 +708,7 @@ function SquadTab({ gs, mti, mode, teams, activeId, setActiveId, team, displayLi
       <div className="res-layout">
         <div className="res-panel res-players-card">
           {playingXI.length < 11 && playingXI.length > 0 && (
-            <div style={{ background: '#15110a', border: '1px solid #4a3920', borderRadius: 12, padding: '12px 14px', marginBottom: 16, color: '#f3c547', fontSize: 12, letterSpacing: 1.2 }}>
+            <div style={{ background: '#15110a', border: '1px solid #4a3920', borderRadius: 12, padding: '12px 14px', marginBottom: 16, color: '#E8603C', fontSize: 12, letterSpacing: 1.2 }}>
               Only {playingXI.length} players are available in this XI. A full Playing XI needs 11 players.
             </div>
           )}
@@ -761,7 +761,7 @@ function SquadTab({ gs, mti, mode, teams, activeId, setActiveId, team, displayLi
             <div className="res-section-label">Lineup Check</div>
             <div className="res-section-title" style={{ fontSize: 28 }}>Squad Balance</div>
             <div className="res-checklist">
-              <CheckItem label="Players in XI" value={`${playingXI.length}/11`} tone={playingXI.length === 11 ? '#4ade80' : '#f3c547'} />
+              <CheckItem label="Players in XI" value={`${playingXI.length}/11`} tone={playingXI.length === 11 ? '#4ade80' : '#E8603C'} />
               <CheckItem label="Batters" value={String(roleBreakdown.batters)} tone={roleBreakdown.batters >= 2 ? '#4ade80' : '#ef4444'} />
               <CheckItem label="Bowlers" value={String(roleBreakdown.bowlers)} tone={roleBreakdown.bowlers >= 2 ? '#4ade80' : '#ef4444'} />
               <CheckItem label="Wicketkeepers" value={String(roleBreakdown.wicketkeepers)} tone={roleBreakdown.wicketkeepers >= 1 ? '#4ade80' : '#ef4444'} />
@@ -836,7 +836,7 @@ function LeaderboardTab({ gs, mode, mti, teams, isRivals, getTeamLabel }) {
         <span style={{ color: '#333' }}>Rating scale: 90–100 Elite · 80–89 Excellent · 70–79 Good · 60–69 Average · 50–59 Below Avg · &lt;50 Reserve</span>
       </div>
 
-      <div style={{ fontFamily: "'Bebas Neue'", fontSize: 14, color: '#333', letterSpacing: 4, marginBottom: 10 }}>{isRivals ? 'RIVALS SHOWDOWN — CLICK TO EXPAND XI' : 'ALL TEAM RANKINGS — CLICK TO EXPAND XI'}</div>
+      <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 14, color: '#333', letterSpacing: 4, marginBottom: 10 }}>{isRivals ? 'RIVALS SHOWDOWN — CLICK TO EXPAND XI' : 'ALL TEAM RANKINGS — CLICK TO EXPAND XI'}</div>
 
       {rankings.length === 0 && (
         <div style={{ color: '#555', textAlign: 'center', padding: 40, fontSize: 14, letterSpacing: 2 }}>Calculating leaderboard…</div>
@@ -856,7 +856,7 @@ function LeaderboardTab({ gs, mode, mti, teams, isRivals, getTeamLabel }) {
               style={{ background: CARD, border: `1px solid ${isMyTeam ? color : borderC}`, borderRadius: 12, overflow: 'hidden', cursor: 'pointer', transition: 'transform .15s', boxShadow: isMyTeam ? `0 0 20px ${color}20` : 'none' }}>
               {/* Row header */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', background: idx === 0 ? `${GOLD}06` : 'transparent' }}>
-                <div style={{ fontFamily: "'Bebas Neue'", fontSize: 24, minWidth: 40, textAlign: 'center', color: medalColor(idx), lineHeight: 1 }}>
+                <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 24, minWidth: 40, textAlign: 'center', color: medalColor(idx), lineHeight: 1 }}>
                   {idx < 3 ? MEDAL[idx] : `#${idx + 1}`}
                 </div>
                 {/* Team logo */}
@@ -871,7 +871,7 @@ function LeaderboardTab({ gs, mode, mti, teams, isRivals, getTeamLabel }) {
                   <div style={{ width: 10, height: 10, borderRadius: '50%', background: color, boxShadow: `0 0 8px ${color}`, flexShrink: 0 }} />
                 )}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontFamily: "'Bebas Neue'", fontSize: 18, color, letterSpacing: 2, lineHeight: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 18, color, letterSpacing: 2, lineHeight: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
                     {getTeamLabel(r.teamId)}{isMyTeam ? ' (YOU)' : ''}
                     {r.isDisqualified && (
                       <span style={{ background: '#ef4444', color: '#fff', fontSize: 9, padding: '2px 6px', borderRadius: 4, letterSpacing: 1 }}>DISQUALIFIED</span>
@@ -885,7 +885,7 @@ function LeaderboardTab({ gs, mode, mti, teams, isRivals, getTeamLabel }) {
                 </div>
                 {/* Score */}
                 <div style={{ textAlign: 'center', minWidth: 70, flexShrink: 0 }}>
-                  <div style={{ fontFamily: "'Bebas Neue'", fontSize: 28, color: medalColor(idx), lineHeight: 1 }}>{r.totalScore}</div>
+                  <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 28, color: medalColor(idx), lineHeight: 1 }}>{r.totalScore}</div>
                   <div style={{ fontSize: 8, color: '#333', letterSpacing: 2 }}>TOTAL PTS</div>
                 </div>
                 {/* Rating bar */}
@@ -913,7 +913,7 @@ function LeaderboardTab({ gs, mode, mti, teams, isRivals, getTeamLabel }) {
                               <span style={{ color: '#bbb', fontSize: 13 }}>{p.name}</span>
                               {p.rating >= 85 && <span style={{ fontSize: 9, color: GOLD, marginLeft: 6, letterSpacing: 1 }}>ELITE</span>}
                             </div>
-                            <span style={{ color: p.rating >= 85 ? GOLD : p.rating >= 70 ? '#4ade80' : '#888', fontSize: 13, fontFamily: "'Bebas Neue'", letterSpacing: 1, flexShrink: 0 }}>
+                            <span style={{ color: p.rating >= 85 ? GOLD : p.rating >= 70 ? '#4ade80' : '#888', fontSize: 13, fontFamily: "var(--font-main), sans-serif", letterSpacing: 1, flexShrink: 0 }}>
                               {p.rating} PTS
                             </span>
                           </div>
@@ -922,7 +922,7 @@ function LeaderboardTab({ gs, mode, mti, teams, isRivals, getTeamLabel }) {
                     )}
                     <div style={{ marginTop: 12, paddingTop: 8, borderTop: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between' }}>
                       <span style={{ color: '#444', fontSize: 11, letterSpacing: 2 }}>TEAM TOTAL</span>
-                      <span style={{ color: idx === 0 ? GOLD : '#888', fontFamily: "'Bebas Neue'", fontSize: 16, letterSpacing: 2 }}>{r.totalScore} PTS</span>
+                      <span style={{ color: idx === 0 ? GOLD : '#888', fontFamily: "var(--font-main), sans-serif", fontSize: 16, letterSpacing: 2 }}>{r.totalScore} PTS</span>
                     </div>
                   </div>
                 </div>
@@ -959,7 +959,7 @@ function LeaderboardTab({ gs, mode, mti, teams, isRivals, getTeamLabel }) {
 function StatBubble({ label, val, color }) {
   return (
     <div style={{ textAlign: 'center' }}>
-      <div style={{ color, fontFamily: "'Bebas Neue'", fontSize: 20, letterSpacing: 1 }}>{val}</div>
+      <div style={{ color, fontFamily: "var(--font-main), sans-serif", fontSize: 20, letterSpacing: 1 }}>{val}</div>
       <div style={{ color: '#444', fontSize: 9, letterSpacing: 3 }}>{label}</div>
     </div>
   );
@@ -995,7 +995,7 @@ function ActionBtn({ onClick, bg, label }) {
       cursor: 'pointer', 
       fontSize: 13, 
       letterSpacing: 2, 
-      fontFamily: "'Barlow Condensed'",
+      fontFamily: "var(--font-main), sans-serif",
       transition: 'all 0.2s ease-out',
       display: 'inline-flex',
       alignItems: 'center'

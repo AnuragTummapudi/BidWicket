@@ -34,9 +34,13 @@ app.use((req, res, next) => {
 app.use(compression());
 app.use(express.json({ limit: '100kb' }));
 
+if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+    console.error("Missing UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN. See auction-backend/.env.example.");
+    process.exit(1);
+}
 const redis = new Redis({
-    url: process.env.UPSTASH_REDIS_REST_URL || "https://tidy-bass-146618.upstash.io",
-    token: process.env.UPSTASH_REDIS_REST_TOKEN || "gQAAAAAAAjy6AAIgcDJmMTM2Y2QwNWM5MmY0NmQ0YjBiYzRlNzM2MjQ3YzlmNw"
+    url: process.env.UPSTASH_REDIS_REST_URL,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN
 });
 
 const httpServer = createServer(app);
