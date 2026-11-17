@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowUp, Menu, MessageSquare, Settings, Volume2, VolumeX, X } from 'lucide-react';
 import { useState, useRef, useCallback, useMemo, Suspense, memo, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useGame, fmt, nextBid, getOverseasLimitForSquad } from '../GameContext';
@@ -12,7 +13,7 @@ import { SUPPORT_URL } from '../components/ChaiSupport';
 import { isAudioMuted, setAudioMuted } from '../../src/useSocket';
 
 const kohliImg = '/assets/Kohli.avif';
-const CYAN = '#22D3EE';
+const CYAN = '#a3a9b8';
 const RIVALS_MAX_SQUAD_SIZE = 13;
 const RIVALS_MAX_OVERSEAS = 5;
 const MAX_PLAYING_XI_OVERSEAS = 4;
@@ -35,8 +36,8 @@ function isResolvedOverseasPlayer(player) {
 
 const StatRow = ({ label, val }) => (
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-    <span style={{ color: '#888', fontSize: 10, letterSpacing: 1 }}>{label}</span>
-    <span style={{ fontFamily: "'Bebas Neue'", fontSize: 15, letterSpacing: 1 }}>{val}</span>
+    <span style={{ color: '#7a8296', fontSize: 12, letterSpacing: 0 }}>{label}</span>
+    <span style={{ fontFamily: 'var(--font-display)', fontSize: 15, letterSpacing: 0 }}>{val}</span>
   </div>
 );
 
@@ -62,7 +63,7 @@ function playBidClick() {
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
     osc.start(ctx.currentTime);
     osc.stop(ctx.currentTime + 0.12);
-  } catch (_) {}
+  } catch { /* audio unsupported */ }
 }
 
 function WhatsAppIcon() {
@@ -87,12 +88,12 @@ function formatCountdown(ms) {
 function TimerBar({ timer, maxTimer = 30, isPaused }) {
   const pct = Math.min(100, (timer / maxTimer) * 100);
   const isLow = timer <= 5;
-  const barColor = isPaused ? '#333' : isLow ? '#ef4444' : GOLD;
+  const barColor = isPaused ? '#333' : isLow ? '#e5484d' : GOLD;
 
   return (
     <div style={{
       height: 3,
-      background: '#111',
+      background: '#1a1e28',
       width: '100%',
       overflow: 'hidden',
       flexShrink: 0,
@@ -103,7 +104,7 @@ function TimerBar({ timer, maxTimer = 30, isPaused }) {
         width: `${pct}%`,
         background: barColor,
         transition: isPaused ? 'none' : 'width 1s linear, background 0.3s ease',
-        boxShadow: !isPaused && isLow ? `0 0 8px ${barColor}` : 'none',
+        boxShadow: 'none',
       }} />
     </div>
   );
@@ -113,25 +114,25 @@ const UpcomingModal = memo(function UpcomingModal({ isOpen, onClose, upcomingPla
   if (!isOpen) return null;
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.92)", backdropFilter: "blur(12px)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "'Barlow Condensed', sans-serif" }}>
-      <div style={{ width: "100%", maxWidth: 900, background: "#0a0a0c", border: `1px solid ${GOLD}44`, borderRadius: 16, display: "flex", flexDirection: "column", maxHeight: "92vh", boxShadow: "0 0 50px rgba(0,0,0,1)" }}>
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.92)", backdropFilter: "blur(12px)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: 'var(--font-display)' }}>
+      <div style={{ width: "100%", maxWidth: 900, background: "#11141c", border: `1px solid ${GOLD}44`, borderRadius: 16, display: "flex", flexDirection: "column", maxHeight: "92vh", boxShadow: "none" }}>
         <div style={{ padding: "16px 20px", borderBottom: `1px solid ${BORDER}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <div style={{ fontFamily: "'Bebas Neue'", fontSize: 22, color: GOLD, letterSpacing: 2 }}>UPCOMING PLAYERS</div>
-            <div style={{ color: "#555", fontSize: 11, letterSpacing: 1, marginTop: 2 }}>POOLED BY CATEGORY · {upcomingPlayers.length} LEFT</div>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 22, color: GOLD, letterSpacing: 0 }}>Upcoming players</div>
+            <div style={{ color: "#7a8296", fontSize: 12, letterSpacing: 0, marginTop: 2 }}>POOLED BY CATEGORY · {upcomingPlayers.length} LEFT</div>
           </div>
-          <button onClick={onClose} style={{ background: "transparent", border: "none", color: "#666", fontSize: 24, cursor: "pointer", padding: 4 }}>✕</button>
+          <button onClick={onClose} style={{ background: "transparent", border: "none", color: "#7a8296", fontSize: 24, cursor: "pointer", padding: 4 }} aria-label="Close"><X size={16} strokeWidth={1.5} /></button>
         </div>
         <div className="squad-scroller" style={{ padding: "16px 20px", overflowY: "auto", flex: 1 }}>
           {Object.entries(groupedUpcoming).length === 0 ? (
-            <div style={{ textAlign: 'center', padding: 40, color: '#444' }}>No players remaining in the auction.</div>
+            <div style={{ textAlign: 'center', padding: 40, color: '#7a8296' }}>No players remaining in the auction.</div>
           ) : (
             Object.entries(groupedUpcoming).map(([cat, players]) => (
               <div key={cat} style={{ marginBottom: 24 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-                  <div style={{ fontFamily: "'Bebas Neue'", fontSize: 16, color: "#fff", letterSpacing: 2 }}>{cat.toUpperCase()}</div>
-                  <div style={{ color: CYAN, fontSize: 10, background: `${CYAN}15`, padding: "2px 6px", borderRadius: 4, fontWeight: 700 }}>{players.length}</div>
-                  <div style={{ flex: 1, height: 1, background: `linear-gradient(to right, ${BORDER}, transparent)` }} />
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, color: "#fff", letterSpacing: 0 }}>{cat.toUpperCase()}</div>
+                  <div style={{ color: CYAN, fontSize: 12, background: `${CYAN}15`, padding: "2px 6px", borderRadius: 4, fontWeight: 600 }}>{players.length}</div>
+                  <div style={{ flex: 1, height: 1, background: BORDER }} />
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10 }}>
                   {players.map((player, i) => {
@@ -139,7 +140,7 @@ const UpcomingModal = memo(function UpcomingModal({ isOpen, onClose, upcomingPla
                     return (
                       <div
                         key={`${cat}-${player.name}-${i}`}
-                        style={{ background: "#0d0d10", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "10px 12px", display: "flex", alignItems: "center", gap: 10 }}
+                        style={{ background: "#11141c", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "10px 12px", display: "flex", alignItems: "center", gap: 10 }}
                       >
                         <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: `1px solid ${ROLE_C[player.role]}55`, background: `${ROLE_C[player.role]}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
                           {photoUrl ? (
@@ -149,15 +150,15 @@ const UpcomingModal = memo(function UpcomingModal({ isOpen, onClose, upcomingPla
                           )}
                         </div>
                         <div style={{ minWidth: 0, flex: 1 }}>
-                          <div style={{ fontSize: 14, fontWeight: 700, color: "#e0e0e0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={player.name}>
+                          <div style={{ fontSize: 14, fontWeight: 600, color: "#c9cdd6", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={player.name}>
                             {player.name}
                           </div>
                           <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
-                            <span style={{ fontSize: 10, color: ROLE_C[player.role], letterSpacing: 1, fontFamily: "'Barlow Condensed'", fontWeight: 700 }}>
+                            <span style={{ fontSize: 12, color: ROLE_C[player.role], letterSpacing: 0, fontFamily: 'var(--font-display)', fontWeight: 600 }}>
                               {player.role.toUpperCase()}
                             </span>
                             {player.overseas && (
-                              <span style={{ fontSize: 9, background: "#6366f120", color: "#818cf8", padding: "1px 5px", borderRadius: 999, letterSpacing: 1, fontWeight: 700 }}>
+                              <span style={{ fontSize: 12, background: "#6366f120", color: "#a3a9b8", padding: "1px 5px", borderRadius: 999, letterSpacing: 0, fontWeight: 600 }}>
                                 OS
                               </span>
                             )}
@@ -207,7 +208,7 @@ function AuctionContent() {
   const [hostToastVisible, setHostToastVisible] = useState(false);
   const wasHostRef = useRef(false);
   const hostToastTimerRef = useRef(null);
-  const playerQueue = gs?.playerQueue ?? [];
+  const playerQueue = useMemo(() => gs?.playerQueue ?? [], [gs?.playerQueue]);
   const currentIdx = gs?.currentIdx ?? -1;
   const currentMode = (isMulti ? lobbyMode : auctionMode) || gs?.auctionMode || 'mega';
   const isRivals = gs?.roomType === 'rivals' || currentMode?.toLowerCase() === 'rivals';
@@ -244,7 +245,7 @@ function AuctionContent() {
       actions: [
         { label: 'Cancel', variant: 'secondary', onClick: closeDialog },
         {
-          label: 'End Auction',
+          label: 'End auction',
           variant: 'danger',
           onClick: () => {
             closeDialog();
@@ -279,7 +280,7 @@ function AuctionContent() {
     const currentSquadLimit = gs?.squadLimit || (isRivals ? RIVALS_MAX_SQUAD_SIZE : 15);
     const overseasLimit = isRivals ? RIVALS_MAX_OVERSEAS : getOverseasLimitForSquad(currentSquadLimit);
     setDialog({
-      title: 'Auction Rules',
+      title: 'Auction rules',
       message: [
         `Squad limit: each team can buy up to ${currentSquadLimit} players.`,
         'Final XI: every team must submit exactly 11 players after the auction ends.',
@@ -309,7 +310,7 @@ function AuctionContent() {
     emit('finalize-selection', {}, (res) => {
       if (!res?.ok) {
         setDialog({
-          title: 'Cannot Finalize Results',
+          title: 'Cannot finalize results',
           message: res?.error || 'Something went wrong while finalizing the selection phase.',
           tone: 'info',
           actions: [{ label: 'OK', onClick: closeDialog }],
@@ -328,14 +329,14 @@ function AuctionContent() {
       actions: [
         { label: 'Cancel', variant: 'secondary', onClick: closeDialog },
         {
-          label: 'Kick Player',
+          label: 'Kick player',
           variant: 'danger',
           onClick: () => {
             closeDialog();
             emit('kick-player', { targetPlayerId: player.id }, (res) => {
               if (!res?.ok) {
                 setDialog({
-                  title: 'Could Not Kick Player',
+                  title: 'Could not kick player',
                   message: res?.error || 'Something went wrong while removing this player.',
                   tone: 'info',
                   actions: [{ label: 'OK', onClick: closeDialog }],
@@ -511,8 +512,8 @@ function AuctionContent() {
     return (
       <div style={{ height: '100vh', background: BG, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
         <div style={{ width: 40, height: 40, border: `3px solid ${GOLD}20`, borderTopColor: GOLD, borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-        <div style={{ fontFamily: "'Bebas Neue'", fontSize: 24, color: GOLD, letterSpacing: 3 }}>SYNCING AUCTION ARENA...</div>
-        <div style={{ color: '#666', fontSize: 12, letterSpacing: 1.5 }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, color: GOLD, letterSpacing: 0 }}>Syncing auction arena...</div>
+        <div style={{ color: '#7a8296', fontSize: 12, letterSpacing: 0 }}>
           {roomFromQuery ? `Room ${roomFromQuery}` : 'Rebuilding live auction state'}
         </div>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
@@ -586,10 +587,10 @@ function AuctionContent() {
   const maxOverseasReached = player.overseas && osCount >= maxOverseas;
   const hasEnoughFunds = (gs.purses[effectiveMyTeamId] || 0) >= (gs.currentBidder === null ? gs.currentBid : nextBid(gs.currentBid));
   const bidDisabledLabel = squadFull
-    ? `SQUAD FULL (${maxSquadSize}/${maxSquadSize})`
+    ? `Squad full (${maxSquadSize}/${maxSquadSize})`
     : maxOverseasReached
-      ? `MAX ${maxOverseas} OVERSEAS`
-      : 'INSUFFICIENT FUNDS';
+      ? `Max ${maxOverseas} overseas`
+      : 'Insufficient funds';
 
   const canBid      = gs.phase === 'bidding'
     && gs.currentBidder !== effectiveMyTeamId
@@ -615,9 +616,8 @@ function AuctionContent() {
   });
 
   return (
-    <div className="ac-app-root" style={{ fontFamily: "'Barlow Condensed', sans-serif", background: BG, color: '#fff', height: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overscrollBehavior: 'none', WebkitTapHighlightColor: 'transparent' }}>
+    <div className="ac-app-root" style={{ fontFamily: 'var(--font-display)', background: BG, color: '#fff', height: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overscrollBehavior: 'none', WebkitTapHighlightColor: 'transparent' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         @keyframes sold    { 0%{transform:scale(.5);opacity:0} 65%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
         @keyframes tPulse  { 0%,100%{opacity:1} 50%{opacity:.3} }
@@ -626,9 +626,9 @@ function AuctionContent() {
         @keyframes sheetUp { from{transform:translateY(100%)} to{transform:none} }
         @keyframes sheetBackdropIn { from{opacity:0} to{opacity:1} }
         @keyframes sheetDialogIn { from{opacity:0;transform:translate(-50%,14px) scale(.985)} to{opacity:1;transform:translate(-50%,0) scale(1)} }
-        @keyframes timerGlow { 0%,100%{box-shadow:0 0 8px #ef4444} 50%{box-shadow:0 0 18px #ef4444,0 0 30px #ef444440} }
+        @keyframes timerGlow { 0%,100%{opacity:1} 50%{opacity:1} }
         @keyframes hostToastIn { from{opacity:0;transform:translate(-50%,-10px)} to{opacity:1;transform:translate(-50%,0)} }
-        ::-webkit-scrollbar { width:2px } ::-webkit-scrollbar-thumb { background:#222 }
+        ::-webkit-scrollbar { width:2px } ::-webkit-scrollbar-thumb { background:#242936 }
         .squad-scroller::-webkit-scrollbar { width: 6px; }
         .squad-scroller::-webkit-scrollbar-track { background: ${BG}; border-radius: 4px; }
         .squad-scroller::-webkit-scrollbar-thumb { background: ${GOLD}55; border-radius: 4px; }
@@ -644,19 +644,19 @@ function AuctionContent() {
           color: #F8FAFC;
           border-radius: 14px;
           padding: 12px 14px;
-          box-shadow: 0 18px 44px rgba(0,0,0,0.48), 0 0 24px rgba(232,184,75,0.1);
+          box-shadow: 0 18px 44px rgba(0,0,0,0.48);
           animation: hostToastIn .18s ease-out both;
           pointer-events: none;
         }
         .ac-host-toast-title {
           color: ${GOLD};
-          font-family: 'Bebas Neue', sans-serif;
+          font-family:var(--font-display);
           font-size: 19px;
-          letter-spacing: 2px;
+          letter-spacing:0;
           line-height: 1;
         }
         .ac-host-toast-copy {
-          color: #CBD5E1;
+          color: #c9cdd6;
           font-size: 12px;
           line-height: 1.35;
           letter-spacing: .6px;
@@ -665,7 +665,7 @@ function AuctionContent() {
 
         /* ── TOP BAR ── */
         .ac-top {
-          background: #09090c;
+          background: #11141c;
           border-bottom: 1px solid ${BORDER};
           position: relative;
           z-index: 50;
@@ -692,30 +692,30 @@ function AuctionContent() {
           gap: 6px;
           flex-shrink: 0;
         }
-        .ac-top-brand { font-family:'Bebas Neue',sans-serif; font-size: 16px; color:${GOLD}; letter-spacing:2px; white-space:nowrap; flex-shrink:0; }
-        .ac-top-badge-sm { background:${GOLD}18; border:1px solid ${GOLD}30; padding:2px 6px; font-size:9px; color:${GOLD}; font-weight:600; letter-spacing:1px; white-space:nowrap; border-radius:3px; }
-        .ac-top-live-sm  { background:#22D3EE18; border:1px solid #22D3EE30; padding:2px 5px; font-size:9px; color:#22D3EE; letter-spacing:1px; white-space:nowrap; border-radius:3px; }
+        .ac-top-brand { font-family:var(--font-display); font-size: 16px; color:${GOLD}; letter-spacing:0; white-space:nowrap; flex-shrink:0; }
+        .ac-top-badge-sm { background:${GOLD}18; border:1px solid ${GOLD}30; padding:2px 6px; font-size:12px; color:${GOLD}; font-weight:600; letter-spacing:0; white-space:nowrap; border-radius:3px; }
+        .ac-top-live-sm  { background:#22D3EE18; border:1px solid #22D3EE30; padding:2px 5px; font-size:12px; color:#22D3EE; letter-spacing:0; white-space:nowrap; border-radius:3px; }
         .ac-mobile-host-bar { display: none; }
 
         /* Responsive timer — big display */
         .ac-timer-box {
           display: flex; flex-direction: column; align-items: center; justify-content: center;
           min-width: 52px; height: 40px; border-radius: 8px;
-          border: 1px solid ${BORDER}; background: #0f0f12; flex-shrink: 0;
+          border: 1px solid ${BORDER}; background: #1a1e28; flex-shrink: 0;
           transition: border-color 0.3s, background 0.3s;
-          font-family: 'Bebas Neue', sans-serif;
+          font-family:var(--font-display);
         }
         .ac-timer-box.low {
           border-color: #ef444488;
-          background: #1a0505;
-          animation: timerGlow 0.5s ease-in-out infinite;
+          background: #1a1e28;
+          
         }
 
-        .ac-top-me  { display:flex; align-items:center; gap:5px; flex-shrink:0; padding: 3px 7px; background: rgba(255,255,255,0.03); border-radius: 4px; border: 1px solid #1a1a1a; }
-        .ac-top-btn { background:rgba(34,211,238,.12); border:1px solid rgba(34,211,238,.3); color:#22D3EE;
-          padding:5px 10px; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:11px;
-          letter-spacing:.06em; cursor:pointer; white-space:nowrap; transition: background .2s; border-radius: 4px; }
-        .ac-top-btn:hover { background: rgba(34,211,238,.22); }
+        .ac-top-me  { display:flex; align-items:center; gap:5px; flex-shrink:0; padding: 3px 7px; background: rgba(255,255,255,0.03); border-radius: 4px; border: 1px solid #1a1e28; }
+        .ac-top-btn { background:rgba(163,169,184,.12); border:1px solid rgba(163,169,184,.3); color:#22D3EE;
+          padding:5px 10px; font-family:var(--font-display); font-weight:600; font-size:12px;
+          letter-spacing:0; cursor:pointer; white-space:nowrap; transition: background .2s; border-radius: 4px; }
+        .ac-top-btn:hover { background: rgba(163,169,184,.22); }
         .ac-top-btn-gold { background:rgba(232,184,75,0.1); border:1px solid ${GOLD}44; color:${GOLD}; }
         .ac-top-btn-gold:hover { background: rgba(232,184,75,0.18); }
         .ac-top-link { text-decoration:none; }
@@ -751,7 +751,7 @@ function AuctionContent() {
         /* Player compact pill on mobile */
         .ac-player-pill {
           width:100%; max-width:480px; display:flex; align-items:center; gap:10px;
-          background:#0f0f12; border:1px solid ${BORDER}; padding:10px 12px; margin-bottom:8px;
+          background:#1a1e28; border:1px solid ${BORDER}; padding:10px 12px; margin-bottom:8px;
           animation: fadeUp .3s ease both; border-radius: 10px;
           min-height: 72px;
           flex-shrink: 0;
@@ -760,8 +760,8 @@ function AuctionContent() {
           width:48px; height:48px; border-radius:50%; overflow:hidden; flex-shrink:0;
           display:flex; align-items:center; justify-content:center;
         }
-        .ac-player-name { font-family:'Bebas Neue',sans-serif; font-size:clamp(17px,4vw,22px); color:#fff; letter-spacing:1px; line-height:1; }
-        .ac-player-meta { font-size:11px; letter-spacing:1px; margin-top:2px; }
+        .ac-player-name { font-family:var(--font-display); font-size:clamp(17px,4vw,22px); color:#fff; letter-spacing:0; line-height:1; }
+        .ac-player-meta { font-size:12px; letter-spacing:0; margin-top:2px; }
 
         /* Bid area */
         .ac-bid-area {
@@ -774,11 +774,11 @@ function AuctionContent() {
           justify-content:flex-start;
           flex-shrink:0;
         }
-        .ac-bid-label { font-size:9px; letter-spacing:4px; color:#333; text-transform:uppercase; margin-bottom:2px; }
+        .ac-bid-label { font-size:12px; letter-spacing:0; color:#7a8296;  margin-bottom:2px; }
         .ac-bid-amount {
-          font-family:'Bebas Neue',sans-serif; font-size:clamp(48px,12vw,80px);
-          color:${GOLD}; letter-spacing:3px; line-height:1;
-          text-shadow:0 0 40px ${GOLD}40;
+          font-family:var(--font-display); font-size:clamp(48px,12vw,80px);
+          color:${GOLD}; letter-spacing:0; line-height:1;
+          text-shadow:none}40;
         }
         .ac-leading-pill {
           display:inline-flex; align-items:center; gap:8px; margin-top:4px;
@@ -804,7 +804,7 @@ function AuctionContent() {
           width:100%;
           max-width:960px;
           margin-top:18px;
-          background:linear-gradient(180deg, rgba(15,15,18,0.96), rgba(9,9,12,0.96));
+          background:var(--ink-2);
           border:1px solid ${BORDER};
           border-radius:16px;
           overflow:hidden;
@@ -826,8 +826,8 @@ function AuctionContent() {
           min-width:378px;
         }
         .ac-desktop-squad-stat {
-          background:#101216;
-          border:1px solid #1f2430;
+          background:#1a1e28;
+          border:1px solid #242936;
           border-radius:10px;
           padding:10px 12px;
           text-align:center;
@@ -843,8 +843,8 @@ function AuctionContent() {
           gap:12px;
         }
         .ac-desktop-squad-col {
-          background:#0d0f14;
-          border:1px solid #181d26;
+          background:#1a1e28;
+          border:1px solid #242936;
           border-radius:12px;
           padding:12px;
         }
@@ -854,7 +854,7 @@ function AuctionContent() {
           justify-content:space-between;
           gap:10px;
           padding:8px 0;
-          border-bottom:1px solid #171b22;
+          border-bottom:1px solid #242936;
         }
         .ac-desktop-squad-player:last-child { border-bottom:none; }
         .ac-desktop-squad-player-main {
@@ -871,13 +871,13 @@ function AuctionContent() {
           overflow:hidden;
           flex-shrink:0;
           border:1px solid #2a3342;
-          background:#12161d;
+          background:#242936;
           display:flex;
           align-items:center;
           justify-content:center;
         }
         .ac-desktop-squad-empty {
-          color:#4b5563;
+          color:#7a8296;
           text-align:center;
           padding:26px 12px;
           font-size:13px;
@@ -889,7 +889,7 @@ function AuctionContent() {
           flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
           animation:sold .4s ease-out; width:100%;
         }
-        .ac-sold-text { font-family:'Bebas Neue',sans-serif; font-size:clamp(56px,14vw,96px); letter-spacing:8px; line-height:.9; }
+        .ac-sold-text { font-family:var(--font-display); font-size:clamp(56px,14vw,96px); letter-spacing:0; line-height:.9; }
         .ac-bidding-shell {
           display: contents;
         }
@@ -905,15 +905,15 @@ function AuctionContent() {
           flex-shrink:0;
         }
         .ac-purse-label {
-          font-size:11px; color:#888; white-space:nowrap; flex-shrink:0;
-          font-family:'Barlow Condensed',sans-serif; font-weight:600;
+          font-size:12px; color:#7a8296; white-space:nowrap; flex-shrink:0;
+          font-family:var(--font-display); font-weight:600;
         }
-        .ac-purse-val { color:#4ade80; font-weight:700; font-size:13px; }
+        .ac-purse-val { color:#4ade80; font-weight:600; font-size:13px; }
 
         /* BID BUTTON — inline, full flex */
         .ac-bid-btn {
           flex:1; height:50px; border:none; cursor:pointer;
-          font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:2px;
+          font-family:var(--font-display); font-size:1.3rem; letter-spacing:0;
           display:flex; align-items:center; justify-content:center;
           flex-direction:column; gap:1px; transition:filter .12s, transform .1s;
           -webkit-tap-highlight-color:transparent; touch-action:manipulation;
@@ -921,14 +921,14 @@ function AuctionContent() {
         }
         .ac-bid-btn:active:not(:disabled) { filter:brightness(1.2); transform:scale(.97); }
         .ac-bid-btn:disabled { cursor:not-allowed; }
-        .ac-bid-btn-sub { font-family:'Barlow Condensed',sans-serif; font-size:9px; letter-spacing:1px; opacity:.7; font-weight:600; }
+        .ac-bid-btn-sub { font-family:var(--font-display); font-size:12px; letter-spacing:0; opacity:.7; font-weight:600; }
         .ac-menu-btn {
-          width:44px; height:50px; border-radius:10px; border:1px solid #222;
-          background:#111; color:#666; font-size:18px; cursor:pointer;
+          width:44px; height:50px; border-radius:10px; border:1px solid #242936;
+          background:#1a1e28; color:#7a8296; font-size:18px; cursor:pointer;
           display:flex; align-items:center; justify-content:center; flex-shrink:0;
           transition:border-color .2s, color .2s;
         }
-        .ac-menu-btn:hover { border-color:#444; color:#ccc; }
+        .ac-menu-btn:hover { border-color:#444; color:#c9cdd6; }
 
         /* DESKTOP BID AREA */
         .ac-desktop-bid-area { display:none; width:100%; max-width:480px; margin-top:24px; }
@@ -942,15 +942,15 @@ function AuctionContent() {
         /* ── MOBILE TAB BAR ── */
         .ac-mob-tabs {
           width:100%; max-width:480px; display:flex;
-          border-bottom:1px solid #1a1a1a; margin-bottom:4px;
+          border-bottom:1px solid #1a1e28; margin-bottom:4px;
           flex-shrink:0;
         }
         @media(min-width:861px){ .ac-mob-tabs { display:none !important; } }
         .ac-mob-tab {
           flex:1; padding:9px 6px; text-align:center;
-          font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700;
+          font-family:var(--font-display); font-size:12px; font-weight:600;
           letter-spacing:.5px; cursor:pointer; border-bottom:2px solid transparent;
-          transition:all .2s; color:#555;
+          transition:background-color .15s, border-color .15s, color .15s, opacity .15s; color:#7a8296;
         }
         .ac-mob-tab.active { color:#fff; border-bottom-color:${GOLD}; }
 
@@ -981,7 +981,7 @@ function AuctionContent() {
 
         /* Team row in tab */
         .ac-team-tab-row {
-          background:#0f0f12; border:1px solid #1c1c1c; border-radius:10px;
+          background:#1a1e28; border:1px solid #1a1e28; border-radius:10px;
           margin-bottom:8px; overflow:hidden;
         }
         .ac-team-tab-header {
@@ -992,7 +992,7 @@ function AuctionContent() {
         .ac-team-dropdown { padding:0 12px 10px; }
         .ac-player-bought-row {
           display:flex; justify-content:space-between; align-items:center;
-          padding:5px 0; border-bottom:1px solid #161616; font-size:13px;
+          padding:5px 0; border-bottom:1px solid #1a1e28; font-size:13px;
         }
         .ac-player-bought-row:last-child { border-bottom:none; }
         .ac-player-bought-main {
@@ -1017,7 +1017,7 @@ function AuctionContent() {
         .ac-sheet-bg { position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:40; animation:sheetBackdropIn .18s ease both; }
         .ac-sheet {
           position:fixed; bottom:0; left:0; right:0; max-height:80vh;
-          background:#0c0c10; border-top:1px solid ${BORDER}; z-index:41;
+          background:#11141c; border-top:1px solid ${BORDER}; z-index:41;
           display:flex; flex-direction:column;
           padding-bottom:env(safe-area-inset-bottom);
           animation:sheetUp .25s ease;
@@ -1026,7 +1026,7 @@ function AuctionContent() {
           display:flex; justify-content:space-between; align-items:center;
           gap:12px;
           border-bottom:1px solid ${BORDER};
-          background:#0c0c10;
+          background:#11141c;
           position:sticky;
           top:0;
           z-index:5;
@@ -1037,10 +1037,10 @@ function AuctionContent() {
           height:40px;
           border-radius:10px;
           border:1px solid rgba(255,255,255,0.22);
-          background:#18181d;
+          background:#242936;
           color:#fff;
           font-size:18px;
-          font-weight:900;
+          font-weight:600;
           cursor:pointer;
           display:flex;
           align-items:center;
@@ -1051,13 +1051,13 @@ function AuctionContent() {
           -webkit-tap-highlight-color:transparent;
           touch-action:manipulation;
         }
-        .ac-sheet-close:hover { border-color:#666; background:#202026; color:#fff; }
+        .ac-sheet-close:hover { border-color:#666; background:#242936; color:#fff; }
         .ac-sheet-close:active { transform:scale(.96); }
-        .ac-sheet-tabs { display:flex; align-items:stretch; border-bottom:1px solid #1a1a1a; flex-shrink:0; }
+        .ac-sheet-tabs { display:flex; align-items:stretch; border-bottom:1px solid #1a1e28; flex-shrink:0; }
         .ac-sheet-tab {
-          flex:1; padding:9px 4px; text-align:center; font-size:11px; font-weight:700;
-          font-family:'Barlow Condensed',sans-serif; letter-spacing:.5px; cursor:pointer;
-          border-bottom:2px solid transparent; color:#555; transition:background-color .12s ease, color .12s ease, border-color .12s ease;
+          flex:1; padding:9px 4px; text-align:center; font-size:12px; font-weight:600;
+          font-family:var(--font-display); letter-spacing:.5px; cursor:pointer;
+          border-bottom:2px solid transparent; color:#7a8296; transition:background-color .12s ease, color .12s ease, border-color .12s ease;
           display:flex; align-items:center; justify-content:center;
           user-select:none;
         }
@@ -1075,20 +1075,20 @@ function AuctionContent() {
           border:1px solid rgba(147,197,253,0.55);
           background:rgba(37,99,235,0.28);
           color:#dbeafe;
-          font-size:9px;
+          font-size:12px;
           line-height:1;
-          letter-spacing:1px;
-          font-weight:900;
+          letter-spacing:0;
+          font-weight:600;
           flex-shrink:0;
-          box-shadow:0 0 14px rgba(96,165,250,0.18);
+          box-shadow:none;
         }
 
         /* ── BOTTOM TICKER ── */
         .ac-ticker { border-top:1px solid ${BORDER}; padding:6px 12px; display:flex;
-          gap:14px; overflow-x:auto; flex-shrink:0; background:#060608; align-items:center;
+          gap:14px; overflow-x:auto; flex-shrink:0; background:#0b0d14; align-items:center;
           scrollbar-width:none; }
         .ac-ticker::-webkit-scrollbar { display:none; }
-        .ac-ticker-item { flex-shrink:0; font-size:12px; color:#aaa; display:flex; gap:6px; align-items:center;
+        .ac-ticker-item { flex-shrink:0; font-size:12px; color:#a3a9b8; display:flex; gap:6px; align-items:center;
           background:#ffffff04; padding:3px 10px; border-radius:4px; border:1px solid ${BORDER}; }
         @media(max-width:860px){ .ac-ticker { display:none; } }
 
@@ -1097,18 +1097,18 @@ function AuctionContent() {
           height:36px;
           padding:0 14px;
           border-radius:10px;
-          border:1px solid #2a2a2a;
-          background:#111318;
-          color:#d1d5db;
-          font-family:'Bebas Neue',sans-serif;
+          border:1px solid #242936;
+          background:#1a1e28;
+          color:#c9cdd6;
+          font-family:var(--font-display);
           font-size:14px;
-          letter-spacing:1.5px;
+          letter-spacing:0;
           cursor:pointer;
           display:inline-flex;
           align-items:center;
           justify-content:center;
           white-space:nowrap;
-          transition:all .18s;
+          transition:background-color .15s, border-color .15s, color .15s, opacity .15s;
         }
         .ac-host-action:hover { border-color:#555; color:#fff; }
         .ac-host-action.active {
@@ -1126,16 +1126,16 @@ function AuctionContent() {
           width:36px;
           height:36px;
           border-radius:10px;
-          border:1px solid #2a2a2a;
-          background:#111318;
-          color:#aaa;
+          border:1px solid #242936;
+          background:#1a1e28;
+          color:#a3a9b8;
           font-size:16px;
           cursor:pointer;
           display:flex;
           align-items:center;
           justify-content:center;
           flex-shrink:0;
-          transition:all .18s;
+          transition:background-color .15s, border-color .15s, color .15s, opacity .15s;
         }
         .ac-settings-btn:hover,
         .ac-settings-btn.active {
@@ -1155,17 +1155,17 @@ function AuctionContent() {
           right:12px;
           width:min(320px, calc(100vw - 24px));
           padding:16px;
-          background:#0b0c10;
+          background:#11141c;
           border:1px solid ${BORDER};
           border-radius:16px;
           box-shadow:0 24px 60px rgba(0,0,0,0.55);
           z-index:60;
         }
         /* Hamburger */
-        .ac-hamburger { background:transparent; border:1px solid #2a2a2a; color:#888;
+        .ac-hamburger { background:transparent; border:1px solid #242936; color:#7a8296;
           width:32px; height:32px; border-radius:6px; font-size:16px; cursor:pointer;
           display:flex; align-items:center; justify-content:center; flex-shrink:0;
-          transition:all .18s; }
+          transition:background-color .15s, border-color .15s, color .15s, opacity .15s; }
         .ac-hamburger:hover { border-color:#555; color:#fff; }
         
         .ac-desktop-only { display: none !important; }
@@ -1197,9 +1197,9 @@ function AuctionContent() {
            .ac-sheet-body { padding:16px 18px 20px; }
 
            /* Desktop Navbar Enhancements */
-           .ac-top-brand { font-size: 20px; letter-spacing: 3px; margin-right: 8px; }
-           .ac-top-badge-sm { font-size: 13px; padding: 6px 12px; border-radius: 6px; letter-spacing: 2px; }
-           .ac-top-live-sm { font-size: 13px; padding: 6px 12px; border-radius: 6px; letter-spacing: 2px; }
+           .ac-top-brand { font-size: 20px; letter-spacing:0; margin-right: 8px; }
+           .ac-top-badge-sm { font-size: 13px; padding: 6px 12px; border-radius: 6px; letter-spacing:0; }
+           .ac-top-live-sm { font-size: 13px; padding: 6px 12px; border-radius: 6px; letter-spacing:0; }
         }
         @media(max-width: 860px) {
           .ac-top-main {
@@ -1218,7 +1218,7 @@ function AuctionContent() {
             padding:0 12px;
             border-radius:999px;
             font-size:12px;
-            letter-spacing:1.2px;
+            letter-spacing:0;
           }
           .ac-scroll {
             padding: 10px 12px 8px;
@@ -1241,7 +1241,7 @@ function AuctionContent() {
           }
           .ac-sold-text {
             font-size:clamp(42px,13vw,60px);
-            letter-spacing:5px;
+            letter-spacing:0;
           }
           .ac-bidding-shell.sale-phase {
             display: contents;
@@ -1332,7 +1332,7 @@ function AuctionContent() {
       />
       {hostToastVisible && (
         <div className="ac-host-toast" role="status" aria-live="polite">
-          <div className="ac-host-toast-title">You Are Host</div>
+          <div className="ac-host-toast-title">You are host</div>
           <div className="ac-host-toast-copy">You can pause, end phases, and move everyone forward.</div>
         </div>
       )}
@@ -1350,31 +1350,31 @@ function AuctionContent() {
                 setCopied(true);
                 setTimeout(() => setCopied(false), 2000);
               }} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }} title="Click to copy room code">
-                {copied ? <span style={{ color: '#22c55e', fontSize: 13, transform: 'translateY(1px)' }}>COPIED!</span> : roomCode}
+                {copied ? <span style={{ color: '#22c55e', fontSize: 13, transform: 'translateY(1px)' }}>Copied!</span> : roomCode}
               </div>
             ) : (
               <div className="ac-top-brand">IPL</div>
             )}
             <div className="ac-top-badge-sm">{gs.currentSetName}</div>
-            {isMulti && <div className="ac-top-live-sm">LIVE</div>}
+            {isMulti && <div className="ac-top-live-sm">Live</div>}
             
             {isMulti && (
-              <div className="ac-desktop-only" style={{ marginLeft: 6, background: '#111', border: `1px solid ${BORDER}`, color: '#aaa', display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 6 }}>
-                <span style={{ fontSize: 8 }}>🟢</span>
-                <span style={{ fontSize: 13, letterSpacing: 2, fontFamily: "'Barlow Condensed'", fontWeight: 700 }}>
+              <div className="ac-desktop-only" style={{ marginLeft: 6, background: '#1a1e28', border: `1px solid ${BORDER}`, color: '#a3a9b8', display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 6 }}>
+                <span style={{ width: 6, height: 6, borderRadius: 3, background: '#4cc38a' }} aria-hidden="true" />
+                <span style={{ fontSize: 13, letterSpacing: 0, fontFamily: 'var(--font-display)', fontWeight: 600 }}>
                   {lobbyPlayers?.filter(p => !p.isSpectator && p.teamId).length || 0} / {displayTeams.length} {isRivals ? 'RIVALS' : 'TEAMS'}
                 </span>
               </div>
             )}
 
             <button className="ac-top-btn ac-desktop-only" onClick={openRulesDialog} style={{ marginLeft: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span>RULES</span>
-              <span style={{ background: `${GOLD}22`, color: GOLD, padding: '2px 6px', borderRadius: 999, fontSize: 9 }}>(i)</span>
+              <span>Rules</span>
+              <span style={{ background: `${GOLD}22`, color: GOLD, padding: '2px 6px', borderRadius: 999, fontSize: 12 }}>(i)</span>
             </button>
 
             <button className="ac-top-btn ac-desktop-only" onClick={handleAudioMuteToggle} style={{ marginLeft: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
               <span>{audioMuted ? 'UNMUTE' : 'MUTE'}</span>
-              <span style={{ fontSize: 12, lineHeight: 1 }}>{audioMuted ? '🔇' : '🔊'}</span>
+              {audioMuted ? <VolumeX size={16} strokeWidth={1.5} /> : <Volume2 size={16} strokeWidth={1.5} />}
             </button>
 
             <a
@@ -1388,8 +1388,8 @@ function AuctionContent() {
             </a>
             
             <button className="ac-top-btn ac-desktop-only" onClick={() => setShowUpcoming(true)} style={{ marginLeft: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span>UPCOMING PLAYERS</span>
-              <span style={{ background: 'rgba(34,211,238,0.2)', padding: '2px 6px', borderRadius: 4, fontSize: 9 }}>{upcomingPlayers.length}</span>
+              <span>Upcoming players</span>
+              <span style={{ background: 'rgba(163,169,184,0.2)', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>{upcomingPlayers.length}</span>
             </button>
 
             <button
@@ -1400,8 +1400,8 @@ function AuctionContent() {
               }}
               style={{ marginLeft: 6, display: 'flex', alignItems: 'center', gap: 8 }}
             >
-              <span style={{ fontSize: 13, lineHeight: 1 }}>☰</span>
-              <span>MARKET TABS</span>
+              <Menu size={16} strokeWidth={1.5} />
+              <span>Market tabs</span>
             </button>
           </div>
 
@@ -1412,8 +1412,9 @@ function AuctionContent() {
                   className={`ac-settings-btn ac-desktop-only${showDesktopSettings ? ' active' : ''}`}
                   title="Auction settings"
                   onClick={() => setShowDesktopSettings(prev => !prev)}
+                  aria-label="Settings"
                 >
-                  ⚙
+                  <Settings size={16} strokeWidth={1.5} />
                 </button>
                 <div className="ac-host-controls">
                   <button
@@ -1423,7 +1424,7 @@ function AuctionContent() {
                     {gs.isPaused ? 'RESUME' : 'PAUSE'}
                   </button>
                   <button className="ac-host-action danger" onClick={openEndAuctionDialog}>
-                    END AUCTION
+                    End auction
                   </button>
                 </div>
               </>
@@ -1439,16 +1440,16 @@ function AuctionContent() {
             )}
 
             <div className={`ac-timer-box${isTimerLow ? ' low' : ''}`}
-              style={{ color: gs.isPaused ? '#555' : isTimerLow ? '#ef4444' : GOLD }}>
-              <span style={{ fontSize:22, lineHeight:1, letterSpacing:1,
+              style={{ color: gs.isPaused ? '#7a8296' : isTimerLow ? '#e5484d' : GOLD }}>
+              <span style={{ fontSize:22, lineHeight:1, letterSpacing: 0,
                 animation: isTimerLow && !gs.isPaused ? 'tPulse .5s infinite' : 'none' }}>
                 {gs.isPaused ? '⏸' : String(gs.timer).padStart(2,'0')}
               </span>
-              <span style={{ fontSize:8, letterSpacing:2, color:'#555', fontFamily:"'Barlow Condensed'", fontWeight:700, marginTop:1 }}>SEC</span>
+              <span style={{ fontSize: 12, letterSpacing: 0, color:'#7a8296', fontFamily: 'var(--font-display)', fontWeight: 600, marginTop:1 }}>SEC</span>
             </div>
 
-            <button className="ac-hamburger" onClick={() => setShowHamburger(true)}>
-              ☰
+            <button className="ac-hamburger" aria-label="More" onClick={() => setShowHamburger(true)}>
+              <Menu size={18} strokeWidth={1.5} />
             </button>
           </div>
         </div>
@@ -1474,20 +1475,20 @@ function AuctionContent() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '0 12px 10px', flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <img src={`/assets/${rivalsMatch.homeTeam}.png`} style={{ width: 26, height: 26, objectFit: 'contain' }} alt="" />
-              <span style={{ color: '#cbd5e1', fontSize: 12, letterSpacing: 1.5, fontWeight: 700 }}>
+              <span style={{ color: '#c9cdd6', fontSize: 12, letterSpacing: 0, fontWeight: 600 }}>
                 {rivalsMatch.homeTeam} VS {rivalsMatch.awayTeam}
               </span>
               <img src={`/assets/${rivalsMatch.awayTeam}.png`} style={{ width: 26, height: 26, objectFit: 'contain' }} alt="" />
               {rivalsMatch.isHighProfile && (
-                <span style={{ background: 'rgba(232,184,75,0.14)', border: `1px solid ${GOLD}40`, color: GOLD, fontSize: 10, fontWeight: 800, letterSpacing: 1.2, padding: '3px 8px', borderRadius: 999 }}>
-                  MARQUEE FIXTURE
+                <span style={{ background: 'rgba(232,184,75,0.14)', border: `1px solid ${GOLD}40`, color: GOLD, fontSize: 12, fontWeight: 600, letterSpacing: 0, padding: '3px 8px', borderRadius: 999 }}>
+                  Marquee fixture
                 </span>
               )}
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#94a3b8', fontSize: 11, letterSpacing: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#a3a9b8', fontSize: 12, letterSpacing: 0 }}>
               <span>{rivalsMatch.venue}</span>
               <span style={{ color: '#334155' }}>•</span>
-              <span style={{ color: CYAN, fontWeight: 700 }}>MATCH START {rivalsCountdown}</span>
+              <span style={{ color: CYAN, fontWeight: 600 }}>MATCH START {rivalsCountdown}</span>
             </div>
           </div>
         )}
@@ -1501,14 +1502,14 @@ function AuctionContent() {
               {gs.isPaused ? 'RESUME' : 'PAUSE'}
             </button>
             <button className="ac-host-action danger" onClick={openEndAuctionDialog}>
-              END AUCTION
+              End auction
             </button>
           </div>
         )}
         {isMulti && !isHost && (
           <div className="ac-mobile-host-bar">
             <button className="ac-host-action danger" onClick={openLeaveAuctionDialog}>
-              LEAVE AUCTION
+              Leave auction
             </button>
           </div>
         )}
@@ -1519,24 +1520,25 @@ function AuctionContent() {
             <div className="ac-desktop-settings">
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12, marginBottom:14 }}>
                 <div>
-                  <div style={{ fontFamily:"'Bebas Neue'", fontSize:22, color:GOLD, letterSpacing:2 }}>AUCTION SETTINGS</div>
-                  <div style={{ color:'#666', fontSize:11, letterSpacing:1.2, marginTop:2 }}>Host controls for the live room</div>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize:22, color:GOLD, letterSpacing: 0 }}>Auction settings</div>
+                  <div style={{ color:'#7a8296', fontSize: 12, letterSpacing: 0, marginTop:2 }}>Host controls for the live room</div>
                 </div>
                 <button
                   onClick={closeDesktopSettings}
-                  style={{ background:'transparent', border:'none', color:'#666', fontSize:20, cursor:'pointer', lineHeight:1 }}
+                  style={{ background:'transparent', border:'none', color:'#7a8296', fontSize:20, cursor:'pointer', lineHeight:1 }}
+                  aria-label="Close"
                 >
-                  ✕
+                  <X size={16} strokeWidth={1.5} />
                 </button>
               </div>
 
-              <div style={{ background:'#0f0f12', border:'1px solid #1c1c1c', borderRadius:12, padding:'14px' }}>
+              <div style={{ background:'#1a1e28', border:'1px solid #1a1e28', borderRadius:12, padding:'14px' }}>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12, marginBottom:10 }}>
                   <div>
-                    <div style={{ color:'#ddd', fontSize:15, fontWeight:700, display:'flex', alignItems:'center', gap:6 }}>⏱ Bid Timer</div>
-                    <div style={{ color:'#555', fontSize:11, marginTop:3 }}>Change the default countdown for every bid round.</div>
+                    <div style={{ color:'#c9cdd6', fontSize:15, fontWeight: 600, display:'flex', alignItems:'center', gap:6 }}>⏱ Bid Timer</div>
+                    <div style={{ color:'#7a8296', fontSize: 12, marginTop:3 }}>Change the default countdown for every bid round.</div>
                   </div>
-                  <div style={{ color:GOLD, fontFamily:"'Bebas Neue'", fontSize:24, letterSpacing:1 }}>{configuredTimer}s</div>
+                  <div style={{ color:GOLD, fontFamily: 'var(--font-display)', fontSize:24, letterSpacing: 0 }}>{configuredTimer}s</div>
                 </div>
                 <div style={{ display:'grid', gridTemplateColumns:'repeat(6, minmax(0, 1fr))', gap:8 }}>
                   {timerOptions.map(t => (
@@ -1548,12 +1550,12 @@ function AuctionContent() {
                       }}
                       style={{
                         padding:'10px 0',
-                        background: configuredTimer === t ? GOLD : '#18181b',
-                        color: configuredTimer === t ? '#000' : '#bbb',
-                        border:`1px solid ${configuredTimer === t ? GOLD : '#2a2a2a'}`,
+                        background: configuredTimer === t ? GOLD : '#1a1e28',
+                        color: configuredTimer === t ? '#000' : '#a3a9b8',
+                        border:`1px solid ${configuredTimer === t ? GOLD : '#242936'}`,
                         borderRadius:8,
-                        fontFamily:"'Barlow Condensed'",
-                        fontWeight:700,
+                        fontFamily: 'var(--font-display)',
+                        fontWeight: 600,
                         fontSize:14,
                         cursor:'pointer',
                       }}
@@ -1564,13 +1566,13 @@ function AuctionContent() {
                 </div>
               </div>
 
-              <div style={{ background:'#0f0f12', border:'1px solid #1c1c1c', borderRadius:12, padding:'14px', marginTop:12 }}>
+              <div style={{ background:'#1a1e28', border:'1px solid #1a1e28', borderRadius:12, padding:'14px', marginTop:12 }}>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12, marginBottom:10 }}>
                   <div>
-                    <div style={{ color:'#ddd', fontSize:15, fontWeight:700, display:'flex', alignItems:'center', gap:6 }}>👥 Squad Limit</div>
-                    <div style={{ color:'#555', fontSize:11, marginTop:3 }}>Change how many players each franchise can buy before the auction ends.</div>
+                    <div style={{ color:'#c9cdd6', fontSize:15, fontWeight: 600, display:'flex', alignItems:'center', gap:6 }}>Squad limit</div>
+                    <div style={{ color:'#7a8296', fontSize: 12, marginTop:3 }}>Change how many players each franchise can buy before the auction ends.</div>
                   </div>
-                  <div style={{ color:GOLD, fontFamily:"'Bebas Neue'", fontSize:24, letterSpacing:1 }}>{gs.squadLimit || maxSquadSize}</div>
+                  <div style={{ color:GOLD, fontFamily: 'var(--font-display)', fontSize:24, letterSpacing: 0 }}>{gs.squadLimit || maxSquadSize}</div>
                 </div>
                 <div style={{ display:'grid', gridTemplateColumns:'repeat(3, minmax(0, 1fr))', gap:8 }}>
                   {squadLimitOptions.map((limit) => (
@@ -1582,12 +1584,12 @@ function AuctionContent() {
                       }}
                       style={{
                         padding:'10px 0',
-                        background: (gs.squadLimit || maxSquadSize) === limit ? GOLD : '#18181b',
-                        color: (gs.squadLimit || maxSquadSize) === limit ? '#000' : '#bbb',
-                        border:`1px solid ${(gs.squadLimit || maxSquadSize) === limit ? GOLD : '#2a2a2a'}`,
+                        background: (gs.squadLimit || maxSquadSize) === limit ? GOLD : '#1a1e28',
+                        color: (gs.squadLimit || maxSquadSize) === limit ? '#000' : '#a3a9b8',
+                        border:`1px solid ${(gs.squadLimit || maxSquadSize) === limit ? GOLD : '#242936'}`,
                         borderRadius:8,
-                        fontFamily:"'Barlow Condensed'",
-                        fontWeight:700,
+                        fontFamily: 'var(--font-display)',
+                        fontWeight: 600,
                         fontSize:14,
                         cursor:'pointer',
                       }}
@@ -1598,19 +1600,19 @@ function AuctionContent() {
                 </div>
               </div>
 
-              <div style={{ background:'#0f0f12', border:'1px solid #1c1c1c', borderRadius:12, padding:'14px', marginTop:12 }}>
+              <div style={{ background:'#1a1e28', border:'1px solid #1a1e28', borderRadius:12, padding:'14px', marginTop:12 }}>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12, marginBottom:10 }}>
                   <div>
-                    <div style={{ color:'#ddd', fontSize:15, fontWeight:700, display:'flex', alignItems:'center', gap:6 }}>📊 Player Ratings</div>
-                    <div style={{ color:'#555', fontSize:11, marginTop:3 }}>Choose whether live bidders can see player ratings during the auction.</div>
+                    <div style={{ color:'#c9cdd6', fontSize:15, fontWeight: 600, display:'flex', alignItems:'center', gap:6 }}>Player ratings</div>
+                    <div style={{ color:'#7a8296', fontSize: 12, marginTop:3 }}>Choose whether live bidders can see player ratings during the auction.</div>
                   </div>
-                  <div style={{ color:showPlayerRatings ? GOLD : '#94A3B8', fontFamily:"'Bebas Neue'", fontSize:20, letterSpacing:1 }}>
+                  <div style={{ color:showPlayerRatings ? GOLD : '#a3a9b8', fontFamily: 'var(--font-display)', fontSize:20, letterSpacing: 0 }}>
                     {showPlayerRatings ? 'SHOWN' : 'HIDDEN'}
                   </div>
                 </div>
                 <div style={{ display:'grid', gridTemplateColumns:'repeat(2, minmax(0, 1fr))', gap:8 }}>
                   {[
-                    { label: 'HIDDEN', value: false, color: '#94A3B8' },
+                    { label: 'HIDDEN', value: false, color: '#a3a9b8' },
                     { label: 'SHOWN', value: true, color: GOLD },
                   ].map((option) => (
                     <button
@@ -1621,12 +1623,12 @@ function AuctionContent() {
                       }}
                       style={{
                         padding:'10px 0',
-                        background: showPlayerRatings === option.value ? option.color : '#18181b',
-                        color: showPlayerRatings === option.value ? '#000' : '#bbb',
-                        border:`1px solid ${showPlayerRatings === option.value ? option.color : '#2a2a2a'}`,
+                        background: showPlayerRatings === option.value ? option.color : '#1a1e28',
+                        color: showPlayerRatings === option.value ? '#000' : '#a3a9b8',
+                        border:`1px solid ${showPlayerRatings === option.value ? option.color : '#7a8296'}`,
                         borderRadius:8,
-                        fontFamily:"'Barlow Condensed'",
-                        fontWeight:700,
+                        fontFamily: 'var(--font-display)',
+                        fontWeight: 600,
                         fontSize:14,
                         cursor:'pointer',
                       }}
@@ -1637,31 +1639,31 @@ function AuctionContent() {
                 </div>
               </div>
 
-              <div style={{ background:'#0f0f12', border:'1px solid #1c1c1c', borderRadius:12, padding:'14px', marginTop:12 }}>
+              <div style={{ background:'#1a1e28', border:'1px solid #1a1e28', borderRadius:12, padding:'14px', marginTop:12 }}>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12, marginBottom:10 }}>
                   <div>
-                    <div style={{ color:'#ddd', fontSize:15, fontWeight:700, display:'flex', alignItems:'center', gap:6 }}>🚫 Player Control</div>
-                    <div style={{ color:'#555', fontSize:11, marginTop:3 }}>Remove unknown players and free their room slot.</div>
+                    <div style={{ color:'#c9cdd6', fontSize:15, fontWeight: 600, display:'flex', alignItems:'center', gap:6 }}>Player control</div>
+                    <div style={{ color:'#7a8296', fontSize: 12, marginTop:3 }}>Remove unknown players and free their room slot.</div>
                   </div>
-                  <div style={{ color:GOLD, fontFamily:"'Bebas Neue'", fontSize:24, letterSpacing:1 }}>{manageablePlayers.length}</div>
+                  <div style={{ color:GOLD, fontFamily: 'var(--font-display)', fontSize:24, letterSpacing: 0 }}>{manageablePlayers.length}</div>
                 </div>
                 <div style={{ display:'grid', gap:8, maxHeight:220, overflowY:'auto' }}>
                   {manageablePlayers.length === 0 ? (
-                    <div style={{ color:'#666', fontSize:12, textAlign:'center', padding:'10px 0' }}>No kickable players right now.</div>
+                    <div style={{ color:'#7a8296', fontSize:12, textAlign:'center', padding:'10px 0' }}>No kickable players right now.</div>
                   ) : manageablePlayers.map((player) => {
                     const team = player.teamId ? TEAMS.find((entry) => entry.id === player.teamId) : null;
                     return (
                       <div key={player.id} style={{ display:'flex', alignItems:'center', gap:10, justifyContent:'space-between', border:'1px solid #1f2937', borderRadius:10, padding:'10px 12px', background:'rgba(255,255,255,0.02)' }}>
                         <div style={{ minWidth:0, flex:1 }}>
-                          <div style={{ color:'#e5e7eb', fontSize:13, fontWeight:700 }}>{player.name}</div>
-                          <div style={{ color:team?.color || '#64748b', fontSize:10, letterSpacing:1.1, marginTop:4 }}>
-                            {player.isSpectator ? 'SPECTATOR' : team ? `${team.short} PLAYER` : 'WAITING FOR TEAM'}
+                          <div style={{ color:'#c9cdd6', fontSize:13, fontWeight: 600 }}>{player.name}</div>
+                          <div style={{ color:team?.color || '#7a8296', fontSize: 12, letterSpacing: 0, marginTop:4 }}>
+                            {player.isSpectator ? 'SPECTATOR' : team ? `${team.short} PLAYER` : 'Waiting for team'}
                           </div>
                         </div>
                         <button
                           type="button"
                           onClick={() => handleKickPlayer(player)}
-                          style={{ padding:'8px 12px', borderRadius:8, border:'1px solid #7f1d1d', background:'#2a0d0d', color:'#fca5a5', fontWeight:800, fontSize:11, letterSpacing:1, cursor:'pointer' }}
+                          style={{ padding:'8px 12px', borderRadius:8, border:'1px solid #7f1d1d', background:'#2a0d0d', color:'#fca5a5', fontWeight: 600, fontSize: 12, letterSpacing: 0, cursor:'pointer' }}
                         >
                           KICK
                         </button>
@@ -1680,7 +1682,7 @@ function AuctionContent() {
         {/* LEFT: player card */}
         <div className="ac-left">
           <div style={{ textAlign:'center', animation:'fadeUp .4s ease' }}>
-            <div style={{ width:110, height:110, borderRadius:'50%', margin:'0 auto 10px', overflow:'hidden', border:`2px solid ${ROLE_C[player.role]}40`, background:`${ROLE_C[player.role]}12`, display:'flex',alignItems:'center',justifyContent:'center', boxShadow:`0 0 30px ${ROLE_C[player.role]}20` }}>
+            <div style={{ width:110, height:110, borderRadius:'50%', margin:'0 auto 10px', overflow:'hidden', border:`2px solid ${ROLE_C[player.role]}40`, background:`${ROLE_C[player.role]}12`, display:'flex',alignItems:'center',justifyContent:'center', boxShadow:'none' }}>
               {photoUrl ? (
                 <img src={photoUrl} alt={player.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top' }} />
               ) : (player.name.toLowerCase() === 'virat kohli'
@@ -1689,21 +1691,21 @@ function AuctionContent() {
               }
             </div>
             
-            <div style={{ fontFamily:"'Bebas Neue'", fontSize:24, color:'#fff', letterSpacing:2, lineHeight:1.1, marginBottom:4 }}>{player.name.toUpperCase()}</div>
-            <div style={{ color:ROLE_C[player.role], fontSize:11, fontWeight:700, letterSpacing:3, marginBottom:16, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize:24, color:'#fff', letterSpacing: 0, lineHeight:1.1, marginBottom:4 }}>{player.name.toUpperCase()}</div>
+            <div style={{ color:ROLE_C[player.role], fontSize: 12, fontWeight: 600, letterSpacing: 0, marginBottom:16, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
               <span>{ROLE_L[player.role]} · {player.overseas ? 'OVERSEAS' : 'INDIAN'}</span>
             </div>
 
             <div style={{ background:'rgba(255,255,255,.03)', border:`1px solid ${showPlayerRatings ? `${GOLD}33` : BORDER}`, borderRadius:8, padding:'10px 8px', marginBottom:8 }}>
-              <div style={{ color:'#444', fontSize:9, letterSpacing:2, marginBottom:4 }}>PLAYER RATING</div>
-              <div style={{ color:showPlayerRatings ? GOLD : '#6b7280', fontFamily:"'Bebas Neue'", fontSize:20, letterSpacing:1 }}>
+              <div style={{ color:'#7a8296', fontSize: 12, letterSpacing: 0, marginBottom:4 }}>Player rating</div>
+              <div style={{ color:showPlayerRatings ? GOLD : '#7a8296', fontFamily: 'var(--font-display)', fontSize:20, letterSpacing: 0 }}>
                 {showPlayerRatings ? `${livePlayerRating}/100` : 'HIDDEN'}
               </div>
             </div>
 
             {Object.keys(stats).length > 0 && (
               <div style={{ background:'rgba(255,255,255,.03)', border:`1px solid ${BORDER}`, borderRadius:8, padding:'10px 10px 6px', marginBottom:12 }}>
-                <div style={{ color: GOLD, fontSize: 10, letterSpacing: 2, textAlign: 'center', borderBottom: `1px solid ${BORDER}`, paddingBottom: 6, marginBottom: 8 }}>RECENT IPL STATS</div>
+                <div style={{ color: GOLD, fontSize: 12, letterSpacing: 0, textAlign: 'center', borderBottom: `1px solid ${BORDER}`, paddingBottom: 6, marginBottom: 8 }}>Recent IPL stats</div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: '4px 12px', textAlign: 'left' }}>
                   {stats.runs != null && <StatRow label="RUNS" val={stats.runs} />}
                   {stats.sr != null && <StatRow label="S.R" val={stats.sr} />}
@@ -1715,22 +1717,22 @@ function AuctionContent() {
               </div>
             )}
 
-            {[['BASE PRICE', fmt(player.base), GOLD], ['CATEGORY', player.setName.toUpperCase(), '#aaa']].map(([label,val,c]) => (
+            {[['Base price', fmt(player.base), GOLD], ['CATEGORY', player.setName.toUpperCase(), '#aaa']].map(([label,val,c]) => (
               <div key={label} style={{ background:'rgba(255,255,255,.03)', border:`1px solid ${BORDER}`, borderRadius:8, padding:'10px 8px', marginBottom:8 }}>
-                <div style={{ color:'#444', fontSize:9, letterSpacing:2, marginBottom:4 }}>{label}</div>
-                <div style={{ color:c, fontFamily:"'Bebas Neue'", fontSize:20 }}>{val}</div>
+                <div style={{ color:'#7a8296', fontSize: 12, letterSpacing: 0, marginBottom:4 }}>{label}</div>
+                <div style={{ color:c, fontFamily: 'var(--font-display)', fontSize:20 }}>{val}</div>
               </div>
             ))}
 
             {gs.bidLog.length > 0 && (
               <div style={{ marginTop:16, textAlign:'left' }}>
-                <div style={{ fontFamily:"'Bebas Neue'", fontSize:13, color:'#444', letterSpacing:3, marginBottom:8 }}>BID LOG</div>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize:13, color:'#7a8296', letterSpacing: 0, marginBottom:8 }}>Bid log</div>
                 {gs.bidLog.map((b,i) => {
                   const t = displayTeams.find(t => t.id === b.teamId) || TEAMS.find(t => t.id === b.teamId);
                   return (
                     <div key={i} style={{ display:'flex', justifyContent:'space-between', padding:'4px 8px', borderRadius:4, background:i===0?`${t?.color}18`:'transparent', marginBottom:2, border:i===0?`1px solid ${t?.color}30`:'none' }}>
-                      <span style={{ color:t?.color, fontWeight:700, fontSize:12 }}>{t ? getTeamLabel(t, { short: true }) : b.teamId}</span>
-                      <span style={{ color:i===0?'#fff':'#666', fontSize:12, fontWeight:700 }}>{fmt(b.bid)}</span>
+                      <span style={{ color:t?.color, fontWeight: 600, fontSize:12 }}>{t ? getTeamLabel(t, { short: true }) : b.teamId}</span>
+                      <span style={{ color:i===0?'#fff':'#7a8296', fontSize:12, fontWeight: 600 }}>{fmt(b.bid)}</span>
                     </div>
                   );
                 })}
@@ -1746,14 +1748,14 @@ function AuctionContent() {
             <div className="ac-phase-overlay">
               {gs.phase === 'sold' ? (
                 <>
-                  <div className="ac-sold-text" style={{ color:GOLD, textShadow:`0 0 60px ${GOLD}, 0 0 120px ${GOLD}44` }}>SOLD!</div>
-                  <div style={{ color:bidderTeam?.color, fontSize:18, fontWeight:700, letterSpacing:2, marginTop:8 }}>{bidderTeam ? getTeamLabel(bidderTeam) : ''}</div>
-                  <div style={{ color:GOLD, fontFamily:"'Bebas Neue'", fontSize:32, letterSpacing:4, marginTop:4 }}>{fmt(gs.currentBid)}</div>
+                  <div className="ac-sold-text" style={{ color:GOLD, textShadow: 'none' }}>Sold!</div>
+                  <div style={{ color:bidderTeam?.color, fontSize:18, fontWeight: 600, letterSpacing: 0, marginTop:8 }}>{bidderTeam ? getTeamLabel(bidderTeam) : ''}</div>
+                  <div style={{ color:GOLD, fontFamily: 'var(--font-display)', fontSize:32, letterSpacing: 0, marginTop:4 }}>{fmt(gs.currentBid)}</div>
                 </>
               ) : (
                 <>
-                  <div className="ac-sold-text" style={{ color:'#ef4444', textShadow:'0 0 60px #ef4444' }}>UNSOLD</div>
-                  <div style={{ color:'#555', fontSize:13, marginTop:8, letterSpacing:3 }}>No bids received</div>
+                  <div className="ac-sold-text" style={{ color:'#e5484d', textShadow: 'none' }}>Unsold</div>
+                  <div style={{ color:'#7a8296', fontSize:13, marginTop:8, letterSpacing: 0 }}>No bids received</div>
                 </>
               )}
             </div>
@@ -1776,13 +1778,13 @@ function AuctionContent() {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div className="ac-player-name">{player.name.toUpperCase()}</div>
                     <div className="ac-player-meta" style={{ color:ROLE_C[player.role], display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span style={{ fontSize: 10, background: `${ROLE_C[player.role]}20`, color: ROLE_C[player.role], padding: '1px 5px', borderRadius: 3, letterSpacing: 1, fontWeight: 700 }}>{ROLE_L[player.role]}</span>
+                      <span style={{ fontSize: 12, background: `${ROLE_C[player.role]}20`, color: ROLE_C[player.role], padding: '1px 5px', borderRadius: 3, letterSpacing: 0, fontWeight: 600 }}>{ROLE_L[player.role]}</span>
                       {player.overseas && <span className="ac-os-badge">OS</span>}
-                      {player.isWildcard && <span style={{ fontSize: 9, background: `${GOLD}18`, color: GOLD, padding: '1px 5px', borderRadius: 3, letterSpacing: 1, fontWeight: 700 }}>WILDCARD</span>}
+                      {player.isWildcard && <span style={{ fontSize: 12, background: `${GOLD}18`, color: GOLD, padding: '1px 5px', borderRadius: 3, letterSpacing: 0, fontWeight: 600 }}>Wildcard</span>}
                     </div>
-                    <div style={{ fontSize:10, color:'#444', letterSpacing:.5, marginTop:2 }}>
+                    <div style={{ fontSize: 12, color:'#7a8296', letterSpacing: 0, marginTop:2 }}>
                       Base: {fmt(player.base)} · #{gs.currentIdx + 1}/{gs.playerQueue.length}
-                      <span style={{ color: showPlayerRatings ? GOLD : '#6b7280', marginLeft: 6 }}>
+                      <span style={{ color: showPlayerRatings ? GOLD : '#7a8296', marginLeft: 6 }}>
                         · RTG {showPlayerRatings ? livePlayerRating : 'Hidden'}
                       </span>
                     </div>
@@ -1791,53 +1793,53 @@ function AuctionContent() {
 
                 {/* Bid amount */}
                 <div className="ac-bid-area">
-                  <div className="ac-bid-label">CURRENT BID</div>
+                  <div className="ac-bid-label">Current bid</div>
                   <div className="ac-bid-amount">{fmt(gs.currentBid)}</div>
                   {bidderTeam ? (
                     <div className="ac-leading-pill" style={{ background:`${bidderTeam.color}14`, border:`1px solid ${bidderTeam.color}40` }}>
-                      <div style={{ width:8,height:8,borderRadius:'50%',background:bidderTeam.color,boxShadow:`0 0 8px ${bidderTeam.color}` }} />
-                      <span style={{ color:bidderTeam.color, fontWeight:700, fontSize:14 }}>{getTeamLabel(bidderTeam)}</span>
-                      <span style={{ color:'#555', fontSize:13 }}>leading</span>
+                      <div style={{ width:8,height:8,borderRadius:'50%',background:bidderTeam.color,boxShadow:'none' }} />
+                      <span style={{ color:bidderTeam.color, fontWeight: 600, fontSize:14 }}>{getTeamLabel(bidderTeam)}</span>
+                      <span style={{ color:'#7a8296', fontSize:13 }}>leading</span>
                     </div>
                   ) : (
-                    <div style={{ color:'#555', fontSize:13, marginTop:8, letterSpacing:2 }}>↑ BASE PRICE — No bids yet</div>
+                    <div style={{ color:'#7a8296', fontSize:13, marginTop:8, letterSpacing: 0 }}>Base price, no bids yet</div>
                   )}
 
                   {/* ── DESKTOP BID BUTTON ── */}
                   <div className="ac-desktop-bid-area">
                     {isSpectatorMode ? (
-                      <div style={{ background:'rgba(129,196,248,0.08)', border:'1px solid rgba(129,196,248,0.25)', borderRadius:8, padding:'14px 30px', color:'#81C4F8', fontFamily:"'Bebas Neue'", fontSize:15, letterSpacing:2, textAlign:'center' }}>
-                        👁 SPECTATOR VIEW — Watching Live
+                      <div style={{ background:'rgba(129,196,248,0.08)', border:'1px solid rgba(129,196,248,0.25)', borderRadius:8, padding:'14px 30px', color:'#81C4F8', fontFamily: 'var(--font-display)', fontSize:15, letterSpacing: 0, textAlign:'center' }}>
+                        Spectating
                       </div>
                     ) : (
                       <div style={{ display: 'flex', gap: 12 }}>
                         {iLeading ? (
-                          <div style={{ flex: 1, background:`${myTeam?.color}20`, border:`2px solid ${myTeam?.color}80`, borderRadius:8, padding:'14px 30px', color:myTeam?.color, fontWeight:700, fontSize:15, letterSpacing:1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            ✓ YOU&apos;RE LEADING — {fmt(gs.currentBid)}
+                          <div style={{ flex: 1, background:`${myTeam?.color}20`, border:`2px solid ${myTeam?.color}80`, borderRadius:8, padding:'14px 30px', color:myTeam?.color, fontWeight: 600, fontSize:15, letterSpacing: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            You lead at {fmt(gs.currentBid)}
                           </div>
                         ) : (
                           <button
                             onClick={handleBid}
                             disabled={!canBid}
                             style={{
-                              flex: 1, background: canBid ? `linear-gradient(135deg,${myTeam?.color}40,${myTeam?.color}20)` : '#0e0e0e',
-                              border: `2px solid ${canBid ? myTeam?.color : '#2a2a2a'}`, borderRadius:8, padding:'15px 0',
-                              color: canBid ? myTeam?.color : '#3a3a3a', cursor: canBid ? 'pointer' : 'not-allowed',
-                              boxShadow: canBid ? `0 0 28px ${myTeam?.color}44` : 'none', transition:'all 0.2s',
+                              flex: 1, background: canBid ? `${myTeam?.color}30` : '#1a1e28',
+                              border: `2px solid ${canBid ? myTeam?.color : '#7a8296'}`, borderRadius:8, padding:'15px 0',
+                              color: canBid ? myTeam?.color : '#7a8296', cursor: canBid ? 'pointer' : 'not-allowed',
+                              boxShadow: 'none', transition: 'background-color .15s, border-color .15s, color .15s, opacity .15s',
                               display:'flex', flexDirection:'column', alignItems:'center', gap:2
                             }}
                           >
                             {canBid ? (
-                              <span style={{ fontFamily:"'Bebas Neue'", fontSize:'1.8rem', letterSpacing:3 }}>BID {fmtIncrement(gs.currentBid, nextPrice)}</span>
+                              <span style={{ fontFamily: 'var(--font-display)', fontSize:'1.8rem', letterSpacing: 0 }}>BID {fmtIncrement(gs.currentBid, nextPrice)}</span>
                             ) : (
-                              <span style={{ fontFamily:"'Bebas Neue'", fontSize:'1.5rem', letterSpacing:2 }}>{bidDisabledLabel}</span>
+                              <span style={{ fontFamily: 'var(--font-display)', fontSize:'1.5rem', letterSpacing: 0 }}>{bidDisabledLabel}</span>
                             )}
                           </button>
                         )}
                         
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minWidth: 90, background: '#111', border: `1px solid ${BORDER}`, borderRadius: 8, padding: '10px 16px' }}>
-                           <span style={{ fontSize: 9, color: '#777', letterSpacing: 2, marginBottom: 2 }}>PURSE LEFT</span>
-                           <span style={{ fontSize: 18, color: myTeam?.color || GOLD, fontFamily: "'Bebas Neue'", letterSpacing: 1 }}>{fmt(gs.purses[effectiveMyTeamId] || 0)}</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minWidth: 90, background: '#1a1e28', border: `1px solid ${BORDER}`, borderRadius: 8, padding: '10px 16px' }}>
+                           <span style={{ fontSize: 12, color: '#7a8296', letterSpacing: 0, marginBottom: 2 }}>Purse left</span>
+                           <span style={{ fontSize: 18, color: myTeam?.color || GOLD, fontFamily: 'var(--font-display)', letterSpacing: 0 }}>{fmt(gs.purses[effectiveMyTeamId] || 0)}</span>
                         </div>
                       </div>
                     )}
@@ -1853,10 +1855,10 @@ function AuctionContent() {
                         <div key={i} className="ac-log-row" style={{ background:i===0?`${t?.color}12`:'transparent', animation:i===0?'rowIn .2s ease':'none', opacity:Math.max(.1,1-i*.2) }}>
                           <div style={{ display:'flex', alignItems:'center', gap:7 }}>
                             <div style={{ width:6,height:6,borderRadius:'50%',background:t?.color }} />
-                            <span style={{ color:t?.color, fontWeight:700, fontSize:13 }}>{t ? getTeamLabel(t, { short: true }) : b.teamId}</span>
-                            {b.teamId === effectiveMyTeamId && <span style={{ fontSize:9, background:`${t?.color}33`, color:t?.color, padding:'1px 5px', borderRadius:6 }}>YOU</span>}
+                            <span style={{ color:t?.color, fontWeight: 600, fontSize:13 }}>{t ? getTeamLabel(t, { short: true }) : b.teamId}</span>
+                            {b.teamId === effectiveMyTeamId && <span style={{ fontSize: 12, background:`${t?.color}33`, color:t?.color, padding:'1px 5px', borderRadius:6 }}>YOU</span>}
                           </div>
-                          <span style={{ color:GOLD, fontWeight:700, fontSize:13 }}>{fmt(b.bid)}</span>
+                          <span style={{ color:GOLD, fontWeight: 600, fontSize:13 }}>{fmt(b.bid)}</span>
                         </div>
                       );
                     })}
@@ -1866,25 +1868,25 @@ function AuctionContent() {
                 <div className="ac-desktop-squad">
                   <div className="ac-desktop-squad-head">
                     <div>
-                      <div style={{ fontFamily:"'Bebas Neue'", fontSize:28, letterSpacing:2, color:myTeam?.color || GOLD }}>
-                        {myTeam ? getTeamLabel(myTeam, { short: true }) : 'YOUR TEAM'} SQUAD
+                      <div style={{ fontFamily: 'var(--font-display)', fontSize:28, letterSpacing: 0, color:myTeam?.color || GOLD }}>
+                        {myTeam ? getTeamLabel(myTeam, { short: true }) : 'Your team'} SQUAD
                       </div>
-                      <div style={{ color:'#6b7280', fontSize:12, letterSpacing:1.1, marginTop:4 }}>
+                      <div style={{ color:'#7a8296', fontSize:12, letterSpacing: 0, marginTop:4 }}>
                         Your own buys stay visible here, while the franchise rail on the right still opens every team.
                       </div>
                     </div>
                     <div className="ac-desktop-squad-meta">
                       <div className="ac-desktop-squad-stat">
-                        <div style={{ color:'#6b7280', fontSize:10, letterSpacing:1.6 }}>PLAYERS</div>
-                        <div style={{ color:'#fff', fontFamily:"'Bebas Neue'", fontSize:26, letterSpacing:1, whiteSpace:'nowrap' }}>{mySquad.length}/{maxSquadSize}</div>
+                        <div style={{ color:'#7a8296', fontSize: 12, letterSpacing: 0 }}>Players</div>
+                        <div style={{ color:'#fff', fontFamily: 'var(--font-display)', fontSize:26, letterSpacing: 0, whiteSpace:'nowrap' }}>{mySquad.length}/{maxSquadSize}</div>
                       </div>
                       <div className="ac-desktop-squad-stat">
-                        <div style={{ color:'#6b7280', fontSize:10, letterSpacing:1.6 }}>OVERSEAS</div>
-                        <div style={{ color:'#a78bfa', fontFamily:"'Bebas Neue'", fontSize:26, letterSpacing:1, whiteSpace:'nowrap' }}>{osCount}/{maxOverseas}</div>
+                        <div style={{ color:'#7a8296', fontSize: 12, letterSpacing: 0 }}>Overseas</div>
+                        <div style={{ color:'#a78bfa', fontFamily: 'var(--font-display)', fontSize:26, letterSpacing: 0, whiteSpace:'nowrap' }}>{osCount}/{maxOverseas}</div>
                       </div>
                       <div className="ac-desktop-squad-stat">
-                        <div style={{ color:'#6b7280', fontSize:10, letterSpacing:1.6 }}>SPENT</div>
-                        <div style={{ color:GOLD, fontFamily:"'Bebas Neue'", fontSize:24, letterSpacing:1, whiteSpace:'nowrap' }}>{fmt(mySpent)}</div>
+                        <div style={{ color:'#7a8296', fontSize: 12, letterSpacing: 0 }}>Spent</div>
+                        <div style={{ color:GOLD, fontFamily: 'var(--font-display)', fontSize:24, letterSpacing: 0, whiteSpace:'nowrap' }}>{fmt(mySpent)}</div>
                       </div>
                     </div>
                   </div>
@@ -1899,9 +1901,9 @@ function AuctionContent() {
                             <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:8 }}>
                               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                                 <span style={{ fontSize:18 }}>{ROLE_EMOJI[role]}</span>
-                                <span style={{ color:ROLE_C[role], fontWeight:800, fontSize:13, letterSpacing:1.4 }}>{ROLE_L[role].toUpperCase()}</span>
+                                <span style={{ color:ROLE_C[role], fontWeight: 600, fontSize:13, letterSpacing: 0 }}>{ROLE_L[role].toUpperCase()}</span>
                               </div>
-                              <span style={{ color:'#6b7280', fontSize:11 }}>{rolePlayers.length}</span>
+                              <span style={{ color:'#7a8296', fontSize: 12 }}>{rolePlayers.length}</span>
                             </div>
 
                             {rolePlayers.map((squadPlayer, index) => (
@@ -1919,23 +1921,23 @@ function AuctionContent() {
                                     )}
                                   </div>
                                   <div style={{ minWidth:0, flex:1 }}>
-                                    <div style={{ color:'#e5e7eb', fontSize:14, fontWeight:700, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
+                                    <div style={{ color:'#c9cdd6', fontSize:14, fontWeight: 600, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
                                       {squadPlayer.name}
                                     </div>
                                     <div style={{ display:'flex', alignItems:'center', gap:6, marginTop:4 }}>
                                       {squadPlayer.overseas && (
-                                        <span style={{ fontSize:9, background:'#6366f120', color:'#818cf8', padding:'2px 6px', borderRadius:999, letterSpacing:1 }}>
+                                        <span style={{ fontSize: 12, background:'#6366f120', color:'#a3a9b8', padding:'2px 6px', borderRadius:999, letterSpacing: 0 }}>
                                           OS
                                         </span>
                                       )}
-                                      <span style={{ color:'#4b5563', fontSize:10, letterSpacing:1.2 }}>
+                                      <span style={{ color:'#7a8296', fontSize: 12, letterSpacing: 0 }}>
                                         {squadPlayer.setName || 'Auction buy'}
                                       </span>
                                     </div>
                                   </div>
                                 </div>
                                 <div style={{ flexShrink:0, textAlign:'right' }}>
-                                  <div style={{ color:GOLD, fontFamily:"'Bebas Neue'", fontSize:20, letterSpacing:1, whiteSpace:'nowrap' }}>
+                                  <div style={{ color:GOLD, fontFamily: 'var(--font-display)', fontSize:20, letterSpacing: 0, whiteSpace:'nowrap' }}>
                                     {fmt(squadPlayer.soldFor || squadPlayer.base)}
                                   </div>
                                 </div>
@@ -1965,39 +1967,39 @@ function AuctionContent() {
                         color: gs.phase === 'sold' ? GOLD : '#f87171',
                       }}
                     >
-                      <span style={{ fontSize:'1.1rem', fontFamily:"'Bebas Neue'", letterSpacing:2 }}>
+                      <span style={{ fontSize:'1.1rem', fontFamily: 'var(--font-display)', letterSpacing: 0 }}>
                         {gs.phase === 'sold' ? 'SOLD' : 'UNSOLD'}
                       </span>
                       <span className="ac-bid-btn-sub">
-                        {gs.phase === 'sold' ? fmt(gs.currentBid) : 'NEXT PLAYER SOON'}
+                        {gs.phase === 'sold' ? fmt(gs.currentBid) : 'Next player soon'}
                       </span>
                     </div>
                   ) : isSpectatorMode ? (
                     <div className="ac-bid-btn" style={{ background:'rgba(129,196,248,0.08)', border:'1px solid rgba(129,196,248,0.2)', color:'#81C4F8' }}>
-                      <span style={{ fontSize:'0.9rem' }}>👁 SPECTATOR</span>
+                      <span style={{ fontSize:'0.9rem' }}>Spectating</span>
                     </div>
                   ) : iLeading ? (
                     <div className="ac-bid-btn" style={{ background:`${myTeam?.color}20`, border:`2px solid ${myTeam?.color}80`, color:myTeam?.color }}>
-                      <span style={{ fontSize:'1.1rem', fontFamily:"'Bebas Neue'", letterSpacing:1 }}>✓ LEADING</span>
+                      <span style={{ fontSize:'1.1rem', fontFamily: 'var(--font-display)', letterSpacing: 0 }}>Leading</span>
                       <span className="ac-bid-btn-sub">{fmt(gs.currentBid)}</span>
                     </div>
                   ) : (
                     <button className="ac-bid-btn" onClick={handleBid} disabled={!canBid}
                       style={{
-                        background: canBid ? `linear-gradient(135deg,${myTeam?.color}dd,${myTeam?.color}99)` : '#111',
-                        border: `2px solid ${canBid ? myTeam?.color : '#1e1e1e'}`,
-                        color: canBid ? '#000' : '#2a2a2a',
-                        boxShadow: canBid ? `0 4px 24px ${myTeam?.color}50` : 'none',
+                        background: canBid ? `${myTeam?.color}` : '#1a1e28',
+                        border: `2px solid ${canBid ? myTeam?.color : '#1a1e28'}`,
+                        color: canBid ? '#000' : '#7a8296',
+                        boxShadow: 'none',
                       }}>
                       {canBid ? (
                         <>
-                          <span style={{ fontSize:'1.25rem', fontFamily:"'Bebas Neue'", letterSpacing:2, color:'#000', fontWeight:900 }}>
+                          <span style={{ fontSize:'1.25rem', fontFamily: 'var(--font-display)', letterSpacing: 0, color:'#000', fontWeight: 600 }}>
                             BID {fmt(nextPrice)}
                           </span>
                           <span className="ac-bid-btn-sub" style={{ color:'#00000088' }}>{fmtIncrement(gs.currentBid, nextPrice)}</span>
                         </>
                       ) : (
-                        <span style={{ fontSize:'0.85rem', fontFamily:"'Bebas Neue'", letterSpacing:1 }}>
+                        <span style={{ fontSize:'0.85rem', fontFamily: 'var(--font-display)', letterSpacing: 0 }}>
                           {bidDisabledLabel}
                         </span>
                       )}
@@ -2031,26 +2033,26 @@ function AuctionContent() {
                         <img src={`/assets/${team.id}.png`} style={{ width:24, height:24, objectFit:'contain' }} alt="" />
                         <div style={{ flex:1, minWidth:0 }}>
                           <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                            <span style={{ fontWeight:700, color: isMe ? team.color : '#ddd', fontSize:15, letterSpacing:.5 }}>{getTeamLabel(team, { short: true })}</span>
-                            {isMe && <span style={{ fontSize:9, background:`${team.color}22`, color:team.color, padding:'1px 5px', borderRadius:3, letterSpacing:1 }}>YOU</span>}
-                            {isLead && <span style={{ fontSize:9, background:'#ef444418', color:'#ef4444', padding:'1px 5px', borderRadius:3, letterSpacing:1 }}>LEADING</span>}
+                            <span style={{ fontWeight: 600, color: isMe ? team.color : '#c9cdd6', fontSize:15, letterSpacing: 0 }}>{getTeamLabel(team, { short: true })}</span>
+                            {isMe && <span style={{ fontSize: 12, background:`${team.color}22`, color:team.color, padding:'1px 5px', borderRadius:3, letterSpacing: 0 }}>YOU</span>}
+                            {isLead && <span style={{ fontSize: 12, background:'#ef444418', color:'#e5484d', padding:'1px 5px', borderRadius:3, letterSpacing: 0 }}>Leading</span>}
                           </div>
-                          <div style={{ fontSize:10, color:'#555', marginTop:1 }}>{squad.length} players · Spent {fmt(spent)}</div>
+                          <div style={{ fontSize: 12, color:'#7a8296', marginTop:1 }}>{squad.length} players · Spent {fmt(spent)}</div>
                         </div>
                         <div style={{ textAlign:'right', flexShrink:0 }}>
-                          <div style={{ color:team.color, fontFamily:"'Bebas Neue'", fontSize:17, letterSpacing:1 }}>{fmt(gs.purses[team.id])}</div>
-                          <div style={{ fontSize:8, color:'#444', letterSpacing:1 }}>REMAINING</div>
+                          <div style={{ color:team.color, fontFamily: 'var(--font-display)', fontSize:17, letterSpacing: 0 }}>{fmt(gs.purses[team.id])}</div>
+                          <div style={{ fontSize: 12, color:'#7a8296', letterSpacing: 0 }}>Remaining</div>
                         </div>
-                        <span style={{ color:'#555', fontSize:12, marginLeft:6 }}>{isOpen ? '▲' : '▼'}</span>
+                        <span style={{ color:'#7a8296', fontSize:12, marginLeft:6 }}>{isOpen ? '▲' : '▼'}</span>
                       </div>
                       {isOpen && (
                         <div className="ac-team-dropdown">
                           {squad.length === 0 ? (
-                            <div style={{ color:'#444', fontSize:12, textAlign:'center', padding:'8px 0' }}>No players bought yet</div>
+                            <div style={{ color:'#7a8296', fontSize:12, textAlign:'center', padding:'8px 0' }}>No players bought yet</div>
                           ) : (
                             Object.entries(byRole).map(([role, players]) => (
                               <div key={role} style={{ marginBottom:8 }}>
-                                <div style={{ fontSize:9, letterSpacing:2, color:ROLE_C[role], fontWeight:700, marginBottom:4 }}>{ROLE_L[role].toUpperCase()}</div>
+                                <div style={{ fontSize: 12, letterSpacing: 0, color:ROLE_C[role], fontWeight: 600, marginBottom:4 }}>{ROLE_L[role].toUpperCase()}</div>
                                 {players.map((p,i) => (
                                   <div key={i} className="ac-player-bought-row">
                                     <div className="ac-player-bought-main">
@@ -2066,13 +2068,13 @@ function AuctionContent() {
                                         )}
                                       </div>
                                       <div style={{ minWidth:0, flex:1 }}>
-                                        <span style={{ color:'#ccc', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', display:'block' }}>{p.name}</span>
+                                        <span style={{ color:'#c9cdd6', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', display:'block' }}>{p.name}</span>
                                         {p.overseas && (
                                           <span className="ac-os-badge" style={{ marginTop:2 }}>OS</span>
                                         )}
                                       </div>
                                     </div>
-                                    <span style={{ color:GOLD, fontWeight:700, whiteSpace:'nowrap', flexShrink:0 }}>{fmt(p.soldFor||p.base)}</span>
+                                    <span style={{ color:GOLD, fontWeight: 600, whiteSpace:'nowrap', flexShrink:0 }}>{fmt(p.soldFor||p.base)}</span>
                                   </div>
                                 ))}
                               </div>
@@ -2086,23 +2088,23 @@ function AuctionContent() {
 
                 {mobileTab === 'settings' && (
                   <div style={{ padding:'4px 0' }}>
-                    <div style={{ fontSize:10, letterSpacing:3, color:'#555', textTransform:'uppercase', marginBottom:14 }}>ROOM SETTINGS</div>
+                    <div style={{ fontSize: 12, letterSpacing: 0, color:'#7a8296', marginBottom:14 }}>Room settings</div>
                     {/* Bid Timer */}
-                    <div style={{ background:'#0f0f12', border:'1px solid #1c1c1c', borderRadius:10, padding:'14px', marginBottom:10 }}>
+                    <div style={{ background:'#1a1e28', border:'1px solid #1a1e28', borderRadius:10, padding:'14px', marginBottom:10 }}>
                       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
                         <div>
-                          <div style={{ color:'#ddd', fontSize:14, fontWeight:700, display:'flex', alignItems:'center', gap:6 }}>⏱ Bid Timer</div>
-                          <div style={{ color:'#555', fontSize:10, marginTop:2 }}>Time allowed for each bid round</div>
+                          <div style={{ color:'#c9cdd6', fontSize:14, fontWeight: 600, display:'flex', alignItems:'center', gap:6 }}>⏱ Bid Timer</div>
+                          <div style={{ color:'#7a8296', fontSize: 12, marginTop:2 }}>Time allowed for each bid round</div>
                         </div>
-                        <div style={{ color:GOLD, fontFamily:"'Bebas Neue'", fontSize:20, letterSpacing:1 }}>{configuredTimer}s</div>
+                        <div style={{ color:GOLD, fontFamily: 'var(--font-display)', fontSize:20, letterSpacing: 0 }}>{configuredTimer}s</div>
                       </div>
                       {isHost && (
                         <div style={{ display:'flex', gap:6 }}>
                           {timerOptions.map(t => (
                             <button key={t} onClick={() => handleTimerDurationChange(t)}
-                              style={{ flex:1, padding:'7px 0', background: configuredTimer===t ? GOLD : '#1a1a1a',
-                                color: configuredTimer===t ? '#000' : '#888', border:'none', borderRadius:6,
-                                fontFamily:"'Barlow Condensed'", fontWeight:700, fontSize:13, cursor:'pointer' }}>
+                              style={{ flex:1, padding:'7px 0', background: configuredTimer===t ? GOLD : '#1a1e28',
+                                color: configuredTimer===t ? '#000' : '#7a8296', border:'none', borderRadius:6,
+                                fontFamily: 'var(--font-display)', fontWeight: 600, fontSize:13, cursor:'pointer' }}>
                               {t}s
                             </button>
                           ))}
@@ -2110,50 +2112,50 @@ function AuctionContent() {
                       )}
                     </div>
                     {/* Auction Mode */}
-                    <div style={{ background:'#0f0f12', border:'1px solid #1c1c1c', borderRadius:10, padding:'14px', marginBottom:10 }}>
+                    <div style={{ background:'#1a1e28', border:'1px solid #1a1e28', borderRadius:10, padding:'14px', marginBottom:10 }}>
                       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                         <div>
-                          <div style={{ color:'#ddd', fontSize:14, fontWeight:700 }}>🏏 Auction Mode</div>
-                          <div style={{ color:'#555', fontSize:10, marginTop:2 }}>Cannot be changed after room creation</div>
+                          <div style={{ color:'#c9cdd6', fontSize:14, fontWeight: 600 }}>Auction mode</div>
+                          <div style={{ color:'#7a8296', fontSize: 12, marginTop:2 }}>Cannot be changed after room creation</div>
                         </div>
-                        <span style={{ background:`${GOLD}18`, border:`1px solid ${GOLD}40`, color:GOLD, fontSize:11, fontWeight:700, padding:'3px 10px', borderRadius:5, letterSpacing:.5 }}>
+                        <span style={{ background:`${GOLD}18`, border:`1px solid ${GOLD}40`, color:GOLD, fontSize: 12, fontWeight: 600, padding:'3px 10px', borderRadius:5, letterSpacing: 0 }}>
                           {isRivals ? 'Rivals Auction' : (isMulti ? lobbyMode : auctionMode) === 'mega' ? 'Mega Auction' : 'Mini Auction'}
                         </span>
                       </div>
                     </div>
                     {/* Starting Purse */}
-                    <div style={{ background:'#0f0f12', border:'1px solid #1c1c1c', borderRadius:10, padding:'14px' }}>
+                    <div style={{ background:'#1a1e28', border:'1px solid #1a1e28', borderRadius:10, padding:'14px' }}>
                       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                        <div style={{ color:'#ddd', fontSize:14, fontWeight:700 }}>₹ Starting Purse</div>
-                        <span style={{ color:'#22c55e', fontFamily:"'Bebas Neue'", fontSize:20, letterSpacing:1 }}>₹{initialPurse} Cr</span>
+                        <div style={{ color:'#c9cdd6', fontSize:14, fontWeight: 600 }}>₹ Starting Purse</div>
+                        <span style={{ color:'#22c55e', fontFamily: 'var(--font-display)', fontSize:20, letterSpacing: 0 }}>₹{initialPurse} Cr</span>
                       </div>
                     </div>
                     {isHost && (
-                      <div style={{ background:'#0f0f12', border:'1px solid #1c1c1c', borderRadius:10, padding:'14px', marginTop:10 }}>
+                      <div style={{ background:'#1a1e28', border:'1px solid #1a1e28', borderRadius:10, padding:'14px', marginTop:10 }}>
                         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
                           <div>
-                            <div style={{ color:'#ddd', fontSize:14, fontWeight:700 }}>🚫 Kick Players</div>
-                            <div style={{ color:'#555', fontSize:10, marginTop:2 }}>Remove unknown players from the live room.</div>
+                            <div style={{ color:'#c9cdd6', fontSize:14, fontWeight: 600 }}>Remove players</div>
+                            <div style={{ color:'#7a8296', fontSize: 12, marginTop:2 }}>Remove unknown players from the live room.</div>
                           </div>
-                          <span style={{ color:GOLD, fontFamily:"'Bebas Neue'", fontSize:20, letterSpacing:1 }}>{manageablePlayers.length}</span>
+                          <span style={{ color:GOLD, fontFamily: 'var(--font-display)', fontSize:20, letterSpacing: 0 }}>{manageablePlayers.length}</span>
                         </div>
                         <div style={{ display:'grid', gap:8 }}>
                           {manageablePlayers.length === 0 ? (
-                            <div style={{ color:'#666', fontSize:12, textAlign:'center', padding:'8px 0' }}>No kickable players right now.</div>
+                            <div style={{ color:'#7a8296', fontSize:12, textAlign:'center', padding:'8px 0' }}>No kickable players right now.</div>
                           ) : manageablePlayers.map((player) => {
                             const team = player.teamId ? TEAMS.find((entry) => entry.id === player.teamId) : null;
                             return (
                               <div key={player.id} style={{ display:'flex', alignItems:'center', gap:10, justifyContent:'space-between', border:'1px solid #1f2937', borderRadius:10, padding:'10px 12px', background:'rgba(255,255,255,0.02)' }}>
                                 <div style={{ minWidth:0, flex:1 }}>
-                                  <div style={{ color:'#e5e7eb', fontSize:13, fontWeight:700 }}>{player.name}</div>
-                                  <div style={{ color:team?.color || '#64748b', fontSize:10, letterSpacing:1.1, marginTop:4 }}>
-                                    {player.isSpectator ? 'SPECTATOR' : team ? `${team.short} PLAYER` : 'WAITING FOR TEAM'}
+                                  <div style={{ color:'#c9cdd6', fontSize:13, fontWeight: 600 }}>{player.name}</div>
+                                  <div style={{ color:team?.color || '#7a8296', fontSize: 12, letterSpacing: 0, marginTop:4 }}>
+                                    {player.isSpectator ? 'SPECTATOR' : team ? `${team.short} PLAYER` : 'Waiting for team'}
                                   </div>
                                 </div>
                                 <button
                                   type="button"
                                   onClick={() => handleKickPlayer(player)}
-                                  style={{ padding:'7px 10px', borderRadius:8, border:'1px solid #7f1d1d', background:'#2a0d0d', color:'#fca5a5', fontWeight:800, fontSize:11, letterSpacing:1, cursor:'pointer' }}
+                                  style={{ padding:'7px 10px', borderRadius:8, border:'1px solid #7f1d1d', background:'#2a0d0d', color:'#fca5a5', fontWeight: 600, fontSize: 12, letterSpacing: 0, cursor:'pointer' }}
                                 >
                                   KICK
                                 </button>
@@ -2177,7 +2179,7 @@ function AuctionContent() {
 
         {/* RIGHT: teams */}
         <div className="ac-right">
-          <div style={{ padding:'6px 12px', fontSize:9, letterSpacing:3, color:'#444', borderBottom:`1px solid ${BORDER}`, flexShrink:0 }}>{isRivals ? 'RIVALS' : 'FRANCHISES'}</div>
+          <div style={{ padding:'6px 12px', fontSize: 12, letterSpacing: 0, color:'#7a8296', borderBottom:`1px solid ${BORDER}`, flexShrink:0 }}>{isRivals ? 'RIVALS' : 'FRANCHISES'}</div>
           <div className="ac-right-row">
             {sortedTeams.map(team => {
               const isLead = team.id === gs.currentBidder, isMe = team.id === effectiveMyTeamId;
@@ -2189,15 +2191,15 @@ function AuctionContent() {
                   <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                     <div style={{ display:'flex', alignItems:'center', gap:6 }}>
                       <img src={`/assets/${team.id}.png`} style={{ width: 18, height: 18, objectFit: 'contain' }} alt="" />
-                      <span style={{ fontWeight:700, color:'#ddd', fontSize:13, letterSpacing:.5 }}>{getTeamLabel(team, { short: true })}</span>
-                      {isMe && <span style={{ fontSize:9, color:team.color }}>YOU</span>}
+                      <span style={{ fontWeight: 600, color:'#c9cdd6', fontSize:13, letterSpacing: 0 }}>{getTeamLabel(team, { short: true })}</span>
+                      {isMe && <span style={{ fontSize: 12, color:team.color }}>YOU</span>}
                     </div>
                     <div style={{ textAlign:'right' }}>
-                      <div style={{ color:team.color, fontFamily:"'Bebas Neue'", fontSize:15, letterSpacing:1 }}>{fmt(gs.purses[team.id])}</div>
-                      <div style={{ fontSize:8, color:'#555', letterSpacing:1 }}>{gs.squads[team.id]?.length} pl</div>
+                      <div style={{ color:team.color, fontFamily: 'var(--font-display)', fontSize:15, letterSpacing: 0 }}>{fmt(gs.purses[team.id])}</div>
+                      <div style={{ fontSize: 12, color:'#7a8296', letterSpacing: 0 }}>{gs.squads[team.id]?.length} pl</div>
                     </div>
                   </div>
-                  <div style={{ height:2, background:'#0e0e0e', marginTop:5, borderRadius:2, overflow:'hidden' }}>
+                  <div style={{ height:2, background:'#11141c', marginTop:5, borderRadius:2, overflow:'hidden' }}>
                     <div style={{ height:'100%', background:team.color, width:`${pct}%`, transition:'width .3s' }} />
                   </div>
                 </div>
@@ -2207,16 +2209,16 @@ function AuctionContent() {
 
           {/* DESKTOP CHAT AREA */}
           <div style={{ flex: 1, borderTop: `1px solid ${BORDER}`, display: 'flex', flexDirection: 'column', minHeight: '40%' }}>
-            <div style={{ padding:'6px 12px', fontSize:9, letterSpacing:3, color:'#22D3EE', borderBottom:`1px solid ${BORDER}`, flexShrink:0 }}>LIVE CHAT</div>
+            <div style={{ padding:'6px 12px', fontSize: 12, letterSpacing: 0, color:'#a3a9b8', borderBottom:`1px solid ${BORDER}`, flexShrink:0 }}>Live chat</div>
             <div style={{ padding:'8px 12px', borderBottom:`1px solid ${BORDER}`, flexShrink:0 }}>
               <a
                 href={WHATSAPP_COMMUNITY_URL}
                 target="_blank"
                 rel="noreferrer"
-                style={{ display:'inline-flex', alignItems:'center', gap:8, color:'#25D366', textDecoration:'none', fontSize:11, letterSpacing:1.5, fontWeight:700 }}
+                style={{ display:'inline-flex', alignItems:'center', gap:8, color:'#25D366', textDecoration:'none', fontSize: 12, letterSpacing: 0, fontWeight: 600 }}
               >
                 <WhatsAppIcon />
-                JOIN WHATSAPP COMMUNITY
+                Join WhatsApp community
               </a>
             </div>
             <div style={{ flex: 1, overflow: 'hidden' }}>
@@ -2228,18 +2230,18 @@ function AuctionContent() {
 
       {/* ── TICKER (desktop only) ── */}
       <div className="ac-ticker" style={{ position: 'relative' }}>
-        <span style={{ fontSize:9, color:GOLD, letterSpacing:4, fontWeight:900, flexShrink:0 }}>SALES</span>
-        <span style={{ fontSize:8, color:'#444', letterSpacing:1, marginLeft: 12, marginRight: 12, flexShrink:0, opacity: 0.8 }}>DATA: IPLT20.COM &amp; CRICAPI</span>
+        <span style={{ fontSize: 12, color:GOLD, letterSpacing: 0, fontWeight: 600, flexShrink:0 }}>Sales</span>
+        <span style={{ fontSize: 12, color:'#7a8296', letterSpacing: 0, marginLeft: 12, marginRight: 12, flexShrink:0, opacity: 0.8 }}>DATA: IPLT20.COM &amp; CRICAPI</span>
         {(gs.auctionLog||[]).slice(0,12).map((item,i) => {
           const t = displayTeams.find(t => t.id === item.bidder);
           return (
             <div key={i} className="ac-ticker-item">
               <span>{item.player.name}</span>
-              {item.sold ? (<><span style={{ color:GOLD }}>→</span><span style={{ color:t?.color, fontWeight:900 }}>{t ? getTeamLabel(t, { short: true }) : item.bidder}</span><span style={{ color:'#ddd', fontWeight:700 }}>{fmt(item.price)}</span></>) : <span style={{ color:'#ef4444', fontWeight:700 }}>UNSOLD</span>}
+              {item.sold ? (<><span style={{ color:GOLD }}>→</span><span style={{ color:t?.color, fontWeight: 600 }}>{t ? getTeamLabel(t, { short: true }) : item.bidder}</span><span style={{ color:'#c9cdd6', fontWeight: 600 }}>{fmt(item.price)}</span></>) : <span style={{ color:'#e5484d', fontWeight: 600 }}>Unsold</span>}
             </div>
           );
         })}
-        {(!gs.auctionLog || gs.auctionLog.length === 0) && <span style={{ color:'#333', fontSize:11 }}>Auction in progress…</span>}
+        {(!gs.auctionLog || gs.auctionLog.length === 0) && <span style={{ color:'#7a8296', fontSize: 12 }}>Auction in progress…</span>}
       </div>
 
       {/* ── TEAMS BOTTOM SHEET (mobile) ── */}
@@ -2248,8 +2250,8 @@ function AuctionContent() {
           <div className="ac-sheet-bg" onClick={() => setShowTeams(false)} />
           <div className="ac-sheet">
             <div className="ac-sheet-header">
-              <span style={{ fontFamily:"'Bebas Neue'", fontSize:18, color:'#ccc', letterSpacing:2 }}>FRANCHISES</span>
-              <button onClick={() => setShowTeams(false)} style={{ background:'none', border:'none', color:'#666', fontSize:20, cursor:'pointer' }}>✕</button>
+              <span style={{ fontFamily: 'var(--font-display)', fontSize:18, color:'#c9cdd6', letterSpacing: 0 }}>Franchises</span>
+              <button onClick={() => setShowTeams(false)} style={{ background:'none', border:'none', color:'#7a8296', fontSize:20, cursor:'pointer' }} aria-label="Close"><X size={18} strokeWidth={1.5} /></button>
             </div>
             {sortedTeams.map(team => {
               const isLead = team.id === gs.currentBidder, isMe = team.id === effectiveMyTeamId;
@@ -2260,17 +2262,17 @@ function AuctionContent() {
                   <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                     <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                       <img src={`/assets/${team.id}.png`} style={{ width: 22, height: 22, objectFit: 'contain' }} alt="" />
-                      <span style={{ fontWeight:700, color:'#ddd', fontSize:16, letterSpacing:.5 }}>{getTeamLabel(team, { short: true })}</span>
-                      <span style={{ fontSize:12, color:'#555' }}>{team.name}</span>
-                      {isMe && <span style={{ fontSize:10, color:team.color }}>★ YOU</span>}
-                      {isLead && <span style={{ fontSize:10, color:team.color, letterSpacing:2 }}>LEADING</span>}
+                      <span style={{ fontWeight: 600, color:'#c9cdd6', fontSize:16, letterSpacing: 0 }}>{getTeamLabel(team, { short: true })}</span>
+                      <span style={{ fontSize:12, color:'#7a8296' }}>{team.name}</span>
+                      {isMe && <span style={{ fontSize: 12, color:team.color }}>You</span>}
+                      {isLead && <span style={{ fontSize: 12, color:team.color, letterSpacing: 0 }}>Leading</span>}
                     </div>
                     <div style={{ textAlign:'right' }}>
-                      <div style={{ color:team.color, fontFamily:"'Bebas Neue'", fontSize:20, letterSpacing:1 }}>{fmt(gs.purses[team.id])}</div>
-                      <div style={{ fontSize:10, color:'#555' }}>{gs.squads[team.id]?.length} players</div>
+                      <div style={{ color:team.color, fontFamily: 'var(--font-display)', fontSize:20, letterSpacing: 0 }}>{fmt(gs.purses[team.id])}</div>
+                      <div style={{ fontSize: 12, color:'#7a8296' }}>{gs.squads[team.id]?.length} players</div>
                     </div>
                   </div>
-                  <div style={{ height:2, background:'#111', marginTop:8, borderRadius:2, overflow:'hidden' }}>
+                  <div style={{ height:2, background:'#1a1e28', marginTop:8, borderRadius:2, overflow:'hidden' }}>
                     <div style={{ height:'100%', background:team.color, width:`${pct}%`, transition:'width .3s' }} />
                   </div>
                 </div>
@@ -2287,8 +2289,8 @@ function AuctionContent() {
           <div className="ac-sheet">
             {/* Header */}
             <div className="ac-sheet-header">
-              <span style={{ fontFamily:"'Bebas Neue'", fontSize:17, color:'#ccc', letterSpacing:2 }}>MORE</span>
-              <button type="button" className="ac-sheet-close" onClick={() => setShowHamburger(false)} aria-label="Close more panel">✕</button>
+              <span style={{ fontFamily: 'var(--font-display)', fontSize:17, color:'#c9cdd6', letterSpacing: 0 }}>More</span>
+              <button type="button" className="ac-sheet-close" onClick={() => setShowHamburger(false)} aria-label="Close more panel"><X size={18} strokeWidth={1.5} /></button>
             </div>
             {/* Sub-tabs */}
             <div className="ac-sheet-tabs">
@@ -2303,20 +2305,20 @@ function AuctionContent() {
               {/* UPCOMING */}
               {hamburgerTab === 'upcoming' && (
                 upcomingPlayers.length === 0
-                  ? <div style={{ textAlign:'center', color:'#444', padding:32 }}>No players remaining</div>
+                  ? <div style={{ textAlign:'center', color:'#7a8296', padding:32 }}>No players remaining</div>
                   : Object.entries(groupedUpcoming).map(([cat, players]) => (
                     <div key={cat} style={{ marginBottom:20 }}>
                       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:10 }}>
-                        <span style={{ fontFamily:"'Bebas Neue'", fontSize:14, color:'#fff', letterSpacing:2 }}>{cat.toUpperCase()}</span>
-                        <span style={{ fontSize:10, color:CYAN, background:`${CYAN}15`, padding:'1px 6px', borderRadius:3, fontWeight:700 }}>{players.length}</span>
+                        <span style={{ fontFamily: 'var(--font-display)', fontSize:14, color:'#fff', letterSpacing: 0 }}>{cat.toUpperCase()}</span>
+                        <span style={{ fontSize: 12, color:CYAN, background:`${CYAN}15`, padding:'1px 6px', borderRadius:3, fontWeight: 600 }}>{players.length}</span>
                       </div>
                       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:6 }}>
                         {players.map((p,i) => (
-                          <div key={i} style={{ background:'#0d0d10', border:'1px solid #1a1a1a', borderRadius:6, padding:'7px 9px', display:'flex', justifyContent:'space-between', alignItems:'center', gap:8 }}>
-                            <span style={{ fontSize:12, color:'#aaa', minWidth:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{p.name}</span>
+                          <div key={i} style={{ background:'#11141c', border:'1px solid #1a1e28', borderRadius:6, padding:'7px 9px', display:'flex', justifyContent:'space-between', alignItems:'center', gap:8 }}>
+                            <span style={{ fontSize:12, color:'#a3a9b8', minWidth:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{p.name}</span>
                             <span style={{ display:'flex', alignItems:'center', gap:5, flexShrink:0 }}>
                               {p.overseas && <span className="ac-os-badge">OS</span>}
-                              <span style={{ fontSize:10, color:ROLE_C[p.role] }}>{ROLE_EMOJI[p.role]}</span>
+                              <span style={{ fontSize: 12, color:ROLE_C[p.role] }}>{ROLE_EMOJI[p.role]}</span>
                             </span>
                           </div>
                         ))}
@@ -2329,21 +2331,21 @@ function AuctionContent() {
               {hamburgerTab === 'sold' && (() => {
                 const sold = (gs.auctionLog||[]).filter(x => x.sold);
                 return sold.length === 0
-                  ? <div style={{ textAlign:'center', color:'#444', padding:32 }}>No players sold yet</div>
+                  ? <div style={{ textAlign:'center', color:'#7a8296', padding:32 }}>No players sold yet</div>
                   : sold.map((item,i) => {
                     const t = displayTeams.find(t => t.id === item.bidder);
                     return (
-                      <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0', borderBottom:'1px solid #141414' }}>
+                      <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0', borderBottom:'1px solid #1a1e28' }}>
                         <div>
-                          <div style={{ color:'#ddd', fontWeight:700, fontSize:13 }}>{item.player.name}</div>
+                          <div style={{ color:'#c9cdd6', fontWeight: 600, fontSize:13 }}>{item.player.name}</div>
                           <div style={{ display:'flex', alignItems:'center', gap:6, marginTop:2 }}>
-                            <span style={{ fontSize:10, color:ROLE_C[item.player.role] }}>{ROLE_L[item.player.role]}</span>
+                            <span style={{ fontSize: 12, color:ROLE_C[item.player.role] }}>{ROLE_L[item.player.role]}</span>
                             {item.player.overseas && <span className="ac-os-badge">OS</span>}
                           </div>
                         </div>
                         <div style={{ textAlign:'right' }}>
-                          <div style={{ color:t?.color, fontWeight:700, fontSize:12 }}>{t ? getTeamLabel(t, { short: true }) : item.bidder}</div>
-                          <div style={{ color:GOLD, fontFamily:"'Bebas Neue'", fontSize:15 }}>{fmt(item.price)}</div>
+                          <div style={{ color:t?.color, fontWeight: 600, fontSize:12 }}>{t ? getTeamLabel(t, { short: true }) : item.bidder}</div>
+                          <div style={{ color:GOLD, fontFamily: 'var(--font-display)', fontSize:15 }}>{fmt(item.price)}</div>
                         </div>
                       </div>
                     );
@@ -2354,17 +2356,17 @@ function AuctionContent() {
               {hamburgerTab === 'unsold' && (() => {
                 const unsold = (gs.auctionLog||[]).filter(x => !x.sold);
                 return unsold.length === 0
-                  ? <div style={{ textAlign:'center', color:'#444', padding:32 }}>No unsold players yet</div>
+                  ? <div style={{ textAlign:'center', color:'#7a8296', padding:32 }}>No unsold players yet</div>
                   : unsold.map((item,i) => (
-                    <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0', borderBottom:'1px solid #141414' }}>
+                    <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 0', borderBottom:'1px solid #1a1e28' }}>
                       <div>
-                        <div style={{ color:'#888', fontWeight:700, fontSize:13 }}>{item.player.name}</div>
+                        <div style={{ color:'#7a8296', fontWeight: 600, fontSize:13 }}>{item.player.name}</div>
                         <div style={{ display:'flex', alignItems:'center', gap:6, marginTop:2 }}>
-                          <span style={{ fontSize:10, color:ROLE_C[item.player.role] }}>{ROLE_L[item.player.role]}</span>
+                          <span style={{ fontSize: 12, color:ROLE_C[item.player.role] }}>{ROLE_L[item.player.role]}</span>
                           {item.player.overseas && <span className="ac-os-badge">OS</span>}
                         </div>
                       </div>
-                      <span style={{ color:'#ef4444', fontWeight:700, fontSize:11, letterSpacing:1 }}>UNSOLD</span>
+                      <span style={{ color:'#e5484d', fontWeight: 600, fontSize: 12, letterSpacing: 0 }}>Unsold</span>
                     </div>
                   ));
               })()}
@@ -2376,15 +2378,15 @@ function AuctionContent() {
                   .sort((a,b) => b.topBid - a.topBid);
                 return (
                   <div>
-                    <div style={{ fontSize:9, letterSpacing:3, color:'#555', marginBottom:12 }}>HIGHEST SINGLE BID · {isRivals ? 'TODAY’S RIVALS' : 'ALL TEAMS'}</div>
+                    <div style={{ fontSize: 12, letterSpacing: 0, color:'#7a8296', marginBottom:12 }}>HIGHEST SINGLE BID · {isRivals ? 'Today’s rivals' : 'All teams'}</div>
                     {board.map((row,i) => (
-                      <div key={row.team.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'9px 0', borderBottom:'1px solid #141414' }}>
-                        <span style={{ color:'#333', fontSize:12, fontFamily:"'Bebas Neue'", width:18 }}>#{i+1}</span>
+                      <div key={row.team.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'9px 0', borderBottom:'1px solid #1a1e28' }}>
+                        <span style={{ color:'#7a8296', fontSize:12, fontFamily: 'var(--font-display)', width:18 }}>#{i+1}</span>
                         <img src={`/assets/${row.team.id}.png`} style={{ width:20, height:20, objectFit:'contain' }} alt="" />
-                        <span style={{ flex:1, color: row.team.id===effectiveMyTeamId ? row.team.color : '#ccc', fontWeight:700, fontSize:13 }}>{row.team.short}</span>
+                        <span style={{ flex:1, color: row.team.id===effectiveMyTeamId ? row.team.color : '#c9cdd6', fontWeight: 600, fontSize:13 }}>{row.team.short}</span>
                         <div style={{ textAlign:'right' }}>
-                          <div style={{ color:GOLD, fontFamily:"'Bebas Neue'", fontSize:16 }}>{row.topBid > 0 ? fmt(row.topBid) : '—'}</div>
-                          <div style={{ fontSize:9, color:'#555' }}>Spent {fmt(row.spent)}</div>
+                          <div style={{ color:GOLD, fontFamily: 'var(--font-display)', fontSize:16 }}>{row.topBid > 0 ? fmt(row.topBid) : '—'}</div>
+                          <div style={{ fontSize: 12, color:'#7a8296' }}>Spent {fmt(row.spent)}</div>
                         </div>
                       </div>
                     ))}
@@ -2413,13 +2415,14 @@ function TradeScreen({ gs, teams, myTeamId, isHost, isSpectator, emit, activeTea
   const tradeCounts = gs?.tradeCounts || {};
   const tradeReady = gs?.tradeReady || {};
   const proposals = gs?.tradeProposals || [];
-  const mySquad = gs?.squads?.[myTeamId] || [];
+  const mySquad = useMemo(() => gs?.squads?.[myTeamId] || [], [gs?.squads, myTeamId]);
   const myTradeCount = tradeCounts?.[myTeamId] || 0;
   const myTeam = teams.find((team) => team.id === myTeamId) || TEAMS.find((team) => team.id === myTeamId);
   const activeTeamIds = new Set((activeTeams || []).map((player) => player.teamId).filter(Boolean));
   const tradeTeams = teams.filter((team) => team.id !== myTeamId && (gs?.squads?.[team.id] || []).length > 0 && (!activeTeamIds.size || activeTeamIds.has(team.id)));
   const targetTeam = tradeTeams.find((team) => team.id === targetTeamId) || tradeTeams[0] || null;
-  const targetSquad = targetTeam ? (gs?.squads?.[targetTeam.id] || []) : [];
+  const targetTeamKey = targetTeam?.id;
+  const targetSquad = useMemo(() => (targetTeamKey ? (gs?.squads?.[targetTeamKey] || []) : []), [gs?.squads, targetTeamKey]);
   const offeredPlayer = mySquad.find((player) => player.name === offeredName) || null;
   const requestedPlayer = targetSquad.find((player) => player.name === requestedName) || null;
   const pendingReceived = proposals.filter((proposal) => proposal.status === 'pending' && proposal.toTeamId === myTeamId);
@@ -2490,7 +2493,7 @@ function TradeScreen({ gs, teams, myTeamId, isHost, isSpectator, emit, activeTea
       actions: [
         { label: 'Cancel', variant: 'secondary', onClick: () => setDialog(null) },
         {
-          label: 'Accept Swap',
+          label: 'Accept swap',
           variant: 'primary',
           onClick: () => {
             setDialog(null);
@@ -2529,7 +2532,7 @@ function TradeScreen({ gs, teams, myTeamId, isHost, isSpectator, emit, activeTea
       ].join('\n\n'),
       tone: 'info',
       actions: [
-        { label: 'Stay Here', variant: 'secondary', onClick: () => setDialog(null) },
+        { label: 'Stay here', variant: 'secondary', onClick: () => setDialog(null) },
         {
           label: 'Start XI Now',
           variant: 'primary',
@@ -2601,7 +2604,7 @@ function TradeScreen({ gs, teams, myTeamId, isHost, isSpectator, emit, activeTea
   const TradeActions = ({ compact = false }) => (
     <div className={`trade-action-panel${compact ? ' compact' : ''}`}>
       <div className="trade-action-copy">
-        <span>Trade Actions</span>
+        <span>Trade actions</span>
         <strong>{tradeReadyStatus}</strong>
         {isHost ? (
           <p>This cancels pending trade proposals and moves everyone to Playing XI.</p>
@@ -2673,7 +2676,7 @@ function TradeScreen({ gs, teams, myTeamId, isHost, isSpectator, emit, activeTea
     <section className="trade-panel trade-side-panel">
       <div className="trade-panel-head">
         <div>
-          <p>Swap Desk</p>
+          <p>Swap desk</p>
           <h2>Proposals</h2>
         </div>
         <span>{myTradeCount}/{tradeLimit}</span>
@@ -2708,62 +2711,62 @@ function TradeScreen({ gs, teams, myTeamId, isHost, isSpectator, emit, activeTea
   return (
     <div className="trade-screen">
       <style>{`
-        .trade-screen{min-height:100vh;background:#050608;color:#fff;font-family:'Rajdhani',sans-serif;padding:22px 16px 34px;overflow-x:hidden}
+        .trade-screen{min-height:100vh;background:#0b0d14;color:#fff;font-family:var(--font-ui);padding:22px 16px 34px;overflow-x:hidden}
         .trade-shell{max-width:1360px;margin:0 auto}
-        .trade-hero{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;border:1px solid ${BORDER};background:#0b0d12;border-radius:22px;padding:20px 22px;margin-bottom:16px}
-        .trade-kicker{margin:0 0 6px;color:${GOLD};font-size:12px;letter-spacing:2.4px;text-transform:uppercase;font-weight:800}
-        .trade-hero h1{margin:0;font-family:'Bebas Neue';font-size:clamp(38px,7vw,64px);letter-spacing:3px;color:#fff;line-height:.92}
+        .trade-hero{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;border:1px solid ${BORDER};background:#1a1e28;border-radius:22px;padding:20px 22px;margin-bottom:16px}
+        .trade-kicker{margin:0 0 6px;color:${GOLD};font-size:12px;letter-spacing:0;font-weight:600}
+        .trade-hero h1{margin:0;font-family:var(--font-display);font-size:clamp(38px,7vw,64px);letter-spacing:0;color:#fff;line-height:.92}
         .trade-hero-copy{margin:10px 0 0;color:#9aa8bc;font-size:13px;line-height:1.55;max-width:720px}
         .trade-hero-actions{display:grid;gap:10px;min-width:min(360px,36vw)}
         .trade-count-card{border:1px solid rgba(255,255,255,.08);border-radius:16px;background:rgba(255,255,255,.03);padding:12px 14px;text-align:right}
-        .trade-count-card span{display:block;color:#64748b;font-size:10px;letter-spacing:1.8px;text-transform:uppercase}
-        .trade-count-card strong{font-family:'Bebas Neue';font-size:32px;color:${GOLD};letter-spacing:2px}
-        .trade-action-panel{border:1px solid rgba(34,211,238,.22);border-radius:16px;background:linear-gradient(180deg,rgba(34,211,238,.08),rgba(255,255,255,.03));padding:12px;display:grid;gap:10px}
+        .trade-count-card span{display:block;color:#7a8296;font-size:12px;letter-spacing:0;}
+        .trade-count-card strong{font-family:var(--font-display);font-size:32px;color:${GOLD};letter-spacing:0}
+        .trade-action-panel{border:1px solid rgba(163,169,184,.22);border-radius:16px;background:var(--ink-3);padding:12px;display:grid;gap:10px}
         .trade-action-panel.compact{padding:0;border:0;background:transparent}
-        .trade-action-copy span{display:block;color:${CYAN};font-size:10px;letter-spacing:1.8px;text-transform:uppercase;font-weight:900}
-        .trade-action-copy strong{display:block;margin-top:4px;color:#f8fafc;font-size:16px;letter-spacing:1px;font-weight:900}
+        .trade-action-copy span{display:block;color:${CYAN};font-size:12px;letter-spacing:0;font-weight:600}
+        .trade-action-copy strong{display:block;margin-top:4px;color:#f8fafc;font-size:16px;letter-spacing:0;font-weight:600}
         .trade-action-copy p{margin:5px 0 0;color:#8b95a7;font-size:12px;line-height:1.35;letter-spacing:.6px}
         .trade-action-buttons{display:grid;grid-template-columns:1fr;gap:8px}
-        .trade-phase-btn{border:1px solid #263244;border-radius:12px;background:#111827;color:#cbd5e1;font-family:'Barlow Condensed';font-weight:900;letter-spacing:1.6px;text-transform:uppercase;min-height:44px;padding:0 14px;cursor:pointer;white-space:normal;line-height:1.05}
-        .trade-phase-btn.host{border-color:${CYAN}66;color:#061014;background:linear-gradient(135deg,${CYAN},#0ea5b7)}
+        .trade-phase-btn{border:1px solid #263244;border-radius:12px;background:#242936;color:#c9cdd6;font-family:var(--font-display);font-weight:600;letter-spacing:0;min-height:44px;padding:0 14px;cursor:pointer;white-space:normal;line-height:1.05}
+        .trade-phase-btn.host{border-color:${CYAN}66;color:#061014;background:${CYAN}}
         .trade-phase-btn.ready{border-color:#34d399;color:#34d399;background:rgba(52,211,153,.1)}
         .trade-phase-btn:disabled{opacity:.52;cursor:not-allowed}
         .trade-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 380px;gap:14px;align-items:start}
-        .trade-panel{border:1px solid ${BORDER};border-radius:20px;background:linear-gradient(180deg,rgba(13,16,22,.98),rgba(8,10,14,.98));padding:16px;min-width:0}
+        .trade-panel{border:1px solid ${BORDER};border-radius:20px;background:var(--ink-2);padding:16px;min-width:0}
         .trade-side-panel{position:sticky;top:14px}
         .trade-panel-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px}
-        .trade-panel-head p{margin:0 0 3px;color:#64748b;font-size:10px;letter-spacing:1.8px;text-transform:uppercase;font-weight:800}
-        .trade-panel-head h2{margin:0;font-family:'Bebas Neue';font-size:28px;letter-spacing:2px;color:#fff}
-        .trade-panel-head span{color:${GOLD};font-weight:900;letter-spacing:1.3px;font-size:12px}
+        .trade-panel-head p{margin:0 0 3px;color:#7a8296;font-size:12px;letter-spacing:0;font-weight:600}
+        .trade-panel-head h2{margin:0;font-family:var(--font-display);font-size:28px;letter-spacing:0;color:#fff}
+        .trade-panel-head span{color:${GOLD};font-weight:600;letter-spacing:0;font-size:12px}
         .trade-player-list{display:grid;gap:9px;max-height:62vh;overflow:auto;overscroll-behavior:contain;padding-right:2px}
         .trade-player{width:100%;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:9px 10px;color:#fff;text-align:left;cursor:pointer;touch-action:manipulation}
         .trade-player.selected{background:rgba(232,184,75,.1);box-shadow:0 0 0 1px rgba(232,184,75,.12)}
         .trade-avatar{width:44px;height:44px;border-radius:13px;border:1px solid;overflow:hidden;display:grid;place-items:center;flex-shrink:0}
         .trade-avatar img{width:100%;height:100%;object-fit:cover;object-position:top}
         .trade-player-main{min-width:0;flex:1}
-        .trade-player-name{font-weight:900;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e8eef8}
-        .trade-player-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;color:#7c8799;font-size:10px;letter-spacing:1.1px;font-weight:800;text-transform:uppercase}
+        .trade-player-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e8eef8}
+        .trade-player-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;color:#7c8799;font-size:12px;letter-spacing:0;font-weight:600;}
         .trade-team-strip{display:flex;gap:8px;overflow:auto;padding-bottom:8px;margin-bottom:8px}
-        .trade-team-strip button{border:1px solid #253044;background:#090c12;color:#8b95a7;border-radius:999px;padding:8px 12px;font-weight:900;cursor:pointer}
+        .trade-team-strip button{border:1px solid #253044;background:#1a1e28;color:#8b95a7;border-radius:999px;padding:8px 12px;font-weight:600;cursor:pointer}
         .trade-team-strip button.active{background:rgba(255,255,255,.05)}
         .trade-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
         .trade-summary div{border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.03);padding:10px;min-width:0}
-        .trade-summary span,.trade-swap-line span{display:block;color:#64748b;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;font-weight:800}
+        .trade-summary span,.trade-swap-line span{display:block;color:#7a8296;font-size:12px;letter-spacing:0;font-weight:600}
         .trade-summary strong,.trade-swap-line strong{display:block;margin-top:4px;color:#f8fafc;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .trade-send,.trade-proposal-actions button{border:none;border-radius:12px;background:linear-gradient(135deg,${GOLD},#9a7610);color:#050608;font-family:'Barlow Condensed';font-weight:900;letter-spacing:1.8px;text-transform:uppercase;min-height:44px;padding:0 14px;cursor:pointer}
+        .trade-send,.trade-proposal-actions button{border:none;border-radius:12px;background:${GOLD};color:#050608;font-family:var(--font-display);font-weight:600;letter-spacing:0;min-height:44px;padding:0 14px;cursor:pointer}
         .trade-send:disabled,.trade-proposal-actions button:disabled{opacity:.45;cursor:not-allowed}
         .trade-proposal-list{display:grid;gap:9px}
-        .trade-list-label{color:#64748b;font-size:10px;letter-spacing:1.8px;text-transform:uppercase;font-weight:900;margin-top:4px}
+        .trade-list-label{color:#7a8296;font-size:12px;letter-spacing:0;font-weight:600;margin-top:4px}
         .trade-proposal{border:1px solid rgba(255,255,255,.09);border-radius:15px;background:rgba(255,255,255,.03);padding:11px}
-        .trade-proposal-top{display:flex;justify-content:space-between;gap:8px;color:#9aa8bc;font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase}
-        .trade-status{border-radius:999px;padding:2px 7px;background:#263244;color:#cbd5e1}
+        .trade-proposal-top{display:flex;justify-content:space-between;gap:8px;color:#9aa8bc;font-size:12px;font-weight:600;letter-spacing:0;}
+        .trade-status{border-radius:999px;padding:2px 7px;background:#263244;color:#c9cdd6}
         .trade-status.accepted{background:rgba(52,211,153,.16);color:#34d399}.trade-status.declined,.trade-status.cancelled{background:rgba(248,113,113,.13);color:#f87171}
         .trade-swap-line{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
         .trade-swap-line div{min-width:0}
         .trade-proposal-actions{display:flex;gap:8px;margin-top:10px}
-        .trade-proposal-actions button{min-height:36px;flex:1}.trade-proposal-actions button.ghost{background:#121722;color:#cbd5e1;border:1px solid #283244}
-        .trade-notice,.trade-reason{border:1px solid #4a3920;background:#15110a;color:#f3c547;border-radius:12px;padding:9px 10px;margin-bottom:10px;font-size:12px;line-height:1.45}
-        .trade-empty{border:1px dashed rgba(255,255,255,.12);border-radius:14px;padding:18px 14px;text-align:center;color:#64748b;font-size:13px;line-height:1.6}
+        .trade-proposal-actions button{min-height:36px;flex:1}.trade-proposal-actions button.ghost{background:#242936;color:#c9cdd6;border:1px solid #283244}
+        .trade-notice,.trade-reason{border:1px solid #4a3920;background:#1a1e28;color:#f3c547;border-radius:12px;padding:9px 10px;margin-bottom:10px;font-size:12px;line-height:1.45}
+        .trade-empty{border:1px dashed rgba(255,255,255,.12);border-radius:14px;padding:18px 14px;text-align:center;color:#7a8296;font-size:13px;line-height:1.6}
         .trade-mobile-tabs,.trade-mobile-action{display:none}
         @media(max-width:900px){
           .trade-screen{padding:12px 10px calc(156px + env(safe-area-inset-bottom))}
@@ -2777,21 +2780,21 @@ function TradeScreen({ gs, teams, myTeamId, isHost, isSpectator, emit, activeTea
           .trade-side-panel{position:static}
           .trade-player-list{max-height:none}
           .trade-mobile-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}
-          .trade-mobile-tabs button{border:1px solid #253044;background:#0b0f17;color:#8b95a7;border-radius:12px;min-height:40px;font-weight:900;letter-spacing:1px}
+          .trade-mobile-tabs button{border:1px solid #253044;background:#1a1e28;color:#8b95a7;border-radius:12px;min-height:40px;font-weight:600;letter-spacing:0}
           .trade-mobile-tabs button.active{border-color:${GOLD};color:${GOLD};background:rgba(232,184,75,.08)}
           .desktop-send{display:none}
           .trade-mobile-action{display:block;position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:80;border:1px solid rgba(255,255,255,.1);background:rgba(8,10,14,.97);backdrop-filter:blur(12px);box-shadow:0 -14px 34px rgba(0,0,0,.55);border-radius:18px;padding:10px}
           .trade-mobile-action .trade-send,.trade-mobile-action .trade-phase-btn{width:100%}
           .trade-mobile-action-grid{display:grid;grid-template-columns:1fr;gap:8px}
           .trade-mobile-action-grid.host{grid-template-columns:1fr 1fr}
-          .trade-mobile-action .trade-phase-btn{font-size:13px;letter-spacing:1.2px;padding:0 8px}
-          .trade-mobile-meta{display:flex;justify-content:space-between;gap:10px;color:#7c8799;font-size:11px;font-weight:800;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase}
+          .trade-mobile-action .trade-phase-btn{font-size:13px;letter-spacing:0;padding:0 8px}
+          .trade-mobile-meta{display:flex;justify-content:space-between;gap:10px;color:#7c8799;font-size:12px;font-weight:600;letter-spacing:0;margin-bottom:8px;}
         }
       `}</style>
       <div className="trade-shell">
         <header className="trade-hero">
           <div>
-            <p className="trade-kicker">Player Swap Window</p>
+            <p className="trade-kicker">Player swap window</p>
             <h1>Trade Before Your XI</h1>
             <p className="trade-hero-copy">Swap up to 3 players before selecting your XI. Send a 1-for-1 proposal, then the other team can accept or decline it.</p>
           </div>
@@ -3041,7 +3044,7 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11, mod
   }, [onFinalizeSelection]);
 
   if (submitted) return (
-    <div style={{ minHeight:'100vh', background:'#050608', padding:'20px 14px 28px' }}>
+    <div style={{ minHeight:'100vh', background:'#0b0d14', padding:'20px 14px 28px' }}>
       <style>{`
         .xi-submitted-shell { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr); gap: 18px; align-items: start; }
         @media (max-width: 900px) {
@@ -3049,18 +3052,18 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11, mod
         }
       `}</style>
       <div className="xi-submitted-shell">
-        <div style={{ background:'#0b0d12', border:`1px solid ${BORDER}`, borderRadius:22, padding:'28px 22px', textAlign:'center' }}>
-          <div style={{ fontFamily:"'Bebas Neue'", fontSize:'clamp(36px, 8vw, 56px)', color:GOLD, letterSpacing:4 }}>XI SUBMITTED!</div>
-          <div style={{ color:'#CBD5E1', fontSize:14, marginTop:12, letterSpacing:1.4, lineHeight:1.7 }}>
+        <div style={{ background:'#1a1e28', border:`1px solid ${BORDER}`, borderRadius:22, padding:'28px 22px', textAlign:'center' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize:'clamp(36px, 8vw, 56px)', color:GOLD, letterSpacing: 0 }}>XI submitted!</div>
+          <div style={{ color:'#c9cdd6', fontSize:14, marginTop:12, letterSpacing: 0, lineHeight:1.7 }}>
             Your Playing XI is locked in. Stay here, chat with the room, and wait for the remaining teams to finish.
           </div>
-          <div style={{ color:'#64748B', fontSize:12, marginTop:12, letterSpacing:1.5 }}>{submittedCount}/{totalTeams || 0} teams submitted</div>
+          <div style={{ color:'#7a8296', fontSize:12, marginTop:12, letterSpacing: 0 }}>{submittedCount}/{totalTeams || 0} teams submitted</div>
           {isHost && (
             <button
               onClick={requestFinalizeSelection}
-              style={{ marginTop: 22, background:GOLD, border:`1px solid ${GOLD}`, borderRadius:10, padding:'14px 28px', color:'#000', fontWeight:900, fontSize:15, letterSpacing:3, cursor:'pointer', fontFamily:"'Barlow Condensed'" }}
+              style={{ marginTop: 22, background:GOLD, border:`1px solid ${GOLD}`, borderRadius:10, padding:'14px 28px', color:'#000', fontWeight: 600, fontSize:15, letterSpacing: 0, cursor:'pointer', fontFamily: 'var(--font-display)' }}
             >
-              FINALIZE RESULTS NOW
+              Finalize results now
             </button>
           )}
         </div>
@@ -3084,17 +3087,17 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11, mod
         onClose={closeFinalizeConfirm}
         actions={[
           { label: 'Cancel', variant: 'secondary', onClick: closeFinalizeConfirm },
-          { label: 'Finalize Results', variant: 'danger', onClick: confirmFinalizeSelection },
+          { label: 'Finalize results', variant: 'danger', onClick: confirmFinalizeSelection },
         ]}
       />
     </div>
   );
   return (
-    <div className="xi-screen" style={{ minHeight:'100vh', background:'#050608', padding:'24px 16px 32px' }}>
+    <div className="xi-screen" style={{ minHeight:'100vh', background:'#0b0d14', padding:'24px 16px 32px' }}>
       <style>{`
         .xi-screen { overflow-x: hidden; }
         .xi-shell { max-width: 1320px; margin: 0 auto; }
-        .xi-hero { margin-bottom: 22px; background: #0b0d12; border: 1px solid ${BORDER}; border-radius: 24px; padding: 22px clamp(18px,3vw,30px); }
+        .xi-hero { margin-bottom: 22px; background: #1a1e28; border: 1px solid ${BORDER}; border-radius: 24px; padding: 22px clamp(18px,3vw,30px); }
         .xi-hero-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; flex-wrap: wrap; }
         .xi-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; flex: 1 1 360px; width: 100%; }
         .xi-layout { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.95fr); gap: 20px; align-items: start; }
@@ -3104,11 +3107,11 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11, mod
         .xi-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
         .xi-player-card { min-width: 0; touch-action: manipulation; }
         .xi-action-panel { position: relative; }
-        .xi-action-status { color: #F87171; font-size: 13px; margin-bottom: 14px; letter-spacing: 1.1px; font-weight: 800; text-transform: uppercase; }
+        .xi-action-status { color: #F87171; font-size: 13px; margin-bottom: 14px; letter-spacing:0; font-weight:600;  }
         .xi-action-status.ready { color: #34D399; }
         .xi-action-warning { color: #f3c547; font-size: 12px; line-height: 1.45; margin: -4px 0 12px; letter-spacing: .8px; }
-        .xi-card-shell { background: #0d1016; border: 1px solid ${BORDER}; border-radius: 20px; overflow: hidden; transition: border-color .18s ease, transform .18s ease, background .18s ease; }
-        .xi-card-shell.selected { background: #111a27; box-shadow: 0 0 0 1px rgba(232,184,75,0.18), 0 18px 40px rgba(0,0,0,0.3); }
+        .xi-card-shell { background: #1a1e28; border: 1px solid ${BORDER}; border-radius: 20px; overflow: hidden; transition: border-color .18s ease, transform .18s ease, background .18s ease; }
+        .xi-card-shell.selected { background: #242936; box-shadow: 0 0 0 1px rgba(232,184,75,0.18), 0 18px 40px rgba(0,0,0,0.3); }
         .xi-card-media { position: relative; padding: 14px 14px 10px; min-height: 126px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .xi-card-content { padding: 12px 14px 14px; }
         @media (max-width: 900px) {
@@ -3123,7 +3126,7 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11, mod
           .xi-card-media { min-height: 104px !important; padding: 10px 10px 8px !important; }
           .xi-card-avatar { width: 58px !important; height: 58px !important; border-radius: 16px !important; }
           .xi-card-name { font-size: 14px !important; }
-          .xi-chip { font-size: 9px !important; letter-spacing: 1px !important; padding: 3px 6px !important; }
+          .xi-chip { font-size:12px !important; letter-spacing:0 !important; padding: 3px 6px !important; }
           .xi-action-panel {
             position: fixed !important;
             left: 10px;
@@ -3137,11 +3140,11 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11, mod
           .xi-action-status { margin-bottom: 10px !important; font-size: 12px !important; }
         }
         @media (max-width: 560px) {
-          .xi-title { font-size: 34px !important; letter-spacing: 2.5px !important; }
+          .xi-title { font-size: 34px !important; letter-spacing:0 !important; }
           .xi-copy { font-size: 12px !important; line-height: 1.55 !important; }
           .xi-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
           .xi-metric-card { border-radius: 13px !important; padding: 10px 8px !important; }
-          .xi-metric-label { font-size: 8px !important; letter-spacing: 1.2px !important; }
+          .xi-metric-label { font-size:12px !important; letter-spacing:0 !important; }
           .xi-metric-value { font-size: 27px !important; }
           .xi-squad-grid { grid-template-columns: 1fr !important; }
           .xi-role-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; }
@@ -3160,24 +3163,24 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11, mod
         <div className="xi-hero">
           <div className="xi-hero-row">
             <div className="xi-hero-copy" style={{ flex:'1 1 420px' }}>
-              <div className="xi-title" style={{ fontFamily:"'Bebas Neue'", fontSize:'clamp(30px,6vw,56px)', color:GOLD, letterSpacing:4 }}>SELECT YOUR PLAYING XI</div>
-              <div className="xi-copy" style={{ color:'#CBD5E1', fontSize:13, lineHeight:1.7, marginTop:8, maxWidth:760 }}>
+              <div className="xi-title" style={{ fontFamily: 'var(--font-display)', fontSize:'clamp(30px,6vw,56px)', color:GOLD, letterSpacing: 0 }}>Select your playing XI</div>
+              <div className="xi-copy" style={{ color:'#c9cdd6', fontSize:13, lineHeight:1.7, marginTop:8, maxWidth:760 }}>
                 Pick your best balanced XI. Results open automatically once every active team submits.
                 {isHost ? ' If someone leaves, you can still finalize results and the game will auto-pick the best available XI for teams that did not submit.' : ''}
               </div>
             </div>
             <div className="xi-metrics">
               <div className="xi-metric-card" style={{ background:'rgba(255,255,255,0.03)', border:`1px solid ${BORDER}`, borderRadius:16, padding:'14px 16px' }}>
-                <div className="xi-metric-label" style={{ color:'#64748B', fontSize:10, letterSpacing:2 }}>SELECTED</div>
-                <div className="xi-metric-value" style={{ color:'#fff', fontFamily:"'Bebas Neue'", fontSize:34, letterSpacing:2, marginTop:4 }}>{selected.length}<span style={{ color:'#475569', fontSize:22 }}>/ {playersNeeded}</span></div>
+                <div className="xi-metric-label" style={{ color:'#7a8296', fontSize: 12, letterSpacing: 0 }}>Selected</div>
+                <div className="xi-metric-value" style={{ color:'#fff', fontFamily: 'var(--font-display)', fontSize:34, letterSpacing: 0, marginTop:4 }}>{selected.length}<span style={{ color:'#475569', fontSize:22 }}>/ {playersNeeded}</span></div>
               </div>
               <div className="xi-metric-card" style={{ background:'rgba(255,255,255,0.03)', border:`1px solid ${BORDER}`, borderRadius:16, padding:'14px 16px' }}>
-                <div className="xi-metric-label" style={{ color:'#64748B', fontSize:10, letterSpacing:2 }}>TO PICK</div>
-                <div className="xi-metric-value" style={{ color:playersLeft === 0 ? '#34D399' : CYAN, fontFamily:"'Bebas Neue'", fontSize:34, letterSpacing:2, marginTop:4 }}>{playersLeft}</div>
+                <div className="xi-metric-label" style={{ color:'#7a8296', fontSize: 12, letterSpacing: 0 }}>To pick</div>
+                <div className="xi-metric-value" style={{ color:playersLeft === 0 ? '#34D399' : CYAN, fontFamily: 'var(--font-display)', fontSize:34, letterSpacing: 0, marginTop:4 }}>{playersLeft}</div>
               </div>
               <div className="xi-metric-card" style={{ background:'rgba(255,255,255,0.03)', border:`1px solid ${BORDER}`, borderRadius:16, padding:'14px 16px' }}>
-                <div className="xi-metric-label" style={{ color:'#64748B', fontSize:10, letterSpacing:2 }}>SQUAD SIZE</div>
-                <div className="xi-metric-value" style={{ color:'#fff', fontFamily:"'Bebas Neue'", fontSize:34, letterSpacing:2, marginTop:4 }}>{mySquad.length}<span style={{ color:'#475569', fontSize:22 }}>/ {squadLimit}</span></div>
+                <div className="xi-metric-label" style={{ color:'#7a8296', fontSize: 12, letterSpacing: 0 }}>Squad size</div>
+                <div className="xi-metric-value" style={{ color:'#fff', fontFamily: 'var(--font-display)', fontSize:34, letterSpacing: 0, marginTop:4 }}>{mySquad.length}<span style={{ color:'#475569', fontSize:22 }}>/ {squadLimit}</span></div>
               </div>
             </div>
           </div>
@@ -3196,7 +3199,7 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11, mod
                     key={`${p.name}-${i}`}
                     type="button"
                     onClick={() => toggle(p)}
-                    style={{ background:'transparent', border:'none', padding:0, cursor:'pointer', transition:'transform .18s ease', transform:sel?'translateY(-2px)':'translateY(0)', overflow:'hidden', textAlign:'left' }}
+                    style={{ background:'transparent', border:'none', padding:0, cursor:'pointer', transition:'transform .18s ease', transform:sel?'none':'translateY(0)', overflow:'hidden', textAlign:'left' }}
                   >
                     <div className={`xi-card-shell${sel ? ' selected' : ''}`} style={{ borderColor: sel ? rc : BORDER }}>
                     <div className="xi-card-media">
@@ -3205,30 +3208,30 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11, mod
                           {p.photoUrl ? (
                             <img src={p.photoUrl} alt={p.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top' }} />
                           ) : (
-                            <div style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontFamily:"'Bebas Neue'", fontSize:26, letterSpacing:1 }}>
+                            <div style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontFamily: 'var(--font-display)', fontSize:26, letterSpacing: 0 }}>
                               {p.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}
                             </div>
                           )}
                         </div>
                         <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:8 }}>
-                          <span className="xi-chip" style={{ fontSize:10, letterSpacing:2, color:sel ? '#081018' : rc, background:sel ? rc : `${rc}16`, border:`1px solid ${sel ? rc : `${rc}22`}`, borderRadius:999, padding:'4px 8px', fontWeight:800 }}>
-                            {sel ? 'IN XI' : 'TAP TO PICK'}
+                          <span className="xi-chip" style={{ fontSize: 12, letterSpacing: 0, color:sel ? '#081018' : rc, background:sel ? rc : `${rc}16`, border:`1px solid ${sel ? rc : `${rc}22`}`, borderRadius:999, padding:'4px 8px', fontWeight: 600 }}>
+                            {sel ? 'In XI' : 'Tap to pick'}
                           </span>
-                          <span style={{ fontSize:11, color:GOLD, fontWeight:700, letterSpacing:1.2 }}>{fmt(p.soldFor || p.base)}</span>
+                          <span style={{ fontSize: 12, color:GOLD, fontWeight: 600, letterSpacing: 0 }}>{fmt(p.soldFor || p.base)}</span>
                         </div>
                       </div>
                     </div>
                     <div className="xi-card-content">
-                      <div className="xi-card-name" style={{ color:'#F8FAFC', fontWeight:800, fontSize:16, lineHeight:1.2 }}>{p.name}</div>
+                      <div className="xi-card-name" style={{ color:'#F8FAFC', fontWeight: 600, fontSize:16, lineHeight:1.2 }}>{p.name}</div>
                       <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap', marginTop:8 }}>
-                        <span style={{ fontSize:11, color:rc, fontWeight:800, letterSpacing:1.4 }}>{ROLE_L[p.role]}</span>
+                        <span style={{ fontSize: 12, color:rc, fontWeight: 600, letterSpacing: 0 }}>{ROLE_L[p.role]}</span>
                         {p.overseas && (
-                          <span style={{ fontSize:10, background:'rgba(96,165,250,0.14)', border:'1px solid rgba(96,165,250,0.24)', color:'#93C5FD', padding:'2px 8px', borderRadius:999, fontWeight:800, letterSpacing:1.2 }}>
+                          <span style={{ fontSize: 12, background:'rgba(96,165,250,0.14)', border:'1px solid rgba(96,165,250,0.24)', color:'#93C5FD', padding:'2px 8px', borderRadius:999, fontWeight: 600, letterSpacing: 0 }}>
                             OVERSEAS
                           </span>
                         )}
                         {rating && (
-                          <span style={{ fontSize:10, background:'rgba(232,184,75,0.12)', border:`1px solid ${GOLD}22`, color:GOLD, padding:'2px 8px', borderRadius:999, fontWeight:800, letterSpacing:1.2 }}>
+                          <span style={{ fontSize: 12, background:'rgba(232,184,75,0.12)', border:`1px solid ${GOLD}22`, color:GOLD, padding:'2px 8px', borderRadius:999, fontWeight: 600, letterSpacing: 0 }}>
                             RTG {rating}
                           </span>
                         )}
@@ -3242,13 +3245,13 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11, mod
           </div>
 
           <div className="xi-side">
-            <div className="xi-panel" style={{ background:'linear-gradient(180deg, rgba(13,15,20,0.98), rgba(8,10,14,0.98))', border:`1px solid ${BORDER}`, borderRadius:22, padding:18, boxShadow:'0 18px 50px rgba(0,0,0,0.26)' }}>
+            <div className="xi-panel" style={{ background:'#11141c', border:`1px solid ${BORDER}`, borderRadius:22, padding:18, boxShadow:'0 18px 50px rgba(0,0,0,0.26)' }}>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:12, marginBottom:14 }}>
                 <div>
-                  <div style={{ color:'#fff', fontFamily:"'Bebas Neue'", fontSize:28, letterSpacing:2 }}>Your Final XI</div>
-                  <div style={{ color:'#64748B', fontSize:11, letterSpacing:1.4, marginTop:2 }}>{isCleanXI ? 'Ready to submit' : selected.length > 0 ? 'Can submit, but will be disqualified' : `${playersLeft} more needed to lock the XI`}</div>
+                  <div style={{ color:'#fff', fontFamily: 'var(--font-display)', fontSize:28, letterSpacing: 0 }}>Your Final XI</div>
+                  <div style={{ color:'#7a8296', fontSize: 12, letterSpacing: 0, marginTop:2 }}>{isCleanXI ? 'Ready to submit' : selected.length > 0 ? 'Can submit, but will be disqualified' : `${playersLeft} more needed to lock the XI`}</div>
                 </div>
-                <div style={{ color:GOLD, fontFamily:"'Bebas Neue'", fontSize:34, letterSpacing:2 }}>{selected.length}/{playersNeeded}</div>
+                <div style={{ color:GOLD, fontFamily: 'var(--font-display)', fontSize:34, letterSpacing: 0 }}>{selected.length}/{playersNeeded}</div>
               </div>
 
               <div className="xi-role-grid">
@@ -3257,10 +3260,10 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11, mod
                   return (
                     <div key={item.key} style={{ background:`${item.color}10`, border:`1px solid ${met ? `${item.color}55` : '#273142'}`, borderRadius:14, padding:'10px 12px' }}>
                       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:8 }}>
-                        <span style={{ fontSize:10, color:'#94A3B8', letterSpacing:1.2 }}>{item.label}</span>
-                        <span style={{ color:met ? item.color : '#F87171', fontSize:10, fontWeight:800, letterSpacing:1.2 }}>{item.min > 0 ? `MIN ${item.min}` : 'OPTIONAL'}</span>
+                        <span style={{ fontSize: 12, color:'#a3a9b8', letterSpacing: 0 }}>{item.label}</span>
+                        <span style={{ color:met ? item.color : '#F87171', fontSize: 12, fontWeight: 600, letterSpacing: 0 }}>{item.min > 0 ? `MIN ${item.min}` : 'OPTIONAL'}</span>
                       </div>
-                      <div style={{ color:'#fff', fontFamily:"'Bebas Neue'", fontSize:26, letterSpacing:1.5, marginTop:3 }}>{item.count}</div>
+                      <div style={{ color:'#fff', fontFamily: 'var(--font-display)', fontSize:26, letterSpacing: 0, marginTop:3 }}>{item.count}</div>
                     </div>
                   );
                 })}
@@ -3268,7 +3271,7 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11, mod
 
               <div style={{ display:'grid', gap:10 }}>
                 {selectedOrdered.length === 0 ? (
-                  <div style={{ border:`1px dashed ${BORDER}`, borderRadius:16, padding:'18px 14px', textAlign:'center', color:'#64748B', fontSize:13, lineHeight:1.6 }}>
+                  <div style={{ border:`1px dashed ${BORDER}`, borderRadius:16, padding:'18px 14px', textAlign:'center', color:'#7a8296', fontSize:13, lineHeight:1.6 }}>
                     Start tapping player cards to build your strongest Playing XI.
                   </div>
                 ) : (
@@ -3277,21 +3280,21 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11, mod
                     const rc = ROLE_C[player.role] || CYAN;
                     return (
                       <div className="xi-selected-row" key={`${player.name}-${index}`} style={{ display:'flex', alignItems:'center', gap:10, border:`1px solid ${BORDER}`, background:'rgba(255,255,255,0.02)', borderRadius:16, padding:'10px 12px' }}>
-                        <div style={{ width:34, color:'#475569', fontFamily:"'Bebas Neue'", fontSize:18, letterSpacing:1.5, textAlign:'center', flexShrink:0 }}>{String(index + 1).padStart(2, '0')}</div>
+                        <div style={{ width:34, color:'#475569', fontFamily: 'var(--font-display)', fontSize:18, letterSpacing: 0, textAlign:'center', flexShrink:0 }}>{String(index + 1).padStart(2, '0')}</div>
                         <div style={{ width:42, height:42, borderRadius:14, overflow:'hidden', background:`${rc}18`, border:`1px solid ${rc}55`, flexShrink:0 }}>
                           {photoUrl ? (
                             <img src={photoUrl} alt={player.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top' }} />
                           ) : (
-                            <div style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:800 }}>
+                            <div style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight: 600 }}>
                               {ROLE_EMOJI[player.role]}
                             </div>
                           )}
                         </div>
                         <div style={{ minWidth:0, flex:1 }}>
-                          <div style={{ color:'#E2E8F0', fontSize:14, fontWeight:800, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{player.name}</div>
-                          <div style={{ color:rc, fontSize:10, fontWeight:800, letterSpacing:1.4, marginTop:4 }}>{ROLE_L[player.role]}</div>
+                          <div style={{ color:'#E2E8F0', fontSize:14, fontWeight: 600, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{player.name}</div>
+                          <div style={{ color:rc, fontSize: 12, fontWeight: 600, letterSpacing: 0, marginTop:4 }}>{ROLE_L[player.role]}</div>
                         </div>
-                        <div className="xi-selected-price" style={{ color:GOLD, fontSize:11, fontWeight:800, letterSpacing:1.1, flexShrink:0 }}>{fmt(player.soldFor || player.base)}</div>
+                        <div className="xi-selected-price" style={{ color:GOLD, fontSize: 12, fontWeight: 600, letterSpacing: 0, flexShrink:0 }}>{fmt(player.soldFor || player.base)}</div>
                       </div>
                     );
                   })
@@ -3310,34 +3313,34 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11, mod
               )}
               <div className="xi-actions">
                 <button onClick={() => canSubmit && onSubmit(selected)} disabled={!canSubmit}
-                  style={{ background:canSubmit?`linear-gradient(135deg,${GOLD},#9a7610)`:'#111', border:`1px solid ${canSubmit?GOLD:'#333'}`, borderRadius:12, padding:'15px 30px', color:canSubmit?'#000':'#555', fontWeight:900, fontSize:16, letterSpacing:3, cursor:canSubmit?'pointer':'not-allowed', fontFamily:"'Barlow Condensed'", minWidth:220 }}>
-                  {selected.length !== playersNeeded ? `SELECT ${playersNeeded} PLAYERS` : isCleanXI ? 'SUBMIT PLAYING XI' : 'SUBMIT ANYWAY'}
+                  style={{ background:canSubmit?`${GOLD}`:'#111', border:`1px solid ${canSubmit?GOLD:'#333'}`, borderRadius:12, padding:'15px 30px', color:canSubmit?'#000':'#7a8296', fontWeight: 600, fontSize:16, letterSpacing: 0, cursor:canSubmit?'pointer':'not-allowed', fontFamily: 'var(--font-display)', minWidth:220 }}>
+                  {selected.length !== playersNeeded ? `Select ${playersNeeded} players` : isCleanXI ? 'Submit playing XI' : 'Submit anyway'}
                 </button>
                 {isHost && (
                   <button
                     onClick={requestFinalizeSelection}
-                    style={{ background:'transparent', border:`1px solid ${CYAN}66`, borderRadius:12, padding:'15px 24px', color:CYAN, fontWeight:900, fontSize:15, letterSpacing:2.5, cursor:'pointer', fontFamily:"'Barlow Condensed'" }}
+                    style={{ background:'transparent', border:`1px solid ${CYAN}66`, borderRadius:12, padding:'15px 24px', color:CYAN, fontWeight: 600, fontSize:15, letterSpacing: 0, cursor:'pointer', fontFamily: 'var(--font-display)' }}
                   >
-                    HOST FINALIZE
+                    Host finalize
                   </button>
                 )}
               </div>
               {totalTeams > 0 && (
-                <div style={{ color:'#64748B', fontSize:12, marginTop:14, letterSpacing:1.3 }}>
+                <div style={{ color:'#7a8296', fontSize:12, marginTop:14, letterSpacing: 0 }}>
                   {submittedCount}/{totalTeams} active teams submitted
                 </div>
               )}
             </div>
 
-            <div className="xi-panel" style={{ background:'linear-gradient(180deg, rgba(10,13,18,0.98), rgba(8,10,14,0.98))', border:`1px solid ${BORDER}`, borderRadius:22, padding:18 }}>
-              <div style={{ color:'#fff', fontFamily:"'Bebas Neue'", fontSize:26, letterSpacing:2 }}>Selection Rules</div>
+            <div className="xi-panel" style={{ background:'#11141c', border:`1px solid ${BORDER}`, borderRadius:22, padding:18 }}>
+              <div style={{ color:'#fff', fontFamily: 'var(--font-display)', fontSize:26, letterSpacing: 0 }}>Selection rules</div>
               <div style={{ display:'grid', gap:10, marginTop:14 }}>
                 {selectionRules.map((rule, index) => (
                   <div key={rule} style={{ display:'flex', alignItems:'flex-start', gap:10, border:`1px solid ${BORDER}`, borderRadius:14, padding:'10px 12px', background:'rgba(255,255,255,0.02)' }}>
-                    <div style={{ width:24, height:24, borderRadius:'50%', background:`${GOLD}16`, color:GOLD, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:"'Bebas Neue'", fontSize:14 }}>
+                    <div style={{ width:24, height:24, borderRadius:'50%', background:`${GOLD}16`, color:GOLD, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily: 'var(--font-display)', fontSize:14 }}>
                       {index + 1}
                     </div>
-                    <div style={{ color:'#CBD5E1', fontSize:13, lineHeight:1.55 }}>{rule}</div>
+                    <div style={{ color:'#c9cdd6', fontSize:13, lineHeight:1.55 }}>{rule}</div>
                   </div>
                 ))}
               </div>
@@ -3365,7 +3368,7 @@ function SelectionScreen({ mySquad, onSubmit, submitted, playersNeeded = 11, mod
         onClose={closeFinalizeConfirm}
         actions={[
           { label: 'Cancel', variant: 'secondary', onClick: closeFinalizeConfirm },
-          { label: 'Finalize Results', variant: 'danger', onClick: confirmFinalizeSelection },
+          { label: 'Finalize results', variant: 'danger', onClick: confirmFinalizeSelection },
         ]}
       />
     </div>
@@ -3380,7 +3383,7 @@ const XIChatPanel = memo(function XIChatPanel({ chatLog, emit, currentRoom, isSp
     CSK:'#F9CA24', MI:'#4FC3F7', RCB:'#FF5252', KKR:'#CE93D8', SRH:'#FF8A65',
     DC:'#64B5F6', PBKS:'#EF9A9A', RR:'#F48FB1', GT:'#4DD0E1', LSG:'#81D4FA',
   };
-  const myColor = TEAM_CLR[myTeamId] || '#22D3EE';
+  const myColor = TEAM_CLR[myTeamId] || '#a3a9b8';
 
   const playerTeamMap = useMemo(() => {
     const map = {};
@@ -3419,10 +3422,10 @@ const XIChatPanel = memo(function XIChatPanel({ chatLog, emit, currentRoom, isSp
     <div className="xi-panel" style={{ background:'rgba(10,13,18,0.98)', border:`1px solid ${BORDER}`, borderRadius:22, padding: compact ? 16 : 18, display:'flex', flexDirection:'column', minHeight: compact ? 300 : 420 }}>
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, marginBottom:12 }}>
         <div>
-          <div style={{ color:'#fff', fontFamily:"'Bebas Neue'", fontSize:26, letterSpacing:2 }}>{title}</div>
-          <div style={{ color:'#64748B', fontSize:11, letterSpacing:1.3, marginTop:3 }}>Keep talking while teams finish their XI.</div>
+          <div style={{ color:'#fff', fontFamily: 'var(--font-display)', fontSize:26, letterSpacing: 0 }}>{title}</div>
+          <div style={{ color:'#7a8296', fontSize: 12, letterSpacing: 0, marginTop:3 }}>Keep talking while teams finish their XI.</div>
         </div>
-        <div style={{ color:CYAN, fontSize:10, letterSpacing:2, fontWeight:800 }}>LIVE</div>
+        <div style={{ color:CYAN, fontSize: 12, letterSpacing: 0, fontWeight: 600 }}>Live</div>
       </div>
       <div
         ref={listRef}
@@ -3431,8 +3434,8 @@ const XIChatPanel = memo(function XIChatPanel({ chatLog, emit, currentRoom, isSp
       >
         {visibleMessages.length === 0 ? (
           <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', color:'#475569', gap:10, textAlign:'center', padding:'18px 12px' }}>
-            <div style={{ fontSize:26 }}>💬</div>
-            <div style={{ fontSize:12, letterSpacing:1 }}>No room chat yet</div>
+            <MessageSquare size={20} strokeWidth={1.5} />
+            <div style={{ fontSize:12, letterSpacing: 0 }}>No room chat yet</div>
           </div>
         ) : (
           visibleMessages.map((message) => {
@@ -3441,7 +3444,7 @@ const XIChatPanel = memo(function XIChatPanel({ chatLog, emit, currentRoom, isSp
             const senderColor = TEAM_CLR[senderTeamId] || CYAN;
             return (
               <div key={message.id} style={{ display:'flex', flexDirection:'column', alignItems:isOwn ? 'flex-end' : 'flex-start' }}>
-                <div style={{ fontSize:10, color:senderColor, fontWeight:700, letterSpacing:0.5, marginBottom:3 }}>
+                <div style={{ fontSize: 12, color:senderColor, fontWeight: 600, letterSpacing: 0, marginBottom:3 }}>
                   {message.senderName}
                 </div>
                 {message.type === 'gif' ? (
@@ -3453,7 +3456,7 @@ const XIChatPanel = memo(function XIChatPanel({ chatLog, emit, currentRoom, isSp
                     borderRadius:isOwn ? '12px 12px 4px 12px' : '12px 12px 12px 4px',
                     background:isOwn ? `${myColor}1a` : '#141922',
                     border:`1px solid ${isOwn ? `${myColor}44` : '#232b39'}`,
-                    color:'#e5e7eb',
+                    color:'#c9cdd6',
                     fontSize:13,
                     lineHeight:1.45,
                     wordBreak:'break-word',
@@ -3467,25 +3470,26 @@ const XIChatPanel = memo(function XIChatPanel({ chatLog, emit, currentRoom, isSp
         )}
       </div>
       {!isSpectator ? (
-        <form onSubmit={send} style={{ display:'flex', gap:8, marginTop:12, borderTop:'1px solid #151b25', paddingTop:12 }}>
+        <form onSubmit={send} style={{ display:'flex', gap:8, marginTop:12, borderTop:'1px solid #242936', paddingTop:12 }}>
           <input
             value={msg}
             onChange={(e) => setMsg(e.target.value)}
             placeholder="Message the room..."
-            style={{ flex:1, background:'#0f141c', border:'1px solid #22283a', color:'#e5e7eb', padding:'10px 12px', borderRadius:10, fontSize:13, outline:'none', minWidth:0 }}
+            style={{ flex:1, background:'#1a1e28', border:'1px solid #22283a', color:'#c9cdd6', padding:'10px 12px', borderRadius:10, fontSize:13, outline:'none', minWidth:0 }}
             autoComplete="off"
             autoCorrect="off"
           />
           <button
             type="submit"
             disabled={!msg.trim()}
-            style={{ background: msg.trim() ? myColor : '#111', color: msg.trim() ? '#000' : '#444', border:'none', minWidth:48, borderRadius:10, fontWeight:900, cursor:msg.trim() ? 'pointer' : 'not-allowed', fontSize:18, flexShrink:0 }}
+            style={{ background: msg.trim() ? myColor : '#1a1e28', color: msg.trim() ? '#000' : '#7a8296', border:'none', minWidth:48, borderRadius:10, fontWeight: 600, cursor:msg.trim() ? 'pointer' : 'not-allowed', fontSize:18, flexShrink:0 }}
+            aria-label="Send"
           >
-            ↑
+            <ArrowUp size={16} strokeWidth={1.5} />
           </button>
         </form>
       ) : (
-        <div style={{ marginTop:12, borderTop:'1px solid #151b25', paddingTop:12, color:'#4b5563', fontSize:11, letterSpacing:1, textAlign:'center' }}>
+        <div style={{ marginTop:12, borderTop:'1px solid #242936', paddingTop:12, color:'#7a8296', fontSize: 12, letterSpacing: 0, textAlign:'center' }}>
           Spectator mode
         </div>
       )}
@@ -3495,7 +3499,7 @@ const XIChatPanel = memo(function XIChatPanel({ chatLog, emit, currentRoom, isSp
 
 export default function AuctionPage() {
   return (
-    <Suspense fallback={<div style={{ background: '#080808', height: '100vh' }} />}>
+    <Suspense fallback={<div style={{ background: '#0b0d14', height: '100vh' }} />}>
       <AuctionContent />
     </Suspense>
   );
@@ -3511,7 +3515,7 @@ const MobileChatBox = memo(function MobileChatBox({ chatLog, emit, currentRoom, 
     CSK:'#F9CA24', MI:'#4FC3F7', RCB:'#FF5252', KKR:'#CE93D8', SRH:'#FF8A65',
     DC:'#64B5F6', PBKS:'#EF9A9A', RR:'#F48FB1', GT:'#4DD0E1', LSG:'#81D4FA',
   };
-  const myColor = TEAM_CLR[myTeamId] || '#22D3EE';
+  const myColor = TEAM_CLR[myTeamId] || '#a3a9b8';
 
   // Build a fast id→teamId lookup from the game state
   const playerTeamMap = useMemo(() => {
@@ -3542,17 +3546,17 @@ const MobileChatBox = memo(function MobileChatBox({ chatLog, emit, currentRoom, 
       <div style={{ flex:1, overflowY:'auto', overscrollBehavior:'contain', padding:'6px 0 4px', display:'flex', flexDirection:'column', gap:5, WebkitOverflowScrolling:'touch' }}>
         {visibleMessages.length === 0 && (
           <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', color:'#374151', gap:8, padding:'24px 0' }}>
-            <span style={{ fontSize:26 }}>💬</span>
-            <span style={{ fontSize:11, letterSpacing:1 }}>No messages yet</span>
+            <MessageSquare size={20} strokeWidth={1.5} />
+            <span style={{ fontSize: 12, letterSpacing: 0 }}>No messages yet</span>
           </div>
         )}
         {visibleMessages.map(m => {
           const isOwn = m.senderName === myName;
           const senderTeamId = playerTeamMap[m.senderId];
-          const nameColor = senderTeamId ? (TEAM_CLR[senderTeamId] || '#22D3EE') : '#22D3EE';
+          const nameColor = senderTeamId ? (TEAM_CLR[senderTeamId] || '#a3a9b8') : '#a3a9b8';
           return (
             <div key={m.id} style={{ display:'flex', flexDirection:'column', alignItems: isOwn ? 'flex-end' : 'flex-start', padding:'0 2px' }}>
-              <div style={{ fontSize:9, color: nameColor, fontWeight:700, letterSpacing:.3, marginBottom:2, paddingLeft: isOwn ? 0 : 2, paddingRight: isOwn ? 2 : 0 }}>
+              <div style={{ fontSize: 12, color: nameColor, fontWeight: 600, letterSpacing:.3, marginBottom:2, paddingLeft: isOwn ? 0 : 2, paddingRight: isOwn ? 2 : 0 }}>
                 {m.senderName}
               </div>
               {m.type === 'gif' ? (
@@ -3563,7 +3567,7 @@ const MobileChatBox = memo(function MobileChatBox({ chatLog, emit, currentRoom, 
                   borderRadius: isOwn ? '12px 12px 3px 12px' : '12px 12px 12px 3px',
                   background: isOwn ? `${myColor}1a` : '#181b24',
                   border: `1px solid ${isOwn ? myColor + '33' : '#242832'}`,
-                  fontSize:13, color: isOwn ? '#e5e7eb' : '#c9cdd8', lineHeight:1.45, wordBreak:'break-word',
+                  fontSize:13, color: isOwn ? '#c9cdd6' : '#c9cdd6', lineHeight:1.45, wordBreak:'break-word',
                 }}>
                   {m.text}
                 </div>
@@ -3576,26 +3580,27 @@ const MobileChatBox = memo(function MobileChatBox({ chatLog, emit, currentRoom, 
 
       {/* Input */}
       {!isSpectator ? (
-        <form onSubmit={send} style={{ display:'flex', gap:6, padding:'6px 0 2px', borderTop:'1px solid #1a1a22', flexShrink:0 }}>
+        <form onSubmit={send} style={{ display:'flex', gap:6, padding:'6px 0 2px', borderTop:'1px solid #242936', flexShrink:0 }}>
           <input
             value={msg}
             onChange={e => setMsg(e.target.value)}
             placeholder="Message the room…"
-            style={{ flex:1, background:'#111318', border:'1px solid #22283a', color:'#e5e7eb', padding:'9px 11px', borderRadius:10, fontSize:13, outline:'none', minWidth:0 }}
+            style={{ flex:1, background:'#1a1e28', border:'1px solid #22283a', color:'#c9cdd6', padding:'9px 11px', borderRadius:10, fontSize:13, outline:'none', minWidth:0 }}
             autoComplete="off"
             autoCorrect="off"
           />
           <button
             type="submit"
             disabled={!msg.trim()}
-            style={{ background: msg.trim() ? myColor : '#111', color: msg.trim() ? '#000' : '#333', border:'none', minWidth:44, borderRadius:10, fontWeight:900, cursor: msg.trim() ? 'pointer' : 'not-allowed', fontSize:20, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, transition:'background .15s' }}
+            style={{ background: msg.trim() ? myColor : '#1a1e28', color: msg.trim() ? '#000' : '#7a8296', border:'none', minWidth:44, borderRadius:10, fontWeight: 600, cursor: msg.trim() ? 'pointer' : 'not-allowed', fontSize:20, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, transition:'background .15s' }}
+            aria-label="Send"
           >
-            ↑
+            <ArrowUp size={16} strokeWidth={1.5} />
           </button>
         </form>
       ) : (
-        <div style={{ padding:'8px 0 2px', borderTop:'1px solid #1a1a22', color:'#4b5563', fontSize:11, letterSpacing:1, textAlign:'center', flexShrink:0 }}>
-          👁 Spectator — watching live
+        <div style={{ padding:'8px 0 2px', borderTop:'1px solid #242936', color:'#7a8296', fontSize: 12, letterSpacing: 0, textAlign:'center', flexShrink:0 }}>
+          Spectating
         </div>
       )}
     </div>
@@ -3634,7 +3639,7 @@ const ChatBox = memo(function ChatBox({ chatLog, emit, currentRoom, isSpectator 
         const res = await fetch(endpoint, { signal: controller.signal });
         const data = await res.json();
         setGifResults(Array.isArray(data?.data) ? data.data : []);
-      } catch (_) {
+      } catch {
         if (!controller.signal.aborted) setGifResults([]);
       } finally {
         if (!controller.signal.aborted) setGifLoading(false);
@@ -3663,28 +3668,28 @@ const ChatBox = memo(function ChatBox({ chatLog, emit, currentRoom, isSpectator 
   };
 
   return (
-    <div style={{ display:'flex', flexDirection:'column', height:'100%', background:'linear-gradient(180deg, #0a0a0c 0%, #090b10 100%)', border:'1px solid #171a22', borderRadius:14, overflow:'hidden', boxShadow:'inset 0 1px 0 rgba(255,255,255,0.02)', minHeight:0 }}>
+    <div style={{ display:'flex', flexDirection:'column', height:'100%', background:'#11141c', border:'1px solid #242936', borderRadius:14, overflow:'hidden', boxShadow:'inset 0 1px 0 rgba(255,255,255,0.02)', minHeight:0 }}>
       <div style={{ flex:1, overflowY:'auto', padding:12, display:'flex', flexDirection:'column', gap:8, overscrollBehavior: 'contain' }}>
         {visibleMessages.length === 0 && (
-          <div style={{ flex: 1, display: 'flex', flexDirection:'column', alignItems: 'center', justifyContent: 'center', color: '#4b5563', gap: 10, textAlign:'center', padding:'24px 18px' }}>
-            <div style={{ width: 52, height: 52, borderRadius:'50%', border:'1px solid #1f2430', background:'rgba(34,211,238,0.05)', display:'flex', alignItems:'center', justifyContent:'center', color:'#22D3EE', fontSize:20 }}>
-              💬
+          <div style={{ flex: 1, display: 'flex', flexDirection:'column', alignItems: 'center', justifyContent: 'center', color: '#7a8296', gap: 10, textAlign:'center', padding:'24px 18px' }}>
+            <div style={{ width: 52, height: 52, borderRadius:'50%', border:'1px solid #242936', background:'rgba(163,169,184,0.05)', display:'flex', alignItems:'center', justifyContent:'center', color:'#a3a9b8', fontSize:20 }}>
+              <MessageSquare size={20} strokeWidth={1.5} />
             </div>
-            <div style={{ fontSize: 12, letterSpacing: 1 }}>No chat messages yet</div>
-            <div style={{ fontSize: 10, color:'#394150', letterSpacing: 1.5, textTransform:'uppercase' }}>Start the conversation</div>
+            <div style={{ fontSize: 12, letterSpacing: 0 }}>No chat messages yet</div>
+            <div style={{ fontSize: 12, color:'#7a8296', letterSpacing: 0 }}>Start the conversation</div>
           </div>
         )}
         {visibleMessages.map(m => (
-          <div key={m.id} style={{ fontSize:13, background:'#1a1a20', padding:'8px 12px', borderRadius:8, alignSelf:'flex-start', border:'1px solid #282830' }}>
+          <div key={m.id} style={{ fontSize:13, background:'#242936', padding:'8px 12px', borderRadius:8, alignSelf:'flex-start', border:'1px solid #242936' }}>
             {m.type === 'gif' ? (
                <div>
-                 <div style={{ fontSize:10, color:'#22D3EE', marginBottom:4, fontWeight:600 }}>{m.senderName}</div>
+                 <div style={{ fontSize: 12, color:'#a3a9b8', marginBottom:4, fontWeight:600 }}>{m.senderName}</div>
                  <img src={m.text} style={{ maxWidth:'100%', borderRadius:6 }} alt="GIF" />
                </div>
             ) : (
                <div>
-                 <div style={{ fontSize:10, color:'#22D3EE', marginBottom:4, fontWeight:600 }}>{m.senderName}</div>
-                 <span style={{ color:'#ececec', lineHeight:1.4 }}>{m.text}</span>
+                 <div style={{ fontSize: 12, color:'#a3a9b8', marginBottom:4, fontWeight:600 }}>{m.senderName}</div>
+                 <span style={{ color:'#c9cdd6', lineHeight:1.4 }}>{m.text}</span>
                </div>
             )}
           </div>
@@ -3692,25 +3697,25 @@ const ChatBox = memo(function ChatBox({ chatLog, emit, currentRoom, isSpectator 
         <div ref={endRef} />
       </div>
       {showGifPicker && !isSpectator && (
-        <div style={{ borderTop:'1px solid #1a1a1a', background:'#090b10', padding:'10px 10px 8px', display:'flex', flexDirection:'column', gap:10, minHeight:180, maxHeight:'42%' }}>
+        <div style={{ borderTop:'1px solid #1a1e28', background:'#11141c', padding:'10px 10px 8px', display:'flex', flexDirection:'column', gap:10, minHeight:180, maxHeight:'42%' }}>
           <div style={{ display:'flex', gap:8 }}>
             <input
               value={gifQuery}
               onChange={(e) => setGifQuery(e.target.value)}
               placeholder="Search GIFs"
-              style={{ flex:1, background:'#111', border:'1px solid #222833', color:'#fff', padding:'9px 12px', borderRadius:10, fontSize:13, outline:'none', minWidth:0 }}
+              style={{ flex:1, background:'#1a1e28', border:'1px solid #222833', color:'#fff', padding:'9px 12px', borderRadius:10, fontSize:13, outline:'none', minWidth:0 }}
             />
-            <button type="button" onClick={() => { setShowGifPicker(false); setGifQuery(''); }} style={{ background:'#151922', color:'#9ca3af', border:'1px solid #242a36', borderRadius:10, padding:'0 12px', fontWeight:700, cursor:'pointer' }}>
+            <button type="button" onClick={() => { setShowGifPicker(false); setGifQuery(''); }} style={{ background:'#242936', color:'#a3a9b8', border:'1px solid #242a36', borderRadius:10, padding:'0 12px', fontWeight: 600, cursor:'pointer' }}>
               CLOSE
             </button>
           </div>
           <div style={{ flex:1, minHeight:0, overflowY:'auto', display:'grid', gridTemplateColumns:'repeat(3, minmax(0, 1fr))', gap:8, overscrollBehavior:'contain' }}>
             {gifLoading ? (
-              <div style={{ gridColumn:'1 / -1', display:'flex', alignItems:'center', justifyContent:'center', color:'#64748b', fontSize:12, letterSpacing:1.2 }}>
+              <div style={{ gridColumn:'1 / -1', display:'flex', alignItems:'center', justifyContent:'center', color:'#7a8296', fontSize:12, letterSpacing: 0 }}>
                 Loading GIFs...
               </div>
             ) : gifResults.length === 0 ? (
-              <div style={{ gridColumn:'1 / -1', display:'flex', alignItems:'center', justifyContent:'center', color:'#64748b', fontSize:12, letterSpacing:1.2, textAlign:'center', padding:'12px 0' }}>
+              <div style={{ gridColumn:'1 / -1', display:'flex', alignItems:'center', justifyContent:'center', color:'#7a8296', fontSize:12, letterSpacing: 0, textAlign:'center', padding:'12px 0' }}>
                 No GIFs found right now.
               </div>
             ) : (
@@ -3723,7 +3728,7 @@ const ChatBox = memo(function ChatBox({ chatLog, emit, currentRoom, isSpectator 
                     key={gif.id}
                     type="button"
                     onClick={() => sendGif(sendUrl)}
-                    style={{ background:'#111318', border:'1px solid #1f2430', borderRadius:10, overflow:'hidden', padding:0, cursor:'pointer', minHeight:74 }}
+                    style={{ background:'#1a1e28', border:'1px solid #242936', borderRadius:10, overflow:'hidden', padding:0, cursor:'pointer', minHeight:74 }}
                   >
                     <img src={preview} alt={gif.title || 'GIF'} style={{ width:'100%', height:'100%', objectFit:'cover', display:'block' }} />
                   </button>
@@ -3733,19 +3738,19 @@ const ChatBox = memo(function ChatBox({ chatLog, emit, currentRoom, isSpectator 
           </div>
         </div>
       )}
-      <form onSubmit={send} style={{ display:'flex', borderTop:'1px solid #1a1a1a', padding:10, gap:8, background:'#080808' }}>
+      <form onSubmit={send} style={{ display:'flex', borderTop:'1px solid #1a1e28', padding:10, gap:8, background:'#0b0d14' }}>
         {!isSpectator && (
           <button
             type="button"
             onClick={() => setShowGifPicker((prev) => !prev)}
-            style={{ background:showGifPicker ? '#22D3EE' : '#111', color:showGifPicker ? '#000' : '#22D3EE', border:'1px solid rgba(34,211,238,0.25)', minWidth:52, padding:'0 12px', borderRadius:10, fontWeight:800, cursor:'pointer', flexShrink:0 }}
+            style={{ background:showGifPicker ? '#a3a9b8' : '#1a1e28', color:showGifPicker ? '#000' : '#a3a9b8', border:'1px solid rgba(163,169,184,0.25)', minWidth:52, padding:'0 12px', borderRadius:10, fontWeight: 600, cursor:'pointer', flexShrink:0 }}
           >
             GIF
           </button>
         )}
         <input value={msg} onChange={e=>setMsg(e.target.value)} placeholder={inputPlaceholder}
-          style={{ flex:1, background:'#111', border:'1px solid #222833', color:'#fff', padding:'10px 12px', borderRadius:10, fontSize:13, outline:'none', minWidth:0, boxShadow:'inset 0 1px 0 rgba(255,255,255,0.02)' }} />
-        <button type="submit" disabled={!msg.trim()} style={{ background:'#22D3EE', color:'#000', border:'none', minWidth:58, padding:'0 14px', borderRadius:10, fontWeight:800, cursor:msg.trim()?'pointer':'not-allowed', opacity:msg.trim()?1:0.5, boxShadow:'0 8px 22px rgba(34,211,238,0.22)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+          style={{ flex:1, background:'#1a1e28', border:'1px solid #222833', color:'#fff', padding:'10px 12px', borderRadius:10, fontSize:13, outline:'none', minWidth:0, boxShadow:'inset 0 1px 0 rgba(255,255,255,0.02)' }} />
+        <button type="submit" disabled={!msg.trim()} style={{ background:'#a3a9b8', color:'#000', border:'none', minWidth:58, padding:'0 14px', borderRadius:10, fontWeight: 600, cursor:msg.trim()?'pointer':'not-allowed', opacity:msg.trim()?1:0.5, boxShadow:'0 8px 22px rgba(163,169,184,0.22)', display:'flex', alignItems:'center', justifyContent:'center' }}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M22 2 11 13" />
             <path d="m22 2-7 20-4-9-9-4Z" />

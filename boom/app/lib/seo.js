@@ -1,6 +1,6 @@
 export const SITE_URL = 'https://www.iplauction.fun';
 export const SITE_NAME = 'IPL Auction Simulator';
-export const DEFAULT_OG_IMAGE = '/assets/Hero_players.png';
+export const DEFAULT_OG_IMAGE = '/assets/Hero_players.jpg';
 
 export const primaryKeywords = [
   'IPL Auction Simulator',
@@ -34,7 +34,6 @@ export function createMetadata({
   index = true,
   type = 'website',
 }) {
-  const url = absoluteUrl(path);
   const canonicalUrl = absoluteUrl(canonicalPath || path);
 
   return {

@@ -30,14 +30,14 @@ export default function SupportPage() {
   return (
     <>
       <JsonLd data={breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Support', path: '/support' }])} />
-      <div style={{ minHeight: '100vh', background: '#050608', color: '#f8fafc', padding: '24px 16px 40px' }}>
+      <div style={{ minHeight: '100vh', background: '#0b0d14', color: '#f8fafc', padding: '24px 16px 40px' }}>
         <style>{`
           .support-shell { max-width: 1120px; margin: 0 auto; }
           .support-topbar { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); }
           .support-grid { display:grid; grid-template-columns:minmax(0, 1.1fr) minmax(300px, 0.9fr); gap:22px; margin-top:28px; }
-          .support-card { background:#0b0d12; border:1px solid #1d2330; border-radius:24px; padding:24px; }
+          .support-card { background:#1a1e28; border:1px solid #242936; border-radius:24px; padding:24px; }
           .support-list { display:grid; gap:12px; margin-top:18px; }
-          .support-item { display:flex; align-items:flex-start; gap:10px; color:#cbd5e1; line-height:1.7; }
+          .support-item { display:flex; align-items:flex-start; gap:10px; color:#c9cdd6; line-height:1.7; }
           .support-dot { width:10px; height:10px; border-radius:999px; background:#E8B84B; margin-top:8px; flex-shrink:0; }
           @media (max-width: 860px) {
             .support-grid { grid-template-columns:1fr; }
@@ -49,23 +49,23 @@ export default function SupportPage() {
           <div className="support-topbar">
             <BrandLink compact={true} />
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              <Link href="/" style={{ border: '1px solid #222', color: '#dbe4ee', textDecoration: 'none', borderRadius: 999, padding: '10px 16px', fontWeight: 700, letterSpacing: 1 }}>Home</Link>
-              <Link href="/how-to-play" style={{ border: '1px solid #222', color: '#dbe4ee', textDecoration: 'none', borderRadius: 999, padding: '10px 16px', fontWeight: 700, letterSpacing: 1 }}>How to Play</Link>
-              <a href={SUPPORT_URL} target="_blank" rel="noreferrer" style={{ border: 'none', background: '#E8B84B', color: '#000', textDecoration: 'none', borderRadius: 999, padding: '10px 18px', fontWeight: 900, letterSpacing: 1.2 }}>Buy Me a Chai</a>
+              <Link href="/" style={{ border: '1px solid #242936', color: '#c9cdd6', textDecoration: 'none', borderRadius: 999, padding: '10px 16px', fontWeight: 600, letterSpacing: 0 }}>Home</Link>
+              <Link href="/how-to-play" style={{ border: '1px solid #242936', color: '#c9cdd6', textDecoration: 'none', borderRadius: 999, padding: '10px 16px', fontWeight: 600, letterSpacing: 0 }}>How to play</Link>
+              <a href={SUPPORT_URL} target="_blank" rel="noreferrer" style={{ border: 'none', background: '#E8B84B', color: '#000', textDecoration: 'none', borderRadius: 999, padding: '10px 18px', fontWeight: 600, letterSpacing: 0 }}>Buy me a chai</a>
             </div>
           </div>
 
           <div className="support-grid">
             <div className="support-card">
-              <div style={{ color: '#E8B84B', fontSize: 12, letterSpacing: 3, fontWeight: 800, marginBottom: 8 }}>SUPPORT THE PROJECT</div>
-              <h1 style={{ margin: 0, fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(40px, 7vw, 68px)', lineHeight: 0.92, letterSpacing: 2 }}>
-                HELP KEEP IPL AUCTION SIMULATOR FAST, FREE, AND ALIVE
+              <div style={{ color: '#E8B84B', fontSize: 12, letterSpacing: 0, fontWeight: 600, marginBottom: 8 }}>Support the project</div>
+              <h1 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: 'clamp(40px, 7vw, 68px)', lineHeight: 0.92, letterSpacing: 0 }}>
+                Help keep the IPL auction simulator fast, free and online
               </h1>
-              <p style={{ marginTop: 18, color: '#d1d5db', fontSize: '1.08rem', lineHeight: 1.9, maxWidth: 760 }}>
+              <p style={{ marginTop: 18, color: '#c9cdd6', fontSize: '1.08rem', lineHeight: 1.9, maxWidth: 760 }}>
                 IPL Auction Simulator is built as a passion project for cricket fans who want a smooth multiplayer auction experience without annoying blockers.
                 There is no login requirement, no paywall, and no heavy ad-first experience. The goal is simple: open the site, create a room, invite friends, and play without friction.
               </p>
-              <p style={{ marginTop: 14, color: '#d1d5db', fontSize: '1.05rem', lineHeight: 1.9, maxWidth: 760 }}>
+              <p style={{ marginTop: 14, color: '#c9cdd6', fontSize: '1.05rem', lineHeight: 1.9, maxWidth: 760 }}>
                 As the number of users keeps growing, the cost of running servers, keeping rooms stable, reducing lag, fixing bugs, and maintaining everything cleanly also keeps growing.
                 A small contribution helps keep the platform responsive and lets the work continue without turning the site into a cluttered, ad-heavy product.
               </p>
@@ -82,11 +82,11 @@ export default function SupportPage() {
 
             <div style={{ display: 'grid', gap: 18 }}>
               <div className="support-card">
-                <div style={{ color: '#fff', fontFamily: "'Bebas Neue', sans-serif", fontSize: 30, letterSpacing: 1.5 }}>What Your Support Helps With</div>
+                <div style={{ color: '#fff', fontFamily: 'var(--font-display)', fontSize: 30, letterSpacing: 0 }}>What your support helps with</div>
                 <div className="support-list">
                   {promise.map((item) => (
                     <div key={item} className="support-item">
-                      <span className="support-dot" style={{ background: '#22D3EE' }} />
+                      <span className="support-dot" style={{ background: '#a3a9b8' }} />
                       <span>{item}</span>
                     </div>
                   ))}
@@ -94,11 +94,11 @@ export default function SupportPage() {
               </div>
 
               <div className="support-card" style={{ borderColor: 'rgba(232,184,75,0.28)' }}>
-                <div style={{ color: '#E8B84B', fontSize: 12, letterSpacing: 3, fontWeight: 800, marginBottom: 8 }}>DONATE</div>
-                <div style={{ color: '#fff', fontFamily: "'Bebas Neue', sans-serif", fontSize: 34, lineHeight: 1, letterSpacing: 1.5 }}>
-                  BUY ME A CHAI
+                <div style={{ color: '#E8B84B', fontSize: 12, letterSpacing: 0, fontWeight: 600, marginBottom: 8 }}>Donate</div>
+                <div style={{ color: '#fff', fontFamily: 'var(--font-display)', fontSize: 34, lineHeight: 1, letterSpacing: 0 }}>
+                  Buy me a chai
                 </div>
-                <p style={{ marginTop: 14, color: '#cbd5e1', fontSize: '1rem', lineHeight: 1.8 }}>
+                <p style={{ marginTop: 14, color: '#c9cdd6', fontSize: '1rem', lineHeight: 1.8 }}>
                   If the game has been useful, fun, or part of your auction nights with friends, you can support it here.
                   Every contribution goes a long way toward keeping the servers running smoothly.
                 </p>
@@ -106,11 +106,11 @@ export default function SupportPage() {
                   href={SUPPORT_URL}
                   target="_blank"
                   rel="noreferrer"
-                  style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginTop: 10, width: '100%', minHeight: 52, borderRadius: 14, background: '#E8B84B', color: '#000', textDecoration: 'none', fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 900, fontSize: '1.1rem', letterSpacing: 1.5, textTransform: 'uppercase' }}
+                  style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginTop: 10, width: '100%', minHeight: 52, borderRadius: 14, background: '#E8B84B', color: '#000', textDecoration: 'none', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.1rem', letterSpacing: 0 }}
                 >
                   Support the Servers
                 </a>
-                <div style={{ marginTop: 12, color: '#6b7280', fontSize: 12, lineHeight: 1.7 }}>
+                <div style={{ marginTop: 12, color: '#7a8296', fontSize: 12, lineHeight: 1.7 }}>
                   No pressure. The platform remains free either way. This is simply for people who want to help the project stay healthy and keep improving.
                 </div>
               </div>

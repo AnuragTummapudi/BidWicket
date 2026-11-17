@@ -1,13 +1,56 @@
-/* Base reset — keep minimal so landing.css takes full control */
+/*
+  iplauction.fun design system
+  World: auction night under stadium floodlights. Ink neutrals, one gavel-gold accent.
+  Type: Barlow for the interface, Barlow Condensed for headlines and big figures.
+*/
 *, *::before, *::after { box-sizing: border-box; }
 
 :root {
-  --app-bg: #08111b;
-  --app-surface: rgba(9, 13, 20, 0.88);
-  --app-border: rgba(163, 184, 209, 0.14);
-  --app-gold: #e8b84b;
-  --app-cyan: #22d3ee;
-  --app-text: #f5f7fb;
+  /* Ink ramp (dark) */
+  --ink-0: #07080d;   /* deepest, nav and footer */
+  --ink-1: #0b0d14;   /* page */
+  --ink-2: #11141c;   /* card */
+  --ink-3: #1a1e28;   /* raised, inputs, active rows */
+  --ink-4: #242936;   /* pressed / strong raised */
+  --line: rgba(238, 240, 245, 0.08);
+  --line-strong: rgba(238, 240, 245, 0.14);
+
+  --text-1: #eef0f5;
+  --text-2: #a3a9b8;
+  --text-3: #7a8296;
+
+  /* Accent: the gavel gold. Dark text on it. */
+  --gold: #e8b84b;
+  --gold-hover: #f0c665;
+  --gold-ink: #1a1405;
+  --gold-soft: rgba(232, 184, 75, 0.12);
+
+  --good: #4cc38a;
+  --bad: #e5484d;
+  --warn: #e8a23b;
+
+  --font-ui: var(--font-barlow), 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: var(--font-barlow-condensed), 'Barlow Condensed', system-ui, sans-serif;
+
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --t-fast: 150ms;
+  --t-menu: 200ms;
+  --t-enter: 400ms;
+
+  /* legacy aliases still read by older components */
+  --app-bg: var(--ink-1);
+  --app-surface: var(--ink-2);
+  --app-border: var(--line);
+  --app-gold: var(--gold);
+  --app-cyan: var(--text-2);
+  --app-text: var(--text-1);
+
+  color-scheme: dark;
 }
 
 html,
@@ -18,136 +61,156 @@ body {
   width: 100%;
   max-width: 100%;
   min-height: 100vh;
-  background-color: var(--app-bg);
-  background-image:
-    radial-gradient(circle at top left, rgba(34, 211, 238, 0.14), transparent 24%),
-    radial-gradient(circle at 85% 12%, rgba(232, 184, 75, 0.16), transparent 26%),
-    radial-gradient(circle at 50% 100%, rgba(76, 29, 149, 0.12), transparent 30%),
-    linear-gradient(180deg, #09111a 0%, #06090f 48%, #05070b 100%);
-  background-attachment: fixed;
+  background-color: var(--ink-1);
   overflow-x: hidden;
 }
 
 body {
-  color: var(--app-text);
+  color: var(--text-1);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
 }
 
 a {
+  color: inherit;
   text-decoration: inherit;
 }
 
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+::selection { background: var(--gold); color: var(--gold-ink); }
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* ── Shared components ── */
+.ui-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line-strong);
+  background: var(--ink-3);
+  color: var(--text-1);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.ui-btn:hover { background: var(--ink-4); }
+.ui-btn:active { transform: scale(0.98); }
+.ui-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.ui-btn-primary {
+  background: var(--gold);
+  border-color: transparent;
+  color: var(--gold-ink);
+}
+.ui-btn-primary:hover { background: var(--gold-hover); }
+.ui-btn-ghost { background: transparent; border-color: transparent; color: var(--text-2); }
+.ui-btn-ghost:hover { background: var(--ink-3); color: var(--text-1); }
+.ui-btn-sm { height: 36px; padding: 0 16px; font-size: 14px; }
+
+.ui-card {
+  background: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
+.ui-eyebrow {
+  display: block;
+  color: var(--gold);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.ui-figure {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* ── Support button ── */
 .chai-support {
   position: fixed;
-  left: max(10px, env(safe-area-inset-left));
-  bottom: calc(22px + env(safe-area-inset-bottom));
+  left: max(16px, env(safe-area-inset-left));
+  bottom: calc(24px + env(safe-area-inset-bottom));
   z-index: 2147483000;
   display: inline-flex;
   align-items: center;
-  height: 52px;
-  max-width: 52px;
-  overflow: hidden;
-  border: 1px solid rgba(232, 184, 75, 0.5);
-  border-radius: 999px;
-  background:
-    linear-gradient(135deg, rgba(255, 248, 220, 0.98), rgba(246, 225, 162, 0.98));
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 18px rgba(232, 184, 75, 0.2);
-  color: #3b2408;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px 0 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
+  background: var(--ink-3);
+  color: var(--text-2);
+  font-size: 14px;
+  font-weight: 500;
   text-decoration: none;
-  transform: translateZ(0);
-  transition: max-width 0.24s ease, border-radius 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease;
-  isolation: isolate;
+  transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
   touch-action: manipulation;
 }
-
-.chai-support:hover,
-.chai-support:focus-visible {
-  max-width: 190px;
-  border-radius: 999px 14px 14px 999px;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.42), 0 0 24px rgba(232, 184, 75, 0.28);
-  transform: translateY(-2px);
-}
-
-.chai-support:focus-visible {
-  outline: 2px solid rgba(34, 211, 238, 0.85);
-  outline-offset: 3px;
-}
+.chai-support:hover { background: var(--ink-4); color: var(--text-1); }
 
 .chai-support-icon {
-  width: 52px;
-  height: 52px;
-  flex: 0 0 52px;
-  display: grid;
-  place-items: center;
-  background-color: #fff4c7;
-  background-image:
-    url('/assets/tea.png'),
-    radial-gradient(circle at 50% 35%, #ffffff 0%, #fff4c7 48%, #f1c85b 100%);
-  background-position: center, center;
-  background-repeat: no-repeat;
-  background-size: 36px 36px, cover;
-}
-
-.chai-support-note {
-  position: relative;
-  min-width: 122px;
-  padding: 0 18px 0 8px;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 15px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.chai-support-note::before {
-  content: '';
-  position: absolute;
-  left: -8px;
-  top: 9px;
-  bottom: 9px;
-  width: 1px;
-  background: rgba(93, 58, 9, 0.2);
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  background: url('/assets/tea.png') center / 20px 20px no-repeat;
 }
 
 @media (max-width: 860px) {
-  .chai-support {
-    display: none;
-  }
+  .chai-support { display: none; }
 }
 
+/* ── Wordmark ── */
 .site-brand {
   display: inline-flex;
-  flex-direction: column;
-  gap: 2px;
-  color: #fff;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-1);
   text-decoration: none;
   line-height: 1;
 }
 
+.site-brand-mark {
+  width: 8px;
+  height: 20px;
+  border-radius: 2px;
+  background: var(--gold);
+}
+
 .site-brand-domain {
-  font-family: 'Orbitron', sans-serif;
-  font-size: clamp(1.1rem, 2.4vw, 1.7rem);
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: lowercase;
-  text-shadow: 0 0 22px rgba(34, 211, 238, 0.12);
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
-.site-brand-tag {
-  color: rgba(232, 184, 75, 0.92);
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 0.72rem;
-  letter-spacing: 0.42em;
-  text-transform: uppercase;
-}
+.site-brand-compact .site-brand-domain { font-size: 20px; }
 
-.site-brand-compact .site-brand-domain {
-  font-size: clamp(1rem, 2vw, 1.28rem);
-  letter-spacing: 0.14em;
-}
-
-.site-brand-compact .site-brand-tag {
-  font-size: 0.62rem;
-  letter-spacing: 0.33em;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

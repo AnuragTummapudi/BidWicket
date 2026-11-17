@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { ArrowRight, Menu, X } from 'lucide-react';
 import CircularGallery from './components/CircularGallery';
 import Stack from './components/Stack';
 import BrandLink from './components/BrandLink';
@@ -11,33 +12,42 @@ import ALL_PLAYERS from './data/Players.json';
 import { getBackendUrl } from './lib/backendUrl';
 import './landing.css';
 
-
-const BATSMAN_PATH = 'M50 10 A5 5 0 1 0 50 20 A5 5 0 1 0 50 10 Z M40 25 L60 25 L65 50 L55 50 L50 80 L45 80 L45 50 L35 50 Z M65 40 L80 60 M45 40 L25 50';
-const BOWLER_PATH = 'M40 15 A5 5 0 1 0 40 25 A5 5 0 1 0 40 15 Z M35 30 L55 25 L60 50 L50 60 L45 90 L35 90 L40 60 L20 40 Z M60 30 L80 15 M40 40 L20 50';
-
-const PLAYERS = [
-  { name: 'P. KUMAR', role: 'Batsman', path: BATSMAN_PATH },
-  { name: 'A. SINGH', role: 'Bowler', path: BOWLER_PATH },
-  { name: 'M. STOKES', role: 'All-Rounder', path: BATSMAN_PATH },
-  { name: 'R. SHARMA', role: 'Batsman', path: BATSMAN_PATH },
-  { name: 'J. BUMRAH', role: 'Bowler', path: BOWLER_PATH },
-];
-
 const TEAMS = [
-  { id: 'CSK', name: 'Chennai Super Kings', short: 'CSK', color: '#F9CA24', logo: '/assets/CSK.png' },
-  { id: 'MI', name: 'Mumbai Indians', short: 'MI', color: '#4FC3F7', logo: '/assets/MI.png' },
-  { id: 'RCB', name: 'Royal Challengers Bengaluru', short: 'RCB', color: '#FF5252', logo: '/assets/RCB.png' },
-  { id: 'KKR', name: 'Kolkata Knight Riders', short: 'KKR', color: '#CE93D8', logo: '/assets/KKR.png' },
-  { id: 'SRH', name: 'Sunrisers Hyderabad', short: 'SRH', color: '#FF8A65', logo: '/assets/SRH.png' },
-  { id: 'DC', name: 'Delhi Capitals', short: 'DC', color: '#64B5F6', logo: '/assets/DC.png' },
-  { id: 'PBKS', name: 'Punjab Kings', short: 'PBKS', color: '#EF9A9A', logo: '/assets/PBKS.png' },
-  { id: 'RR', name: 'Rajasthan Royals', short: 'RR', color: '#F48FB1', logo: '/assets/RR.png' },
-  { id: 'GT', name: 'Gujarat Titans', short: 'GT', color: '#4DD0E1', logo: '/assets/GT.png' },
-  { id: 'LSG', name: 'Lucknow Super Giants', short: 'LSG', color: '#81D4FA', logo: '/assets/LSG.png' },
+  { id: 'CSK', name: 'Chennai Super Kings', short: 'CSK', logo: '/assets/CSK.png' },
+  { id: 'MI', name: 'Mumbai Indians', short: 'MI', logo: '/assets/MI.png' },
+  { id: 'RCB', name: 'Royal Challengers Bengaluru', short: 'RCB', logo: '/assets/RCB.png' },
+  { id: 'KKR', name: 'Kolkata Knight Riders', short: 'KKR', logo: '/assets/KKR.png' },
+  { id: 'SRH', name: 'Sunrisers Hyderabad', short: 'SRH', logo: '/assets/SRH.png' },
+  { id: 'DC', name: 'Delhi Capitals', short: 'DC', logo: '/assets/DC.png' },
+  { id: 'PBKS', name: 'Punjab Kings', short: 'PBKS', logo: '/assets/PBKS.png' },
+  { id: 'RR', name: 'Rajasthan Royals', short: 'RR', logo: '/assets/RR.png' },
+  { id: 'GT', name: 'Gujarat Titans', short: 'GT', logo: '/assets/GT.png' },
+  { id: 'LSG', name: 'Lucknow Super Giants', short: 'LSG', logo: '/assets/LSG.png' },
 ];
+
+const NAV_LINKS = [
+  { label: 'Auction', href: '/room' },
+  { label: 'Teams', href: '/teams' },
+  { label: 'Players', href: '/players' },
+  { label: 'How to play', href: '/how-to-play' },
+  { label: 'Schedule', href: '/schedule' },
+  { label: 'Support', href: '/support' },
+];
+
+const ROLE_LABEL = {
+  batsman: 'Batter',
+  bowler: 'Bowler',
+  all_rounder: 'All-rounder',
+  wicket_keeper: 'Wicketkeeper',
+};
 
 const TEAM_LOOKUP = Object.fromEntries(TEAMS.map((team) => [team.id, team]));
 const PLAYER_LOOKUP = Object.fromEntries(ALL_PLAYERS.map((player) => [player.name, player]));
+
+function formatBasePrice(lakhs) {
+  if (!Number.isFinite(lakhs)) return '—';
+  return lakhs >= 100 ? `₹${(lakhs / 100).toFixed(2)} Cr` : `₹${lakhs} L`;
+}
 
 function getDateKey(date) {
   return new Intl.DateTimeFormat('en-CA', {
@@ -71,8 +81,9 @@ function formatCountdown(ms) {
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
-  if (hours > 0) return `${hours}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
-  return `${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
+  const mm = String(minutes).padStart(2, '0');
+  const ss = String(seconds).padStart(2, '0');
+  return hours > 0 ? `${hours}:${mm}:${ss}` : `${mm}:${ss}`;
 }
 
 function formatMatchMeta(startAt) {
@@ -84,29 +95,24 @@ function formatMatchMeta(startAt) {
   }).format(new Date(startAt));
 }
 
-const TICKER_ITEMS = [
-  '204 PLAYERS IN THE POOL', '10 FRANCHISES PER GAME', 'LIVE MULTIPLAYER BIDDING',
-  'REAL-TIME PURSE TRACKER', 'BUILD YOUR DREAM SQUAD', 'OUTSMART YOUR RIVALS',
-  'FREE TO PLAY', 'IPL AUCTION',
-];
+const FACTS = ['520+ players in the pool', '10 franchises per room', 'Live bidding', 'Purse tracker', 'Free to play'];
 
 const MARQUEE_NAMES = [
-  'MS DHONI', 'VIRAT KOHLI', 'ROHIT SHARMA', 'YASHASVI JAISWAL',
-  'SHREYAS IYER', 'RISHABH PANT', 'SANJU SAMSON', 'AXAR PATEL',
-  'ISHAN KISHAN', 'JASPRIT BUMRAH'
+  'MS Dhoni', 'Virat Kohli', 'Rohit Sharma', 'Yashasvi Jaiswal',
+  'Shreyas Iyer', 'Rishabh Pant', 'Sanju Samson', 'Axar Patel',
+  'Ishan Kishan', 'Jasprit Bumrah',
 ];
 
 function getGalleryImage(name, playerRecord) {
   const upperName = String(name || '').toUpperCase();
   if (playerRecord?.photo_url) return playerRecord.photo_url;
-  if (upperName.includes('KOHLI')) return '/assets/Kohli.avif';
   if (upperName.includes('BOULT')) return '/assets/Boult.avif';
   return '/assets/Kohli.avif';
 }
 
 const GALLERY_ITEMS = MARQUEE_NAMES.map((name) => {
   const nUpper = name.toUpperCase();
-  const p = ALL_PLAYERS.find(pl => {
+  const p = ALL_PLAYERS.find((pl) => {
     const pUpper = pl.name.toUpperCase();
     return pUpper === nUpper || pUpper.includes(nUpper.split(' ')[1] || nUpper);
   });
@@ -118,148 +124,89 @@ const GALLERY_ITEMS = MARQUEE_NAMES.map((name) => {
 });
 
 const HOW_STEPS = [
-  { num: '01', title: 'CREATE OR JOIN A ROOM', body: 'Host a private game and share the room code with friends, or jump into a public room instantly. No account needed — just a franchise name and you are in.' },
-  { num: '02', title: 'PICK YOUR SQUAD', body: 'Every player gets a base price. Watch your rivals bid, decide when to hold back and when to go all-in. Your purse is limited — spend it wisely.' },
-  { num: '03', title: 'WIN THE AUCTION', body: 'The franchise with the best squad balance wins. Star-studded lineups only work if you have the budget to back them. Dominate the table.' },
+  { num: '01', title: 'Create or join a room', body: 'Host a private game and share the room code with friends, or jump into a public room. No account needed, just a franchise name.' },
+  { num: '02', title: 'Bid for your squad', body: 'Every player opens at a base price. Watch your rivals, decide when to hold back and when to go all in. Your purse is limited, so spend it carefully.' },
+  { num: '03', title: 'Win the auction', body: 'The franchise with the best balanced squad wins. A lineup full of stars only works if you kept the budget to back it.' },
 ];
 
 const PLAYER_REVIEWS = [
-  {
-    name: 'Aarav Nair',
-    city: 'Bengaluru',
-    text: 'We opened it for one quick auction and ended up playing three rooms back to back. The purse pressure feels very real.',
-  },
-  {
-    name: 'Meera Iyer',
-    city: 'Chennai',
-    text: 'Clean, fast, and oddly addictive. The room code flow made it easy for our whole WhatsApp group to jump in.',
-  },
-  {
-    name: 'Kabir Shah',
-    city: 'Mumbai',
-    text: 'Low-key insane. I lost because I overpaid for two stars, and somehow that made it more fun.',
-  },
-  {
-    name: 'Ananya Rao',
-    city: 'Hyderabad',
-    text: 'Feels like a proper draft night without anyone maintaining a spreadsheet. My cousins understood it in two minutes.',
-  },
-  {
-    name: 'Rohan Kulkarni',
-    city: 'Pune',
-    text: 'The live bidding gets genuinely tense. One value pick at the end changed our entire leaderboard.',
-  },
-  {
-    name: 'Ishita Banerjee',
-    city: 'Kolkata',
-    text: 'Best part is how quick it starts. No login drama, no setup lecture, just room code and chaos.',
-  },
-  {
-    name: 'Devansh Patel',
-    city: 'Ahmedabad',
-    text: 'The Rivals mode is perfect for two people. Short, sharp, and very easy to replay after a close loss.',
-  },
-  {
-    name: 'Sanya Menon',
-    city: 'Kochi',
-    text: 'It actually rewards patience. I saved money for bowlers and finally beat the friend who only chases big names.',
-  },
+  { name: 'Aarav Nair', city: 'Bengaluru', text: 'We opened it for one quick auction and ended up playing three rooms back to back. The purse pressure feels very real.' },
+  { name: 'Meera Iyer', city: 'Chennai', text: 'Fast and oddly addictive. The room code flow made it easy for our whole WhatsApp group to jump in.' },
+  { name: 'Kabir Shah', city: 'Mumbai', text: 'I lost because I overpaid for two stars, and somehow that made it more fun.' },
+  { name: 'Ananya Rao', city: 'Hyderabad', text: 'Feels like a proper draft night without anyone maintaining a spreadsheet. My cousins understood it in two minutes.' },
+  { name: 'Rohan Kulkarni', city: 'Pune', text: 'The live bidding gets genuinely tense. One value pick at the end changed our entire leaderboard.' },
+  { name: 'Ishita Banerjee', city: 'Kolkata', text: 'Best part is how quick it starts. No login, no setup lecture, just a room code and chaos.' },
+  { name: 'Devansh Patel', city: 'Ahmedabad', text: 'Rivals mode is perfect for two people. Short, sharp and easy to replay after a close loss.' },
+  { name: 'Sanya Menon', city: 'Kochi', text: 'It rewards patience. I saved money for bowlers and finally beat the friend who only chases big names.' },
+];
+
+const FEATURES = [
+  ['Live rooms', 'Create private or public IPL auction rooms with real-time bidding and room codes.'],
+  ['Mock auction strategy', 'Practice when to bid, when to save, and how to build a balanced squad.'],
+  ['Purse management', 'Track remaining budget while competing for marquee players and value picks.'],
+  ['Player pool', 'Browse IPL players, roles, base prices, teams and auction-ready player cards.'],
+  ['Team building', 'Compare franchises, squad roles and final auction results after bidding ends.'],
+  ['Free online play', 'Start an IPL auction game in the browser on desktop or mobile.'],
 ];
 
 const HERO_STACK_PLAYERS = [
-  { name: 'KL Rahul', accent: '#81D4FA', tag: 'BATTING ANCHOR' },
-  { name: 'MS Dhoni', accent: '#F9CA24', tag: 'FINISHER ICON' },
-  { name: 'Rohit Sharma', accent: '#4FC3F7', tag: 'TACTICAL CAPTAIN' },
-  { name: 'Jasprit Bumrah', accent: '#FF5252', tag: 'DEATH OVERS ACE' },
-  { name: 'Virat Kohli', accent: '#E8B84B', tag: 'POWER OPENER' },
+  { name: 'KL Rahul', tag: 'Batting anchor' },
+  { name: 'MS Dhoni', tag: 'Finisher' },
+  { name: 'Rohit Sharma', tag: 'Captain' },
+  { name: 'Jasprit Bumrah', tag: 'Death overs' },
+  { name: 'Virat Kohli', tag: 'Opener' },
 ];
 
-/* ── Components ── */
-function CdBox({ value, label, pulse }) {
-  return (
-    <div className={`l-cd-box${pulse ? ' pulse' : ''}`}>
-      <span className="l-cd-num">{value}</span>
-      <span className="l-cd-unit">{label}</span>
-    </div>
-  );
-}
-
-function PlayerCard({ name, role, path }) {
-  return (
-    <div className="l-card">
-      <div className="l-card-img">
-        <svg className="l-card-svg" viewBox="0 0 100 100">
-          <path d={path} fill="none" stroke="#E8B84B" strokeWidth="2" strokeLinecap="square" />
-        </svg>
-      </div>
-      <div className="l-card-info">
-        <div>
-          <div className="l-card-name">{name}</div>
-          <div className="l-card-role">{role}</div>
-        </div>
-        <div className="l-card-price">₹2.00 CR</div>
-      </div>
-    </div>
-  );
-}
-
-function HeroStackCard({ player }) {
+/* A player lot as it appears on the auction floor */
+function LotCard({ player, lot }) {
   const record = PLAYER_LOOKUP[player.name];
   const photoUrl = record?.photo_url || record?.image_url || '/assets/Kohli.avif';
+  const team = TEAM_LOOKUP[record?.ipl_team_code];
 
   return (
-    <div className="l-hero-stack-card">
-      <div className="l-hero-stack-card-glow" style={{ background: `${player.accent}22` }} />
-      <div className="l-hero-stack-card-top">
-        <span className="l-hero-stack-chip" style={{ color: player.accent, borderColor: `${player.accent}66`, background: `${player.accent}12` }}>
-          {player.tag}
-        </span>
-        <span className="l-hero-stack-rating">IPL 2026</span>
+    <div className="l-lot">
+      <div className="l-lot-top">
+        <span className="l-lot-num">Lot {String(lot).padStart(2, '0')}</span>
+        <span className="l-lot-tag">{player.tag}</span>
       </div>
-      <div className="l-hero-stack-image-wrap">
-        <img
-          src={photoUrl}
-          alt={`${player.name} IPL player headshot`}
-          className="l-hero-stack-image"
-          loading="eager"
-        />
+      <div className="l-lot-photo">
+        <img src={photoUrl} alt={`${player.name} IPL player headshot`} loading="eager" />
       </div>
-      <div className="l-hero-stack-info">
-        <div className="l-hero-stack-name">{player.name}</div>
-        <div className="l-hero-stack-meta">
-          <span>{record?.role || 'Player'}</span>
-          <span>{record?.ipl_team_code || 'IPL'}</span>
+      <div className="l-lot-info">
+        <div className="l-lot-name">{player.name}</div>
+        <div className="l-lot-meta">
+          <span>{ROLE_LABEL[record?.role] || 'Player'}</span>
+          <span aria-hidden="true">·</span>
+          <span>{team?.short || record?.ipl_team_code || 'IPL'}</span>
+        </div>
+        <div className="l-lot-price">
+          <span className="l-lot-price-label">Base price</span>
+          <span className="l-lot-price-val">{formatBasePrice(record?.base_price)}</span>
         </div>
       </div>
     </div>
   );
 }
 
-/* ── Page ── */
 export default function LandingPage() {
   const router = useRouter();
   const [rivalsMatches, setRivalsMatches] = useState([]);
   const [nowMs, setNowMs] = useState(() => Date.now());
-  const [isCompactCard, setIsCompactCard] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const heroStackCards = useMemo(
-    () => HERO_STACK_PLAYERS.map((player) => (
-      <HeroStackCard key={player.name} player={player} />
+    () => HERO_STACK_PLAYERS.map((player, i) => (
+      <LotCard key={player.name} player={player} lot={HERO_STACK_PLAYERS.length - i} />
     )),
     []
   );
 
+  const hasRivals = rivalsMatches.length > 0;
   useEffect(() => {
+    // the countdown is the only thing that needs a 1s clock
+    if (!hasRivals) return undefined;
     const timer = window.setInterval(() => setNowMs(Date.now()), 1000);
     return () => window.clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return undefined;
-    const syncCompact = () => setIsCompactCard(window.innerWidth <= 720);
-    syncCompact();
-    window.addEventListener('resize', syncCompact);
-    return () => window.removeEventListener('resize', syncCompact);
-  }, []);
+  }, [hasRivals]);
 
   useEffect(() => {
     let cancelled = false;
@@ -287,316 +234,228 @@ export default function LandingPage() {
   }, [todayRivals, rivalsMatches, nowMs]);
   const rivalsHref = featuredRival ? `/room?action=rivals&matchKey=${encodeURIComponent(featuredRival.key)}` : '/room?action=browse';
 
+  let rival = null;
+  if (featuredRival) {
+    const state = getMatchState(featuredRival, nowMs);
+    rival = {
+      home: TEAM_LOOKUP[featuredRival.homeTeam],
+      away: TEAM_LOOKUP[featuredRival.awayTeam],
+      state,
+      timerLabel: state === 'locked' ? 'Match live' : state === 'open' ? 'Auction locks in' : 'Match starts in',
+      countdown: state === 'locked' ? 'Live' : formatCountdown(new Date(featuredRival.startAt).getTime() - nowMs),
+      meta: formatMatchMeta(featuredRival.startAt),
+    };
+  }
+
   return (
     <div className="landing-root">
-
-      {/* NAVBAR */}
       <nav className="l-nav">
-        <BrandLink compact={true} className="l-nav-logo" />
+        <BrandLink compact className="l-nav-logo" />
 
         <div className="l-nav-links">
-          {[
-            { label: 'Auction', href: '/room' },
-            { label: 'Teams', href: '/teams' },
-            { label: 'Players', href: '/players' },
-            { label: 'How to Play', href: '/how-to-play' },
-            { label: 'Schedule', href: '/schedule' },
-            { label: 'Support', href: '/support' },
-          ].map((link) => (
-            <a key={link.label} href={link.href} className="l-nav-link">{link.label}</a>
+          {NAV_LINKS.map((link) => (
+            <Link key={link.label} href={link.href} className="l-nav-link">{link.label}</Link>
           ))}
         </div>
 
         <div className="l-nav-actions">
-          <button className="l-nav-login" onClick={() => router.push('/room?action=create')}>Create Room</button>
-          <button className="l-nav-login" onClick={() => router.push('/room?action=browse')}>Live Auctions</button>
-          <button className="l-btn-gold" onClick={() => router.push('/room?action=join-code')}>Join Room</button>
+          <Link href="/room?action=browse" className="l-nav-text">Live rooms</Link>
+          <button className="ui-btn ui-btn-primary ui-btn-sm" onClick={() => router.push('/room?action=create')}>Create room</button>
+          <button
+            className="l-nav-menu ui-btn ui-btn-ghost ui-btn-sm"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {menuOpen ? <X size={18} strokeWidth={1.5} /> : <Menu size={18} strokeWidth={1.5} />}
+          </button>
         </div>
+
+        {menuOpen && (
+          <div className="l-nav-sheet">
+            {NAV_LINKS.map((link) => (
+              <Link key={link.label} href={link.href} className="l-nav-sheet-link" onClick={() => setMenuOpen(false)}>{link.label}</Link>
+            ))}
+            <Link href="/room?action=browse" className="l-nav-sheet-link" onClick={() => setMenuOpen(false)}>Live rooms</Link>
+          </div>
+        )}
       </nav>
 
-      {/* HERO */}
+      {/* Hero */}
       <section className="l-hero">
-        {/* Left */}
         <div className="l-hero-left">
-          <span className="l-hero-eyebrow">Live Cricket Auction Simulator</span>
-
-          <h1 className="l-hero-h1">
-            IPL AUCTION<br />
-            <span className="l-hero-h1-gold">ONLINE GAME</span>
-            <span className="l-cursor blink" />
-          </h1>
-
+          <span className="ui-eyebrow">IPL auction simulator</span>
+          <h1 className="l-hero-h1">The IPL auction, played live with your friends</h1>
           <p className="l-hero-subtext">
-            Build your franchise in fast live auctions with private room codes, real-time bidding, and smart purse strategy.<br />
-            10 franchises. 520+ players. Multiplayer rooms that feel like draft night.
+            Take a franchise, share a room code and spend a ₹120 Cr purse on real players.
+            Ten teams per room, live bidding, no account needed.
           </p>
-
-          <p className="l-hero-keywords">
-            Create a room, challenge friends, chase value picks, and assemble your dream IPL squad in one place.
-          </p>
-
-          {/* Static Game Stats - Refined */}
-          <div className="l-stats-refined">
-            <span className="l-stats-label">AT A GLANCE</span>
-            <div className="l-stats-grid">
-              <div className="l-stat-item">
-                <span className="l-stat-val">10</span>
-                <span className="l-stat-name" style={{ color: '#E8B84B' }}>FRANCHISES</span>
-              </div>
-              <div className="l-stat-item">
-                <span className="l-stat-val">120CR</span>
-                <span className="l-stat-name" style={{ color: '#22D3EE' }}>PURSE</span>
-              </div>
-              <div className="l-stat-item">
-                <span className="l-stat-val">520+</span>
-                <span className="l-stat-name" style={{ color: '#818CF8' }}>PLAYERS</span>
-              </div>
-            </div>
-          </div>
 
           <div className="l-ctas">
-            <button className="l-btn-primary" onClick={() => router.push('/room?action=create')}>Play Now — Free</button>
-            <button className="l-btn-secondary" onClick={() => router.push('/room?action=browse')}>
-              Live Auction Rooms
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </button>
-            <button className="l-btn-secondary" onClick={() => router.push('/room?action=join-code')}>
-              Join a Room
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
+            <button className="ui-btn ui-btn-primary l-cta" onClick={() => router.push('/room?action=create')}>Create a room</button>
+            <button className="ui-btn l-cta" onClick={() => router.push('/room?action=join-code')}>
+              Join with a code
+              <ArrowRight size={16} strokeWidth={1.5} aria-hidden="true" />
             </button>
           </div>
+
+          <dl className="l-stats">
+            <div><dt>Franchises</dt><dd className="ui-figure">10</dd></div>
+            <div><dt>Purse each</dt><dd className="ui-figure">₹120 Cr</dd></div>
+            <div><dt>Players</dt><dd className="ui-figure">520+</dd></div>
+          </dl>
         </div>
 
-        {/* Right – Hero Stack */}
         <div className="l-hero-right">
-          <div className="l-hero-art-wrap">
-            <div className="l-hero-glow" />
-            <div className="l-hero-stack-shell">
-              <div className="l-hero-stack-frame">
-                <Stack
-                  randomRotation={true}
-                  sensitivity={180}
-                  sendToBackOnClick={true}
-                  autoplay={false}
-                  pauseOnHover={false}
-                  mobileClickOnly={true}
-                  cards={heroStackCards}
-                />
-              </div>
-              <div className="l-hero-stack-caption">
-                Drag or tap the stack to cycle marquee players before you jump into the auction.
-              </div>
-            </div>
+          <div className="l-hero-stack-frame">
+            <Stack
+              randomRotation={false}
+              sensitivity={180}
+              sendToBackOnClick
+              autoplay={false}
+              pauseOnHover={false}
+              mobileClickOnly
+              cards={heroStackCards}
+            />
           </div>
+          <p className="l-hero-stack-caption">Tap the stack to see the next lot</p>
         </div>
       </section>
 
-      <section style={{ padding: '0 24px 28px', position: 'relative', zIndex: 2 }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', background: 'linear-gradient(160deg, rgba(232,184,75,0.12), rgba(9,10,14,0.96))', border: '1px solid rgba(232,184,75,0.18)', borderRadius: 28, padding: '22px 20px 24px', boxShadow: '0 24px 60px rgba(0,0,0,0.28)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 16 }}>
+      {/* Rivals */}
+      <section className="l-rivals">
+        <div className="l-rivals-inner">
+          <div className="l-rivals-head">
             <div>
-              <div style={{ color: '#E8B84B', fontSize: 11, letterSpacing: 3, fontWeight: 800, marginBottom: 6 }}>NEW DAILY MODE</div>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(28px, 4vw, 42px)', letterSpacing: 1.5, color: '#fff' }}>TODAY IN RIVALS MODE</div>
+              <span className="ui-eyebrow">Daily mode</span>
+              <h2 className="l-h2">Today in Rivals</h2>
             </div>
-            <button onClick={() => router.push(rivalsHref)} style={{ border: 'none', borderRadius: 999, padding: '12px 18px', background: 'linear-gradient(135deg, #E8B84B, #c8921b)', color: '#000', fontWeight: 900, letterSpacing: 1.2, cursor: 'pointer' }}>
-              PLAY AUCTION NOW
-            </button>
           </div>
 
-          {featuredRival ? (() => {
-            const home = TEAM_LOOKUP[featuredRival.homeTeam];
-            const away = TEAM_LOOKUP[featuredRival.awayTeam];
-            const state = getMatchState(featuredRival, nowMs);
-            const countdown = formatCountdown(new Date(featuredRival.startAt).getTime() - nowMs);
-            const accent = state === 'open' ? '#4ade80' : state === 'locked' ? '#ef4444' : '#22D3EE';
-            const timerLabel = state === 'locked' ? 'MATCH LIVE' : state === 'open' ? 'AUCTION LOCKS IN' : 'MATCH STARTS IN';
-            const matchMeta = formatMatchMeta(featuredRival.startAt);
-
-            return (
-              <div style={{ background: '#0b0d12', border: `1px solid ${featuredRival.isHighProfile ? 'rgba(232,184,75,0.28)' : '#1b2030'}`, borderRadius: 22, padding: '18px 20px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: isCompactCard ? 'minmax(0, 1fr)' : '1fr auto', gap: 16, alignItems: 'center' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                      <div style={{ color: '#E8B84B', fontSize: 12, letterSpacing: 2.5, fontWeight: 800 }}>RIVALS</div>
-                      <div style={{ color: '#94A3B8', fontSize: 12, letterSpacing: 1.4 }}>{matchMeta} IST</div>
-                      <div style={{ color: featuredRival.isHighProfile ? '#E8B84B' : '#64748B', fontSize: 12, letterSpacing: 1.4 }}>
-                        {featuredRival.isHighProfile ? 'HIGHLIGHT CLASH' : featuredRival.venue}
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: isCompactCard ? 10 : 18, flexWrap: 'nowrap' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: isCompactCard ? 6 : 12, minWidth: 0, flex: 1 }}>
-                      <Image src={home?.logo || '/assets/CSK.png'} alt={`${home?.name || home?.short} logo`} width={58} height={58} style={{ width: isCompactCard ? 44 : 58, height: isCompactCard ? 44 : 58, objectFit: 'contain', flexShrink: 0 }} />
-                      <div style={{ minWidth: 0 }}>
-                        <div style={{ color: home?.color, fontWeight: 800, letterSpacing: 1.4, fontSize: isCompactCard ? 10 : 13 }}>{home?.short}</div>
-                        <div style={{ color: '#fff', fontFamily: "'Bebas Neue', sans-serif", fontSize: isCompactCard ? 16 : 26, letterSpacing: 1, lineHeight: isCompactCard ? 0.96 : 1, whiteSpace: isCompactCard ? 'normal' : 'initial', wordBreak: 'break-word', maxWidth: isCompactCard ? 110 : 'none' }}>{home?.name}</div>
-                      </div>
-                    </div>
-                    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: isCompactCard ? 18 : 34, color: '#94A3B8', letterSpacing: isCompactCard ? 1.5 : 4, flexShrink: 0, alignSelf: isCompactCard ? 'flex-start' : 'center', marginTop: isCompactCard ? 18 : 0 }}>VS</div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: isCompactCard ? 6 : 12, minWidth: 0, flex: 1, justifyContent: 'flex-end' }}>
-                      <div style={{ textAlign: 'right', minWidth: 0 }}>
-                        <div style={{ color: away?.color, fontWeight: 800, letterSpacing: 1.4, fontSize: isCompactCard ? 10 : 13 }}>{away?.short}</div>
-                        <div style={{ color: '#fff', fontFamily: "'Bebas Neue', sans-serif", fontSize: isCompactCard ? 16 : 26, letterSpacing: 1, lineHeight: isCompactCard ? 0.96 : 1, whiteSpace: isCompactCard ? 'normal' : 'initial', wordBreak: 'break-word', maxWidth: isCompactCard ? 110 : 'none', marginLeft: 'auto' }}>{away?.name}</div>
-                      </div>
-                      <Image src={away?.logo || '/assets/MI.png'} alt={`${away?.name || away?.short} logo`} width={58} height={58} style={{ width: isCompactCard ? 44 : 58, height: isCompactCard ? 44 : 58, objectFit: 'contain', flexShrink: 0 }} />
+          {rival ? (
+            <div className="l-rival-card">
+              <div className="l-rival-teams">
+                <div className="l-rival-meta">
+                  <span>{rival.meta} IST</span>
+                  <span aria-hidden="true">·</span>
+                  <span>{featuredRival.isHighProfile ? 'Highlight clash' : featuredRival.venue}</span>
+                </div>
+                <div className="l-rival-row">
+                  <div className="l-rival-team">
+                    <Image src={rival.home?.logo || '/assets/CSK.png'} alt={`${rival.home?.name || 'Home team'} logo`} width={48} height={48} />
+                    <div>
+                      <div className="l-rival-short">{rival.home?.short}</div>
+                      <div className="l-rival-name">{rival.home?.name}</div>
                     </div>
                   </div>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: isCompactCard ? 'stretch' : 'flex-end', gap: 10, textAlign: isCompactCard ? 'center' : 'right' }}>
-                    <div style={{ color: '#94A3B8', fontSize: 11, fontWeight: 800, letterSpacing: 2 }}>{timerLabel}</div>
-                    <div style={{ color: accent, fontFamily: "'Bebas Neue', sans-serif", fontSize: isCompactCard ? 30 : 34, letterSpacing: 1.2 }}>{state === 'locked' ? 'LIVE' : countdown}</div>
-                    <button onClick={() => router.push(rivalsHref)} style={{ border: 'none', borderRadius: 999, padding: '12px 18px', background: 'linear-gradient(135deg, #E8B84B, #c8921b)', color: '#000', fontWeight: 900, letterSpacing: 1.2, cursor: 'pointer', width: isCompactCard ? '100%' : 'auto' }}>
-                      PLAY AUCTION NOW
-                    </button>
+                  <span className="l-rival-vs">vs</span>
+                  <div className="l-rival-team l-rival-team-away">
+                    <div>
+                      <div className="l-rival-short">{rival.away?.short}</div>
+                      <div className="l-rival-name">{rival.away?.name}</div>
+                    </div>
+                    <Image src={rival.away?.logo || '/assets/MI.png'} alt={`${rival.away?.name || 'Away team'} logo`} width={48} height={48} />
                   </div>
                 </div>
               </div>
-            );
-          })() : (
-            <div style={{ background: '#0b0d12', border: '1px solid #1b2030', borderRadius: 18, padding: '18px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-              <div style={{ color: '#94A3B8', lineHeight: 1.7 }}>
-                Rivals mode now refreshes with a daily fantasy team matchup. Jump in from here to find an online rival or create a private duel room.
+              <div className="l-rival-side">
+                <span className="l-rival-timer-label">{rival.timerLabel}</span>
+                <span className={`l-rival-timer ui-figure${rival.state === 'locked' ? ' is-live' : ''}`}>{rival.countdown}</span>
+                <button className="ui-btn ui-btn-primary" onClick={() => router.push(rivalsHref)}>Play this match</button>
               </div>
-              <button onClick={() => router.push('/room?action=browse')} style={{ border: 'none', borderRadius: 999, padding: '12px 18px', background: 'linear-gradient(135deg, #E8B84B, #c8921b)', color: '#000', fontWeight: 900, letterSpacing: 1.2, cursor: 'pointer' }}>
-                PLAY AUCTION NOW
-              </button>
+            </div>
+          ) : (
+            <div className="l-rival-card l-rival-empty">
+              <p>Rivals is a two-player auction built around each day&apos;s IPL match. Find an online rival or create a private duel room.</p>
+              <button className="ui-btn ui-btn-primary" onClick={() => router.push('/room?action=browse')}>Find a rival</button>
             </div>
           )}
         </div>
       </section>
 
-      {/* STATS TICKER */}
-      <div className="l-ticker">
-        <div className="l-ticker-track marquee-anim">
-          {[0, 1].map(i => (
-            <div key={i} className="l-ticker-set">
-              {TICKER_ITEMS.flatMap((item, j) => [
-                <span key={`dot-${j}`}>●</span>,
-                <span key={`item-${j}`}>{item}</span>,
-              ])}
-            </div>
-          ))}
-        </div>
+      {/* Facts strip */}
+      <div className="l-facts">
+        {FACTS.map((fact) => <span key={fact}>{fact}</span>)}
       </div>
 
-      {/* MARQUEE PLAYERS */}
+      {/* Marquee players */}
       <section className="l-players">
-        <div className="l-players-inner">
-          <div className="l-section-title-row">
-            <div className="l-gold-bar" />
-            <h2 className="l-section-h2">MARQUEE PLAYERS IN THE IPL AUCTION GAME</h2>
-          </div>
+        <div className="l-section-head">
+          <span className="ui-eyebrow">Marquee players</span>
+          <h2 className="l-h2">The names everyone will bid on</h2>
         </div>
-        <div className="l-desktop-marquee" style={{ height: '600px', position: 'relative', width: '100%', maxWidth: '100vw', cursor: 'grab', overflow: 'hidden' }}>
+        <div className="l-desktop-marquee">
           <CircularGallery
             items={GALLERY_ITEMS}
-            bend={3}
-            textColor="#E8B84B"
-            borderRadius={0.05}
-            font="700 32px 'Montserrat', sans-serif"
+            bend={1}
+            textColor="#eef0f5"
+            borderRadius={0.04}
+            font="500 30px var(--font-display)"
           />
         </div>
         <div className="l-mobile-marquee">
-          <div style={{ display: 'flex', overflowX: 'auto', gap: 16, padding: '24px', scrollSnapType: 'x mandatory' }}>
-            {GALLERY_ITEMS.map((item, i) => (
-              <div key={i} style={{ minWidth: 220, flexShrink: 0, scrollSnapAlign: 'start', borderRadius: 12, overflow: 'hidden', background: '#111', border: '1px solid #222' }}>
-                <img src={item.image} style={{ width: '100%', height: 280, objectFit: 'cover' }} alt={item.alt} loading="lazy" />
-                <div style={{ padding: 12, textAlign: 'center', background: '#0a0a0c', color: '#E8B84B', fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, letterSpacing: 1 }}>{item.text}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section className="l-how">
-        <div className="l-seo-heading">
-          <span>How It Works</span>
-          <h2>Run a complete IPL auction simulator in minutes</h2>
-          <p>Use the simulator for fantasy IPL auction practice, friendly draft nights, or a full mock IPL auction before the real mega auction.</p>
-        </div>
-        <div className="l-how-grid">
-          {HOW_STEPS.map(({ num, title, body }) => (
-            <div key={num} className="l-step">
-              <div className="l-step-num">{num}</div>
-              <div className="l-step-bar" />
-              <h3 className="l-step-title">{title}</h3>
-              <p className="l-step-body">{body}</p>
-            </div>
+          {GALLERY_ITEMS.map((item) => (
+            <figure key={item.text} className="l-mobile-player">
+              <img src={item.image} alt={item.alt} loading="lazy" />
+              <figcaption>{item.text}</figcaption>
+            </figure>
           ))}
         </div>
       </section>
 
+      {/* How it works */}
+      <section className="l-how">
+        <div className="l-section-head">
+          <span className="ui-eyebrow">How it works</span>
+          <h2 className="l-h2">A full IPL auction in minutes</h2>
+          <p>Use it for fantasy league practice, a draft night with friends, or a mock auction before the real mega auction.</p>
+        </div>
+        <ol className="l-how-grid">
+          {HOW_STEPS.map(({ num, title, body }) => (
+            <li key={num} className="l-step">
+              <span className="l-step-num">{num}</span>
+              <h3 className="l-step-title">{title}</h3>
+              <p className="l-step-body">{body}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* Reviews */}
       <section className="l-reviews">
-        <div className="l-reviews-heading">
-          <div>
-            <span>Player Reviews</span>
-            <h2>Real auction-night energy from Indian cricket fans</h2>
-          </div>
-          <p>
-            Fast rooms, last-second bids, and the kind of friendly arguments that keep the group chat alive after the auction ends.
-          </p>
+        <div className="l-section-head">
+          <span className="ui-eyebrow">Player reviews</span>
+          <h2 className="l-h2">What people say after an auction</h2>
         </div>
-
-        <div className="l-review-spotlight">
-          <div className="l-review-score">
-            <span>4.9</span>
-            <div>
-              <strong>Fan rated</strong>
-              <small>Across friendly rooms, college leagues, and weekend draft nights</small>
-            </div>
-          </div>
-          <div className="l-review-pulse-line" />
-        </div>
-
-        <div className="l-review-marquee" aria-label="Player reviews">
-          <div className="l-review-track">
-            {[0, 1].map((loop) => (
-              <div className="l-review-set" key={loop}>
-                {PLAYER_REVIEWS.map((review, index) => (
-                  <article className="l-review-card" key={`${loop}-${review.name}`}>
-                    <div className="l-review-card-top">
-                      <div className="l-review-avatar">{review.name.split(' ').map((part) => part[0]).join('')}</div>
-                      <div>
-                        <h3>{review.name}</h3>
-                        <p>{review.city}</p>
-                      </div>
-                    </div>
-                    <div className="l-review-stars" aria-label="5 star review">★★★★★</div>
-                    <p className="l-review-text">{review.text}</p>
-                    <span className="l-review-tag">{index % 3 === 0 ? 'Great with friends' : index % 3 === 1 ? 'Smooth multiplayer' : 'Quite insane finish'}</span>
-                  </article>
-                ))}
+        <div className="l-review-row" aria-label="Player reviews">
+          {PLAYER_REVIEWS.map((review) => (
+            <article className="l-review-card" key={review.name}>
+              <p className="l-review-text">{review.text}</p>
+              <div className="l-review-who">
+                <span className="l-review-avatar" aria-hidden="true">{review.name.split(' ').map((part) => part[0]).join('')}</span>
+                <span>
+                  <span className="l-review-name">{review.name}</span>
+                  <span className="l-review-city">{review.city}</span>
+                </span>
               </div>
-            ))}
-          </div>
+            </article>
+          ))}
         </div>
       </section>
 
+      {/* Why */}
       <section className="l-seo-section">
-        <div className="l-seo-heading">
-          <span>Why Use This Simulator</span>
-          <h2>Designed for IPL auction practice, strategy, and multiplayer fun</h2>
+        <div className="l-section-head">
+          <span className="ui-eyebrow">Why use this simulator</span>
+          <h2 className="l-h2">Built for auction practice, strategy and game nights</h2>
           <p>
-            IPL Auction Simulator helps you test bidding plans before a fantasy league, learn purse management,
-            and play an IPL auction online with friends without spreadsheets or manual timers.
+            Test bidding plans before a fantasy league, learn purse management, and play an IPL auction online
+            with friends without spreadsheets or manual timers.
           </p>
         </div>
         <div className="l-feature-grid">
-          {[
-            ['Live rooms', 'Create private or public IPL auction rooms with real-time bidding and room codes.'],
-            ['Mock auction strategy', 'Practice when to bid, when to save, and how to build a balanced squad.'],
-            ['Purse management', 'Track remaining budget while competing for marquee players and value picks.'],
-            ['Player pool', 'Browse IPL players, roles, base prices, teams, and auction-ready player cards.'],
-            ['Team building', 'Compare franchises, squad roles, and final auction results after bidding ends.'],
-            ['Free online play', 'Start an IPL auction game directly in the browser on desktop or mobile.'],
-          ].map(([title, body]) => (
-            <article key={title} className="l-feature-card">
+          {FEATURES.map(([title, body]) => (
+            <article key={title} className="l-feature">
               <h3>{title}</h3>
               <p>{body}</p>
             </article>
@@ -604,70 +463,54 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* TEAMS */}
+      {/* Teams */}
       <section className="l-teams">
-        <p className="l-teams-label">This Season&apos;s Franchises</p>
+        <p className="l-teams-label">This season&apos;s franchises</p>
         <div className="l-teams-grid">
-          {TEAMS.map(t => (
-            <div
-              key={t.id}
-              className="l-team-badge"
-              onClick={() => router.push(`/teams?team=${encodeURIComponent(t.id)}`)}
-              title={t.name}
-              style={{ borderColor: '#1c1c1c', background: `${t.color}08` }}
-            >
-              <Image
-                src={t.logo}
-                alt={`${t.name} team logo`}
-                width={70}
-                height={70}
-                style={{ width: '70px', height: '70px', objectFit: 'contain', display: 'block' }}
-              />
-            </div>
+          {TEAMS.map((t) => (
+            <Link key={t.id} href={`/teams?team=${encodeURIComponent(t.id)}`} className="l-team-badge" title={t.name} aria-label={t.name}>
+              <Image src={t.logo} alt={`${t.name} team logo`} width={64} height={64} />
+            </Link>
           ))}
         </div>
       </section>
 
-      {/* FOOTER */}
       <footer className="l-footer">
         <div className="l-footer-inner">
           <div className="l-footer-top">
             <div className="l-footer-brand">
               <BrandLink className="l-footer-logo" />
-              <p className="l-footer-tagline">The free online IPL auction game at iplauction.fun.</p>
+              <p className="l-footer-tagline">The free online IPL auction game</p>
             </div>
             <div className="l-footer-links">
               {[
-                { label: 'How to Play', href: '/how-to-play' },
+                { label: 'How to play', href: '/how-to-play' },
                 { label: 'Players', href: '/players' },
                 { label: 'Teams', href: '/teams' },
                 { label: 'Support', href: '/support' },
-                { label: 'IPL Auction Simulator', href: '/ipl-auction-simulator' },
-                { label: 'Mock IPL Auction', href: '/mock-ipl-auction' },
-                { label: 'Live Rooms', href: '/room?action=browse' },
+                { label: 'IPL auction simulator', href: '/ipl-auction-simulator' },
+                { label: 'Mock IPL auction', href: '/mock-ipl-auction' },
+                { label: 'Live rooms', href: '/room?action=browse' },
               ].map((link) => (
                 <Link key={link.label} href={link.href} className="l-footer-link">{link.label}</Link>
               ))}
             </div>
           </div>
-          <div className="l-footer-bottom" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', textAlign: 'center' }}>
-            <span>© 2026 IPL AUCTION ONLINE. FREE TO PLAY. BUILT FOR THE GAME.</span>
-
-            <div style={{ fontSize: '10px', color: '#888', letterSpacing: '1px', lineHeight: '1.6', maxWidth: '600px', marginTop: '4px' }}>
-              IPL Auction Online is a fan-made simulator and is not affiliated with the BCCI, IPL, or any official franchise.
-              Data and player information are attributed to <a href="https://www.iplt20.com" target="_blank" rel="noreferrer" style={{ color: '#E8B84B', textDecoration: 'none' }}>iplt20.com</a> & <a href="https://cricapi.com" target="_blank" rel="noreferrer" style={{ color: '#E8B84B', textDecoration: 'none' }}>CricAPI</a>.
-            </div>
-
-            <span style={{ fontSize: '9px', color: '#666', letterSpacing: '2px', textTransform: 'lowercase', marginTop: '8px' }}>
-              <a target="_blank" rel="noreferrer" href="https://icons8.com/icon/OLf3WK9ioebI/auction" style={{ color: 'inherit', textDecoration: 'none' }}>Auction Hammer</a> icon by <a target="_blank" rel="noreferrer" href="https://icons8.com" style={{ color: 'inherit', textDecoration: 'none' }}>Icons8</a>
-            </span>
-            <span style={{ fontSize: '9px', color: '#666', letterSpacing: '1px', textTransform: 'none' }}>
-              <a target="_blank" rel="noreferrer" href="https://www.flaticon.com/free-icons/chai-tea" title="chai-tea icons" style={{ color: 'inherit', textDecoration: 'none' }}>Chai-tea icons created by Fatima Qureshi - Flaticon</a>
-            </span>
+          <div className="l-footer-bottom">
+            <p>© 2026 iplauction.fun · Free to play</p>
+            <p>
+              A fan-made simulator, not affiliated with the BCCI, IPL or any franchise. Player data from{' '}
+              <a href="https://www.iplt20.com" target="_blank" rel="noreferrer">iplt20.com</a> and{' '}
+              <a href="https://cricapi.com" target="_blank" rel="noreferrer">CricAPI</a>.
+            </p>
+            <p>
+              <a target="_blank" rel="noreferrer" href="https://icons8.com/icon/OLf3WK9ioebI/auction">Auction hammer</a> icon by{' '}
+              <a target="_blank" rel="noreferrer" href="https://icons8.com">Icons8</a> ·{' '}
+              <a target="_blank" rel="noreferrer" href="https://www.flaticon.com/free-icons/chai-tea" title="chai-tea icons">Chai icon by Fatima Qureshi, Flaticon</a>
+            </p>
           </div>
         </div>
       </footer>
-
     </div>
   );
 }

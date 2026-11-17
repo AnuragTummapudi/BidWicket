@@ -38,15 +38,15 @@ export default function PlayersPage() {
   const displayedPlayers = filteredPlayers.slice(0, visibleCount);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#000', color: '#fff', fontFamily: "'Rajdhani', sans-serif", minHeight: '100vh', padding: '24px 5vw' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#0b0d14', color: '#fff', fontFamily: 'var(--font-ui)', minHeight: '100vh', padding: '24px 5vw' }}>
       <div style={{ width: '100%', margin: '0 auto' }}>
         
         <header style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '24px', gap: '24px' }}>
           <BrandLink compact={true} />
-          <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '3.5rem', margin: 0, letterSpacing: '4px', color: '#E8B84B' }}>
-            PLAYER <span style={{ color: '#fff' }}>DIRECTORY</span>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '3.5rem', margin: 0, letterSpacing: 0, color: '#E8B84B' }}>
+            Player directory
           </h1>
-          <div style={{ color: '#9aa4b2', fontSize: '1rem' }}>{filteredPlayers.length} matches / {playersData.length} total</div>
+          <div style={{ color: '#a3a9b8', fontSize: '1rem' }}>{filteredPlayers.length} matches / {playersData.length} total</div>
         </header>
 
         {/* Filters Panel */}
@@ -66,7 +66,7 @@ export default function PlayersPage() {
           <div className="filters-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', alignItems: 'center' }}>
             {/* Roles Chips */}
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <span style={{ color: '#94a3b8', marginRight: '8px', fontSize: '0.95rem', letterSpacing: '0.08em' }}>ROLE:</span>
+              <span style={{ color: '#a3a9b8', marginRight: '8px', fontSize: '0.95rem', letterSpacing: 0 }}>Role:</span>
               {ROLES.map(role => (
                 <button
                   key={role}
@@ -80,9 +80,9 @@ export default function PlayersPage() {
                     color: filterRole === role ? '#000' : '#fff',
                     cursor: 'pointer',
                     fontWeight: filterRole === role ? '700' : '600',
-                    transition: 'all 0.2s',
-                    fontFamily: "'Barlow Condensed', sans-serif",
-                    letterSpacing: '0.08em'
+                    transition: 'background-color .15s, border-color .15s, color .15s, opacity .15s',
+                    fontFamily: 'var(--font-display)',
+                    letterSpacing: 0
                   }}
                 >{role}</button>
               ))}
@@ -90,7 +90,7 @@ export default function PlayersPage() {
 
             {/* Nationality Chips */}
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <span style={{ color: '#94a3b8', marginRight: '8px', fontSize: '0.95rem', letterSpacing: '0.08em' }}>NATION:</span>
+              <span style={{ color: '#a3a9b8', marginRight: '8px', fontSize: '0.95rem', letterSpacing: 0 }}>Nation:</span>
               {NATIONS.map(nation => (
                 <button
                   key={nation}
@@ -104,9 +104,9 @@ export default function PlayersPage() {
                     color: filterNation === nation ? '#000' : '#fff',
                     cursor: 'pointer',
                     fontWeight: filterNation === nation ? '700' : '600',
-                    transition: 'all 0.2s',
-                    fontFamily: "'Barlow Condensed', sans-serif",
-                    letterSpacing: '0.08em'
+                    transition: 'background-color .15s, border-color .15s, color .15s, opacity .15s',
+                    fontFamily: 'var(--font-display)',
+                    letterSpacing: 0
                   }}
                 >{nation}</button>
               ))}
@@ -126,17 +126,17 @@ export default function PlayersPage() {
         {/* List */}
         <div>
           {displayedPlayers.length === 0 ? (
-            <div style={{ padding: '64px 24px', textAlign: 'center', backgroundColor: '#0A0A0A', border: '1px dashed #333', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+            <div style={{ padding: '64px 24px', textAlign: 'center', backgroundColor: '#0b0d14', border: '1px dashed #333', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
               <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 <line x1="11" y1="8" x2="11" y2="14"></line>
                 <line x1="8" y1="11" x2="14" y2="11"></line>
               </svg>
-              <div style={{ color: '#cbd5e1', fontSize: '1.2rem' }}>No players found matching your criteria.</div>
+              <div style={{ color: '#c9cdd6', fontSize: '1.2rem' }}>No players found matching your criteria.</div>
               <button 
                 onClick={() => { setSearch(''); setFilterRole('ALL'); setFilterNation('ALL'); }}
-                style={{ marginTop: '16px', padding: '10px 24px', background: 'transparent', border: '1px solid #555', color: '#fff', borderRadius: '4px', cursor: 'pointer', fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.08em' }}
+                style={{ marginTop: '16px', padding: '10px 24px', background: 'transparent', border: '1px solid #555', color: '#fff', borderRadius: '4px', cursor: 'pointer', fontFamily: 'var(--font-display)', letterSpacing: 0 }}
                 onMouseOver={e => e.target.style.borderColor = '#E8B84B'}
                 onMouseOut={e => e.target.style.borderColor = '#555'}
               >
@@ -166,24 +166,23 @@ export default function PlayersPage() {
                       border: '2px solid #E8B84B',
                       color: '#E8B84B',
                       fontSize: '1.1rem',
-                      fontFamily: "'Barlow Condensed', sans-serif",
-                      letterSpacing: '2px',
-                      textTransform: 'uppercase',
+                      fontFamily: 'var(--font-display)',
+                      letterSpacing: 0,
                       cursor: 'pointer',
                       borderRadius: '4px',
-                      transition: 'all 0.2s',
+                      transition: 'background-color .15s, border-color .15s, color .15s, opacity .15s',
                     }}
                     onMouseOver={e => { e.target.style.backgroundColor = '#E8B84B'; e.target.style.color = '#000'; }}
                     onMouseOut={e => { e.target.style.backgroundColor = 'transparent'; e.target.style.color = '#E8B84B'; }}
                   >
-                    LOAD MORE LISTINGS
+                    Load more listings
                   </button>
                 </div>
               )}
             </>
           )}
-        <div style={{ marginTop: '48px', padding: '24px 0', textAlign: 'center', borderTop: '1px solid #111' }}>
-          <div style={{ fontSize: '10px', color: '#444', letterSpacing: '1px', lineHeight: '1.6', maxWidth: '700px', margin: '0 auto' }}>
+        <div style={{ marginTop: '48px', padding: '24px 0', textAlign: 'center', borderTop: '1px solid #1a1e28' }}>
+          <div style={{ fontSize: '10px', color: '#7a8296', letterSpacing: 0, lineHeight: '1.6', maxWidth: '700px', margin: '0 auto' }}>
             IPL Auction Online is a fan-made simulator for educational purposes. 
             Player information and data are attributed to <a href="https://www.iplt20.com" target="_blank" rel="noreferrer" style={{ color: '#E8B84B', textDecoration: 'none' }}>iplt20.com</a> & <a href="https://cricapi.com" target="_blank" rel="noreferrer" style={{ color: '#E8B84B', textDecoration: 'none' }}>CricAPI</a>.
           </div>

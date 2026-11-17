@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, useRef, useReducer, useCallback, useMemo, startTransition } from 'react';
+import { createContext, useContext, useState, useEffect, useRef, useReducer, useMemo, startTransition } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import { MEGA_SETS } from '../src/megaPlayers';
@@ -175,7 +175,7 @@ export function GameProvider({ children }) {
   }
 
   const [auctionMode, setAuctionMode] = useState(null);
-  const [isPrivateRoom, setIsPrivateRoom] = useState(false);
+  const [, setIsPrivateRoom] = useState(false);
   const [playMode, setPlayMode] = useState(null);
   const g = useRef(null);
   const intervalRef = useRef(null);
@@ -185,7 +185,9 @@ export function GameProvider({ children }) {
   const lastMultiBidAtRef = useRef(0);
 
   // Multiplayer state
-  const { emit, on } = useSocket();
+  // Marketing, SEO and directory pages never need the live server; only game routes open a socket.
+  const needsSocket = /^\/(room|auction|results|join|lobby|team-select|mode|play-mode)(\/|$)/.test(pathname || '');
+  const { emit, on } = useSocket(needsSocket);
   const [roomCode, setRoomCode] = useState(null);
   const [lobbyPlayers, setLobbyPlayers] = useState([]);
   const [isHost, setIsHost] = useState(false);
@@ -335,6 +337,8 @@ export function GameProvider({ children }) {
     if (playMode === "single" && g.current) {
       syncSingleGS();
     }
+    // syncSingleGS reads the g ref; these keys are the moments state should be persisted
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playMode, pathname, auctionMode, myTeamId, multiGS]);
 
   // Socket listeners for multiplayer
@@ -439,6 +443,8 @@ export function GameProvider({ children }) {
       router.push('/room?action=browse');
     });
     return () => { off1(); off2(); off3(); off4(); off5(); off6(); off7(); };
+    // listeners are re-bound per room session, not per player id change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playMode, on, router, pathname, roomCode, lobbyMode]);
 
   // Unified Audio & Animation side-effects
@@ -456,6 +462,8 @@ export function GameProvider({ children }) {
     const taken = new Set(lobbyPlayers.map(p => p.teamId).filter(Boolean));
     const available = (TEAMS || []).find(t => !taken.has(t.id));
     return available?.id || (TEAMS && TEAMS[0]?.id) || null;
+    // g is a mutable ref; multiGS and g.current.myTeamId force a recompute when it changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMulti, lobbyPlayers, multiGS, playerId, myTeamId, g.current?.myTeamId]);
 
   useEffect(() => {
@@ -470,6 +478,8 @@ export function GameProvider({ children }) {
       }
     }
     prevTimerRef.current = currentGS.phase;
+    // fire sounds on timer/phase ticks only, not on every multiGS object update
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [multiGS?.timer, multiGS?.phase, g.current?.timer, g.current?.phase, isMulti]);
 
   // Confetti for sold
@@ -483,8 +493,8 @@ export function GameProvider({ children }) {
 
     const frame = () => {
       if (!active) return;
-      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 0.9 }, colors: ['#D4AF37', '#ffffff', '#22D3EE'] });
-      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1, y: 0.9 }, colors: ['#D4AF37', '#ffffff', '#22D3EE'] });
+      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 0.9 }, colors: ['#D4AF37', '#ffffff', '#a3a9b8'] });
+      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1, y: 0.9 }, colors: ['#D4AF37', '#ffffff', '#a3a9b8'] });
       if (Date.now() < end) frameId = requestAnimationFrame(frame);
     };
 
@@ -558,7 +568,7 @@ export function GameProvider({ children }) {
       const now = Date.now();
       if (now - lastMultiBidAtRef.current < 120) return;
       lastMultiBidAtRef.current = now;
-      emit("place-bid", {}, (res) => { });
+      emit("place-bid", {}, () => {});
       return;
     }
     const gs = g.current; if (!gs || gs.phase !== "bidding") return;

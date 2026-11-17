@@ -1,17 +1,18 @@
 'use client';
 
 import Link from 'next/link';
+import BrandLink from '../components/BrandLink';
 
 const GOLD = '#E8B84B';
-const CYAN = '#22D3EE';
-const CARD = '#0d0f14';
-const BORDER = '#1d2330';
+const CYAN = '#a3a9b8';
+const CARD = '#11141c';
+const BORDER = '#1f2430';
 
 const quickFacts = [
   { label: 'Franchises', value: '10' },
-  { label: 'Starting Purse', value: '₹120 Cr' },
-  { label: 'Game Types', value: 'Mega + Mini' },
-  { label: 'Live Ratings', value: 'Hidden During Auction' },
+  { label: 'Starting purse', value: '₹120 Cr' },
+  { label: 'Game types', value: 'Mega + Mini' },
+  { label: 'Live ratings', value: 'Hidden in auction' },
 ];
 
 const steps = [
@@ -48,11 +49,11 @@ const rules = [
 
 const modes = [
   {
-    title: 'Mega Auction',
+    title: 'Mega auction',
     body: 'Best for a full squad-building experience. You buy across a much larger pool and then the game evaluates the strength of your team based on the final XI.',
   },
   {
-    title: 'Mini Auction',
+    title: 'Mini auction',
     body: 'Best for quicker rooms and tighter competition. Mini mode focuses on the strongest possible Playing XI and applies balance checks more strictly in the final ranking.',
   },
 ];
@@ -82,7 +83,7 @@ const scoringPoints = [
 
 const resultsCards = [
   {
-    title: 'Squad Results',
+    title: 'Squad results',
     body: 'See your final team, purse used, purse left, total rating, average rating, and player-by-player value after the auction is complete.',
   },
   {
@@ -149,12 +150,11 @@ export default function HowToPlayClient({ faqSchemaJson }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqSchemaJson }} />
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap');
         .htp-page {
           min-height: 100vh;
-          background: #000;
+          background: #0b0d14;
           color: #f7f7f7;
-          font-family: 'Rajdhani', sans-serif;
+          font-family:var(--font-ui);
         }
         .htp-shell {
           width: min(1180px, calc(100% - 32px));
@@ -182,9 +182,9 @@ export default function HowToPlayClient({ faqSchemaJson }) {
           flex-wrap: wrap;
         }
         .htp-brand {
-          font-family: 'Bebas Neue', sans-serif;
+          font-family:var(--font-display);
           font-size: clamp(1.4rem, 3vw, 1.9rem);
-          letter-spacing: .16em;
+          letter-spacing:0;
           text-decoration: none;
           color: #fff;
         }
@@ -195,35 +195,35 @@ export default function HowToPlayClient({ faqSchemaJson }) {
           min-height: 44px;
           padding: 0 18px;
           border-radius: 999px;
-          font-family: 'Bebas Neue', sans-serif;
-          letter-spacing: .08em;
+          font-family:var(--font-display);
+          letter-spacing:0;
           font-size: 1.05rem;
           text-decoration: none;
           transition: transform .18s ease, filter .18s ease;
         }
-        .htp-btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+        .htp-btn:hover {  filter: brightness(1.05); }
         .htp-hero {
           padding: 48px 0 10px;
         }
         .htp-kicker {
           color: ${CYAN};
-          font-family: 'Barlow Condensed', sans-serif;
+          font-family:var(--font-display);
           font-size: 0.9rem;
-          letter-spacing: .22em;
-          text-transform: uppercase;
+          letter-spacing:0;
+          
         }
         .htp-title {
           margin-top: 12px;
-          font-family: 'Bebas Neue', sans-serif;
+          font-family:var(--font-display);
           font-size: clamp(3.2rem, 8vw, 6.2rem);
           line-height: .9;
-          letter-spacing: .04em;
+          letter-spacing:0;
           color: #fff;
         }
         .htp-subtitle {
           max-width: 860px;
           margin-top: 18px;
-          color: #d1d5db;
+          color: #c9cdd6;
           font-size: 1.12rem;
           line-height: 1.9;
           letter-spacing: 0.01em;
@@ -243,16 +243,16 @@ export default function HowToPlayClient({ faqSchemaJson }) {
         .htp-fact-label {
           color: #70798a;
           font-size: .8rem;
-          letter-spacing: .18em;
-          text-transform: uppercase;
-          font-family: 'Barlow Condensed', sans-serif;
+          letter-spacing:0;
+          
+          font-family:var(--font-display);
         }
         .htp-fact-value {
           margin-top: 10px;
-          font-family: 'Bebas Neue', sans-serif;
+          font-family:var(--font-display);
           font-size: 2rem;
           color: ${GOLD};
-          letter-spacing: .04em;
+          letter-spacing:0;
           line-height: .95;
         }
         .htp-stack-wrap {
@@ -285,16 +285,16 @@ export default function HowToPlayClient({ faqSchemaJson }) {
         }
         .htp-card-title {
           margin-top: 10px;
-          font-family: 'Barlow Condensed', sans-serif;
+          font-family:var(--font-display);
           font-size: clamp(2rem, 4vw, 2.8rem);
-          font-weight: 700;
+          font-weight:600;
           letter-spacing: .02em;
           color: ${GOLD};
           line-height: 1;
-          text-transform: uppercase;
+          
         }
         .htp-card-copy {
-          color: #d1d5db;
+          color: #c9cdd6;
           line-height: 1.85;
           font-size: 1.05rem;
           margin-top: 14px;
@@ -309,20 +309,20 @@ export default function HowToPlayClient({ faqSchemaJson }) {
         .htp-mini-title {
           color: #fff;
           font-size: 1.28rem;
-          font-weight: 700;
+          font-weight:600;
           line-height: 1.35;
         }
         .htp-mini-copy {
-          color: #d1d5db;
+          color: #c9cdd6;
           line-height: 1.8;
           margin-top: 10px;
           font-size: 1.02rem;
         }
         .htp-step-number {
-          font-family: 'Bebas Neue', sans-serif;
+          font-family:var(--font-display);
           color: ${GOLD};
           font-size: 2rem;
-          letter-spacing: .08em;
+          letter-spacing:0;
         }
         .htp-list {
           display: grid;
@@ -333,14 +333,14 @@ export default function HowToPlayClient({ faqSchemaJson }) {
           display: flex;
           align-items: flex-start;
           gap: 10px;
-          color: #d1d5db;
+          color: #c9cdd6;
           line-height: 1.85;
           font-size: 1.02rem;
         }
         .htp-list-icon {
           width: 18px;
           flex: 0 0 18px;
-          font-weight: 700;
+          font-weight:600;
           transform: translateY(2px);
         }
         .htp-faq {
@@ -351,13 +351,13 @@ export default function HowToPlayClient({ faqSchemaJson }) {
         }
         .htp-faq-q {
           color: #fff;
-          font-weight: 700;
+          font-weight:600;
           font-size: 1.14rem;
           line-height: 1.45;
         }
         .htp-faq-a {
           margin-top: 10px;
-          color: #d1d5db;
+          color: #c9cdd6;
           line-height: 1.8;
           font-size: 1rem;
         }
@@ -397,22 +397,20 @@ export default function HowToPlayClient({ faqSchemaJson }) {
 
       <header className="htp-topbar">
         <div className="htp-shell htp-topbar-inner">
-          <Link href="/" className="htp-brand">
-            IPL <span style={{ color: GOLD }}>AUCTION ONLINE</span>
-          </Link>
+          <BrandLink compact />
           <div className="htp-actions">
-            <Link href="/" className="htp-btn" style={{ border: `1px solid ${BORDER}`, color: '#d5d8de', background: '#10131a' }}>Home</Link>
-            <Link href="/support" className="htp-btn" style={{ border: `1px solid ${BORDER}`, color: '#d5d8de', background: '#10131a' }}>Support</Link>
-            <Link href="/room?action=create" className="htp-btn" style={{ background: GOLD, color: '#000' }}>Create Room</Link>
-            <Link href="/room?action=browse" className="htp-btn" style={{ border: `1px solid ${CYAN}55`, color: CYAN, background: `${CYAN}12` }}>Live Auctions</Link>
+            <Link href="/" className="htp-btn" style={{ border: `1px solid ${BORDER}`, color: '#c9cdd6', background: '#1a1e28' }}>Home</Link>
+            <Link href="/support" className="htp-btn" style={{ border: `1px solid ${BORDER}`, color: '#c9cdd6', background: '#1a1e28' }}>Support</Link>
+            <Link href="/room?action=create" className="htp-btn" style={{ background: GOLD, color: '#000' }}>Create room</Link>
+            <Link href="/room?action=browse" className="htp-btn" style={{ border: `1px solid ${CYAN}55`, color: CYAN, background: `${CYAN}12` }}>Live auctions</Link>
           </div>
         </div>
       </header>
 
       <main className="htp-shell">
         <section className="htp-hero">
-          <SectionKicker>Complete Guide</SectionKicker>
-          <h1 className="htp-title">HOW TO PLAY IPL AUCTION ONLINE</h1>
+          <SectionKicker>Complete guide</SectionKicker>
+          <h1 className="htp-title">How to play IPL auction online</h1>
           <p className="htp-subtitle">
             Learn how the IPL auction game works from room setup to final leaderboard scoring. This IPL Auction Online guide covers
             auction rules, bidding strategy, purse management, franchise selection, Mega Auction vs Mini Auction formats,
@@ -430,7 +428,7 @@ export default function HowToPlayClient({ faqSchemaJson }) {
 
         <section className="htp-stack-wrap">
           <div className="htp-card">
-            <SectionKicker>Getting Started</SectionKicker>
+            <SectionKicker>Getting started</SectionKicker>
             <div className="htp-card-title">How the game flow works</div>
             <div className="htp-card-grid two" style={{ marginTop: 18 }}>
               {steps.map((step, index) => (
@@ -444,7 +442,7 @@ export default function HowToPlayClient({ faqSchemaJson }) {
           </div>
 
           <div className="htp-card">
-            <SectionKicker>Auction Rules</SectionKicker>
+            <SectionKicker>Auction rules</SectionKicker>
             <div className="htp-card-title">Core rules every player should know</div>
             <div className="htp-card-copy">
               The live auction is built to feel competitive and readable. These are the rules that shape every room before results are calculated.
@@ -484,7 +482,7 @@ export default function HowToPlayClient({ faqSchemaJson }) {
           </div>
 
           <div className="htp-card">
-            <SectionKicker>After the Auction</SectionKicker>
+            <SectionKicker>After the auction</SectionKicker>
             <div className="htp-card-title">What you see on the results page</div>
             <div className="htp-card-grid three" style={{ marginTop: 18 }}>
               {resultsCards.map((card) => (
@@ -499,11 +497,11 @@ export default function HowToPlayClient({ faqSchemaJson }) {
           <div className="htp-card">
             <SectionKicker>Strategy</SectionKicker>
             <div className="htp-card-title">Tips to win more rooms</div>
-            <BulletList items={strategyTips} icon="↗" color={CYAN} />
+            <BulletList items={strategyTips} color={CYAN} />
           </div>
 
           <div className="htp-card">
-            <SectionKicker>Frequently Asked Questions</SectionKicker>
+            <SectionKicker>Frequently asked questions</SectionKicker>
             <div className="htp-card-title">FAQ</div>
             <div className="htp-card-grid two" style={{ marginTop: 18 }}>
               {faqs.map((item) => (
@@ -516,16 +514,16 @@ export default function HowToPlayClient({ faqSchemaJson }) {
           </div>
 
           <div className="htp-card">
-            <SectionKicker>Ready to Play</SectionKicker>
+            <SectionKicker>Ready to play</SectionKicker>
             <div className="htp-card-title">Start your next auction room</div>
             <div className="htp-card-copy">
               Create a room for friends, browse live rooms, or jump into a private code.
               The live auction hides ratings, the results reveal everything, and the leaderboard decides who actually built the best squad.
             </div>
             <div className="htp-actions" style={{ marginTop: 22 }}>
-              <Link href="/room?action=create" className="htp-btn" style={{ background: GOLD, color: '#000' }}>Create Room</Link>
-              <Link href="/room?action=join-code" className="htp-btn" style={{ border: `1px solid ${BORDER}`, color: '#d5d8de', background: '#10131a' }}>Join Room</Link>
-              <Link href="/room?action=browse" className="htp-btn" style={{ border: `1px solid ${CYAN}55`, color: CYAN, background: `${CYAN}12` }}>Browse Live Auctions</Link>
+              <Link href="/room?action=create" className="htp-btn" style={{ background: GOLD, color: '#000' }}>Create room</Link>
+              <Link href="/room?action=join-code" className="htp-btn" style={{ border: `1px solid ${BORDER}`, color: '#c9cdd6', background: '#1a1e28' }}>Join room</Link>
+              <Link href="/room?action=browse" className="htp-btn" style={{ border: `1px solid ${CYAN}55`, color: CYAN, background: `${CYAN}12` }}>Browse live auctions</Link>
             </div>
           </div>
         </section>

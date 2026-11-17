@@ -1,7 +1,7 @@
 export default function Head() {
   return (
     <>
-      <title>Join Auction Room</title>
+      <title>Join auction room</title>
       <meta name="robots" content="noindex,nofollow" />
       <link rel="canonical" href="https://www.iplauction.fun/room" />
     </>

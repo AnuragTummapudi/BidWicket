@@ -1,5 +1,6 @@
 'use client';
 
+import { AlertTriangle } from 'lucide-react';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGame, fmt } from '../GameContext';
@@ -216,8 +217,8 @@ export default function ResultsPage() {
     return (
       <div style={{ minHeight: '100vh', background: BG, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24 }}>
         <div className="loading-spinner" style={{ width: 60, height: 60, border: `4px solid ${GOLD}22`, borderTopColor: GOLD, borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-        <div style={{ color: GOLD, fontFamily: "'Bebas Neue'", fontSize: 32, letterSpacing: 6, textAlign: 'center' }}>
-          {resolvedGs ? 'CALCULATING FINAL SQUADS...' : 'LOADING RESULTS...'}
+        <div style={{ color: GOLD, fontFamily: 'var(--font-display)', fontSize: 32, letterSpacing: 0, textAlign: 'center' }}>
+          {resolvedGs ? 'Calculating final squads' : 'Loading results'}
         </div>
         <style>{`
           @keyframes spin { to { transform: rotate(360deg); } }
@@ -229,23 +230,23 @@ export default function ResultsPage() {
   if (!resolvedGs) {
     return (
       <div style={{ minHeight: '100vh', background: BG }}>
-        <div style={{ background: '#08090f', borderBottom: `1px solid ${BORDER}`, padding: 'clamp(14px,2vh,22px) clamp(16px,4vw,48px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+        <div style={{ background: '#11141c', borderBottom: `1px solid ${BORDER}`, padding: 'clamp(14px,2vh,22px) clamp(16px,4vw,48px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
           <BrandLink compact={true} />
           <button
             onClick={() => router.push('/room?action=browse')}
-            style={{ background: `linear-gradient(135deg,${GOLD},#9a7610)`, border: 'none', borderRadius: 6, padding: '10px 20px', color: '#000', fontWeight: 900, cursor: 'pointer', fontSize: 13, letterSpacing: 2, fontFamily: "'Barlow Condensed'" }}
+            style={{ background: `${GOLD}`, border: 'none', borderRadius: 6, padding: '10px 20px', color: '#000', fontWeight: 600, cursor: 'pointer', fontSize: 13, letterSpacing: 0, fontFamily: 'var(--font-display)' }}
           >
-            BACK TO ROOMS
+            Back to rooms
           </button>
         </div>
         <div style={{ minHeight: 'calc(100vh - 78px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 18, padding: 24, textAlign: 'center' }}>
-          <div style={{ color: GOLD, fontFamily: "'Bebas Neue'", fontSize: 28, letterSpacing: 4 }}>RESULTS UNAVAILABLE</div>
-          <div style={{ color: '#777', fontSize: 13, letterSpacing: 1 }}>{loadError || 'We could not load that result snapshot.'}</div>
+          <div style={{ color: GOLD, fontFamily: 'var(--font-display)', fontSize: 28, letterSpacing: 0 }}>Results unavailable</div>
+          <div style={{ color: '#7a8296', fontSize: 13, letterSpacing: 0 }}>{loadError || 'We could not load that result snapshot.'}</div>
           <button
             onClick={() => router.push('/room?action=browse')}
-            style={{ background: `linear-gradient(135deg,${GOLD},#9a7610)`, border: 'none', borderRadius: 6, padding: '10px 20px', color: '#000', fontWeight: 900, cursor: 'pointer', fontSize: 13, letterSpacing: 2, fontFamily: "'Barlow Condensed'" }}
+            style={{ background: `${GOLD}`, border: 'none', borderRadius: 6, padding: '10px 20px', color: '#000', fontWeight: 600, cursor: 'pointer', fontSize: 13, letterSpacing: 0, fontFamily: 'var(--font-display)' }}
           >
-            BACK TO ROOMS
+            Back to rooms
           </button>
         </div>
       </div>
@@ -414,66 +415,66 @@ function Results({ gs, myTeamId: mti, onRestart, mode, isArchived = false, archi
             : '';
 
   return (
-    <div style={{ minHeight: '100vh', background: BG, fontFamily: "'Rajdhani',sans-serif" }}>
+    <div style={{ minHeight: '100vh', background: BG, fontFamily: 'var(--font-ui)' }}>
       <style>{`
         @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
         .res-card{animation:fadeUp .35s ease-out both}
-        .res-tab-btn{transition:all .2s;border-radius:0;font-family:'Barlow Condensed';font-size:13px;letter-spacing:2px;font-weight:700;cursor:pointer;border:none;padding:12px 18px}
-        .res-team-pill{transition:all .2s;border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:700;font-size:13px;font-family:'Rajdhani';white-space:nowrap}
+        .res-tab-btn{transition:background-color .15s, border-color .15s, color .15s, opacity .15s;border-radius:0;font-family:var(--font-display);font-size:13px;letter-spacing:0;font-weight:600;cursor:pointer;border:none;padding:12px 18px}
+        .res-team-pill{transition:background-color .15s, border-color .15s, color .15s, opacity .15s;border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:600;font-size:13px;font-family:var(--font-ui);white-space:nowrap}
         .res-action-btn{transition:background-color .2s,border-color .2s,color .2s}
-        .res-action-btn:hover { background:#141922; border-color:#4b5563; color:#fff; }
+        .res-action-btn:hover { background:#242936; border-color:#4b5563; color:#fff; }
         .res-shell{max-width:1480px;margin:0 auto}
-        .res-panel{background:#0d1117;border:1px solid #1b2430;border-radius:18px}
-        .res-panel-muted{background:#0b0f14;border:1px solid #18202b;border-radius:16px}
+        .res-panel{background:#1a1e28;border:1px solid #242936;border-radius:18px}
+        .res-panel-muted{background:#1a1e28;border:1px solid #242936;border-radius:16px}
         .res-summary-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:start}
         .res-metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-        .res-metric{background:#0a0e13;border:1px solid #18202b;border-radius:14px;padding:14px 16px}
-        .res-metric-label{color:#6b7280;font-size:10px;letter-spacing:2px;text-transform:uppercase}
-        .res-metric-value{margin-top:8px;color:#fff;font-family:'Bebas Neue';font-size:28px;letter-spacing:1px;line-height:1}
+        .res-metric{background:#1a1e28;border:1px solid #242936;border-radius:14px;padding:14px 16px}
+        .res-metric-label{color:#7a8296;font-size:12px;letter-spacing:0;}
+        .res-metric-value{margin-top:8px;color:#fff;font-family:var(--font-display);font-size:28px;letter-spacing:0;line-height:1}
         .res-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.95fr);gap:18px;align-items:start}
         .res-players-card{padding:18px}
         .res-side-card{padding:18px}
         .res-player-list{display:grid;gap:10px}
-        .res-player-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;background:#0a0e13;border:1px solid #18202b;border-radius:14px;padding:12px 14px}
-        .res-player-index{width:34px;height:34px;border-radius:999px;border:1px solid #202938;display:flex;align-items:center;justify-content:center;color:#8b95a7;font-family:'Bebas Neue';font-size:16px;flex-shrink:0}
+        .res-player-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;background:#1a1e28;border:1px solid #242936;border-radius:14px;padding:12px 14px}
+        .res-player-index{width:34px;height:34px;border-radius:999px;border:1px solid #202938;display:flex;align-items:center;justify-content:center;color:#8b95a7;font-family:var(--font-display);font-size:16px;flex-shrink:0}
         .res-player-main{display:flex;align-items:center;gap:12px;min-width:0}
-        .res-player-avatar{width:48px;height:48px;border-radius:14px;background:#080b10;border:1px solid #202938;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
-        .res-player-name{color:#f3f4f6;font-size:16px;font-weight:700;line-height:1.2}
+        .res-player-avatar{width:48px;height:48px;border-radius:14px;background:#11141c;border:1px solid #202938;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+        .res-player-name{color:#f3f4f6;font-size:16px;font-weight:600;line-height:1.2}
         .res-player-sub{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:5px}
-        .res-role-chip{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;border:1px solid currentColor}
-        .res-player-meta{color:#7c8799;font-size:11px;letter-spacing:1px}
+        .res-role-chip{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:0;border:1px solid currentColor}
+        .res-player-meta{color:#7c8799;font-size:12px;letter-spacing:0}
         .res-player-stats{text-align:right;min-width:86px}
-        .res-player-price{color:#f3f4f6;font-size:15px;font-weight:700}
-        .res-player-rating{margin-top:4px;font-size:11px;letter-spacing:1px}
-        .res-section-label{color:#7c8799;font-size:10px;letter-spacing:2.4px;text-transform:uppercase}
-        .res-section-title{margin-top:8px;color:#fff;font-family:'Bebas Neue';font-size:34px;letter-spacing:1px;line-height:.95}
+        .res-player-price{color:#f3f4f6;font-size:15px;font-weight:600}
+        .res-player-rating{margin-top:4px;font-size:12px;letter-spacing:0}
+        .res-section-label{color:#7c8799;font-size:12px;letter-spacing:0;}
+        .res-section-title{margin-top:8px;color:#fff;font-family:var(--font-display);font-size:34px;letter-spacing:0;line-height:.95}
         .res-section-copy{margin-top:10px;color:#98a3b3;font-size:14px;line-height:1.7}
         .res-checklist{display:grid;gap:10px;margin-top:14px}
-        .res-check-item{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 14px;border:1px solid #18202b;border-radius:12px;background:#0a0e13}
-        .res-check-name{color:#d1d5db;font-size:13px;font-weight:600}
-        .res-check-value{font-size:12px;font-weight:700;letter-spacing:1px}
+        .res-check-item{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 14px;border:1px solid #242936;border-radius:12px;background:#1a1e28}
+        .res-check-name{color:#c9cdd6;font-size:13px;font-weight:600}
+        .res-check-value{font-size:12px;font-weight:600;letter-spacing:0}
         .res-actions-grid{display:grid;gap:10px;margin-top:14px}
         .res-actions-grid .res-action-btn{width:100%;justify-content:center}
-        .res-desktop-support-btn{display:inline-flex;align-items:center;justify-content:center;background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.36);border-radius:10px;padding:10px 18px;color:${GOLD};font-weight:900;font-size:13px;letter-spacing:1.5px;font-family:'Barlow Condensed';text-decoration:none}
+        .res-desktop-support-btn{display:inline-flex;align-items:center;justify-content:center;background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.36);border-radius:10px;padding:10px 18px;color:${GOLD};font-weight:600;font-size:13px;letter-spacing:0;font-family:var(--font-display);text-decoration:none}
         .support-modal-backdrop{position:fixed;inset:0;z-index:2147482000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(3,6,12,.76);backdrop-filter:blur(10px);animation:modalFade .22s ease-out both}
-        .support-modal{width:min(540px,100%);border:1px solid rgba(232,184,75,.35);border-radius:26px;background:radial-gradient(circle at 20% 0%,rgba(232,184,75,.22),transparent 34%),linear-gradient(145deg,#111723 0%,#070a10 58%,#0c1018 100%);box-shadow:0 26px 80px rgba(0,0,0,.56),0 0 50px rgba(232,184,75,.12);padding:clamp(22px,4vw,34px);text-align:center;animation:modalRise .28s ease-out both}
-        .support-modal-kicker{color:${GOLD};font-size:12px;font-weight:900;letter-spacing:3px;text-transform:uppercase}
-        .support-modal-title{margin-top:8px;color:#fff;font-family:'Bebas Neue';font-size:clamp(36px,8vw,56px);line-height:.9;letter-spacing:2px}
-        .support-modal-copy{margin:18px auto 0;max-width:440px;color:#d5dde8;font-size:16px;line-height:1.75}
+        .support-modal{width:min(540px,100%);border:1px solid rgba(232,184,75,.35);border-radius:26px;background:radial-gradient(circle at 20% 0%,rgba(232,184,75,.22),transparent 34%),linear-gradient(145deg,#111723 0%,#070a10 58%,#0c1018 100%);box-shadow:0 26px 80px rgba(0,0,0,.56),none;padding:clamp(22px,4vw,34px);text-align:center;animation:modalRise .28s ease-out both}
+        .support-modal-kicker{color:${GOLD};font-size:12px;font-weight:600;letter-spacing:0;}
+        .support-modal-title{margin-top:8px;color:#fff;font-family:var(--font-display);font-size:clamp(36px,8vw,56px);line-height:.9;letter-spacing:0}
+        .support-modal-copy{margin:18px auto 0;max-width:440px;color:#c9cdd6;font-size:16px;line-height:1.75}
         .support-modal-actions{display:grid;gap:12px;margin-top:24px}
-        .support-modal-support-btn,.support-modal-pay-btn,.support-modal-close-btn{min-height:52px;border-radius:16px;font-family:'Barlow Condensed';font-size:16px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
-        .support-modal-support-btn{border:0;background:linear-gradient(135deg,${GOLD},#f6d36e);color:#05070b;box-shadow:0 12px 28px rgba(232,184,75,.2)}
-        .support-modal-support-btn:hover,.support-modal-pay-btn:hover,.support-modal-close-btn:hover{transform:translateY(-1px)}
+        .support-modal-support-btn,.support-modal-pay-btn,.support-modal-close-btn{min-height:52px;border-radius:16px;font-family:var(--font-display);font-size:16px;font-weight:600;letter-spacing:0;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+        .support-modal-support-btn{border:0;background:${GOLD};color:#05070b;box-shadow:0 12px 28px rgba(232,184,75,.2)}
+        .support-modal-support-btn:hover,.support-modal-pay-btn:hover,.support-modal-close-btn:hover{}
         .support-modal-mobile-payments{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-        .support-modal-pay-btn{border:1px solid #263344;background:#0b1018;color:#eef4fb}
+        .support-modal-pay-btn{border:1px solid #263344;background:#1a1e28;color:#eef4fb}
         .support-modal-pay-logo{width:28px;height:28px;object-fit:contain;display:block;flex-shrink:0}
-        .support-modal-paytm-mark{color:#00baf2;font-weight:900;letter-spacing:-.02em;text-transform:none}
+        .support-modal-paytm-mark{color:#00baf2;font-weight:600;letter-spacing:-.02em;text-transform:none}
         .support-modal-paytm-mark span{color:#002970}
-        .support-modal-upi-copy{margin-top:14px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.04);padding:12px 14px;width:100%;color:#eef4fb;font-family:'Rajdhani';cursor:pointer}
-        .support-modal-upi-label{display:block;color:#8b95a7;font-size:11px;letter-spacing:1.8px;text-transform:uppercase}
-        .support-modal-upi-value{display:block;margin-top:6px;font-size:18px;font-weight:700;letter-spacing:.5px}
-        .support-modal-upi-hint{display:block;margin-top:6px;color:${GOLD};font-size:12px;letter-spacing:1.1px}
-        .support-modal-countdown{margin-top:16px;color:#8b95a7;font-size:13px;letter-spacing:1.1px}
+        .support-modal-upi-copy{margin-top:14px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.04);padding:12px 14px;width:100%;color:#eef4fb;font-family:var(--font-ui);cursor:pointer}
+        .support-modal-upi-label{display:block;color:#8b95a7;font-size:12px;letter-spacing:0;}
+        .support-modal-upi-value{display:block;margin-top:6px;font-size:18px;font-weight:600;letter-spacing:.5px}
+        .support-modal-upi-hint{display:block;margin-top:6px;color:${GOLD};font-size:12px;letter-spacing:0}
+        .support-modal-countdown{margin-top:16px;color:#8b95a7;font-size:13px;letter-spacing:0}
         .support-modal-close-btn{margin-top:16px;width:100%;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#f8fafc}
         @keyframes modalFade{from{opacity:0}to{opacity:1}}
         @keyframes modalRise{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
@@ -507,19 +508,19 @@ function Results({ gs, myTeamId: mti, onRestart, mode, isArchived = false, archi
       )}
 
       {/* ── Header ── */}
-      <div style={{ background: '#08090f', borderBottom: `1px solid ${BORDER}`, padding: 'clamp(14px,2vh,22px) clamp(16px,4vw,48px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+      <div style={{ background: '#11141c', borderBottom: `1px solid ${BORDER}`, padding: 'clamp(14px,2vh,22px) clamp(16px,4vw,48px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
         <div>
           <div style={{ marginBottom: 14 }}>
             <BrandLink compact={true} />
           </div>
-          <div style={{ fontFamily: "'Bebas Neue'", fontSize: 'clamp(24px,4vw,42px)', color: GOLD, letterSpacing: 6, lineHeight: 1 }}>IPL AUCTION COMPLETE</div>
-          <div style={{ color: '#555', fontSize: 11, letterSpacing: 3, marginTop: 3 }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(24px,4vw,42px)', color: GOLD, letterSpacing: 0, lineHeight: 1 }}>IPL auction complete</div>
+          <div style={{ color: '#7a8296', fontSize: 12, letterSpacing: 0, marginTop: 3 }}>
             {soldCount} SOLD · {unsoldCount} UNSOLD · {(mode || 'N/A').toUpperCase()} AUCTION{isArchived && archivedRoomCode ? ` · ROOM ${archivedRoomCode}` : ''}
           </div>
           {isRivals && rivalsWinner && (
-            <div style={{ color: '#cbd5e1', fontSize: 12, letterSpacing: 1.5, marginTop: 8 }}>
-              WINNER: <span style={{ color: TEAM_LOGOS[rivalsWinner.teamId] ? (displayTeams.find(t => t.id === rivalsWinner.teamId)?.color || GOLD) : GOLD, fontWeight: 700 }}>{getTeamLabel(rivalsWinner.teamId)}</span>
-              {rivalsRunner ? <span style={{ color: '#64748b' }}> over {getTeamLabel(rivalsRunner.teamId)}</span> : null}
+            <div style={{ color: '#c9cdd6', fontSize: 12, letterSpacing: 0, marginTop: 8 }}>
+              WINNER: <span style={{ color: TEAM_LOGOS[rivalsWinner.teamId] ? (displayTeams.find(t => t.id === rivalsWinner.teamId)?.color || GOLD) : GOLD, fontWeight: 600 }}>{getTeamLabel(rivalsWinner.teamId)}</span>
+              {rivalsRunner ? <span style={{ color: '#7a8296' }}> over {getTeamLabel(rivalsRunner.teamId)}</span> : null}
             </div>
           )}
         </div>
@@ -528,25 +529,25 @@ function Results({ gs, myTeamId: mti, onRestart, mode, isArchived = false, archi
             href="https://whatsapp.com/channel/0029VbCeqwJ90x2z9PRli10E"
             target="_blank"
             rel="noreferrer"
-            style={{ background:'#0f141b', border:'1px solid #233041', borderRadius: 10, padding: '10px 18px', color:'#d7dee8', fontWeight: 900, fontSize: 13, letterSpacing: 1.5, fontFamily: "'Barlow Condensed'", textDecoration: 'none' }}
+            style={{ background:'#1a1e28', border:'1px solid #233041', borderRadius: 10, padding: '10px 18px', color:'#c9cdd6', fontWeight: 600, fontSize: 13, letterSpacing: 0, fontFamily: 'var(--font-display)', textDecoration: 'none' }}
           >
-            JOIN WHATSAPP
+            Join WhatsApp
           </a>
           <a className="res-desktop-support-btn" href={SUPPORT_URL} target="_blank" rel="noreferrer">
             SUPPORT
           </a>
           <button
             onClick={onRestart}
-            style={{ background: '#f3c547', border: '1px solid #f3c547', borderRadius: 10, padding: '10px 24px', color: '#05070b', fontWeight: 900, cursor: 'pointer', fontSize: 13, letterSpacing: 2, fontFamily: "'Barlow Condensed'" }}
-          >{isArchived ? 'BACK TO ROOMS' : 'PLAY AGAIN'}</button>
+            style={{ background: '#f3c547', border: '1px solid #f3c547', borderRadius: 10, padding: '10px 24px', color: '#05070b', fontWeight: 600, cursor: 'pointer', fontSize: 13, letterSpacing: 0, fontFamily: 'var(--font-display)' }}
+          >{isArchived ? 'Back to rooms' : 'Play again'}</button>
         </div>
       </div>
 
       {/* ── Tabs ── */}
-      <div style={{ background: '#0a0b12', borderBottom: `1px solid ${BORDER}`, display: 'flex', gap: 0, padding: '0 clamp(16px,4vw,48px)', overflowX: 'auto' }}>
+      <div style={{ background: '#1a1e28', borderBottom: `1px solid ${BORDER}`, display: 'flex', gap: 0, padding: '0 clamp(16px,4vw,48px)', overflowX: 'auto' }}>
         {[['squad', 'SQUADS'], ['leaderboard', 'LEADERBOARD']].map(([key, label]) => (
           <button key={key} className="res-tab-btn" onClick={() => setTab(key)}
-            style={{ background: tab === key ? '#0d1117' : 'transparent', color: tab === key ? GOLD : '#70798a', borderBottom: tab === key ? `2px solid ${GOLD}` : '2px solid transparent', flexShrink: 0 }}>
+            style={{ background: tab === key ? '#1a1e28' : 'transparent', color: tab === key ? GOLD : '#70798a', borderBottom: tab === key ? `2px solid ${GOLD}` : '2px solid transparent', flexShrink: 0 }}>
             {label}
           </button>
         ))}
@@ -571,7 +572,7 @@ function Results({ gs, myTeamId: mti, onRestart, mode, isArchived = false, archi
       </div>
 
       <div style={{ padding: '0 40px 40px', textAlign: 'center' }}>
-        <div style={{ fontSize: '10px', color: '#333', letterSpacing: '1px', maxWidth: '600px', margin: '0 auto', lineHeight: '1.6' }}>
+        <div style={{ fontSize: '10px', color: '#7a8296', letterSpacing: 0, maxWidth: '600px', margin: '0 auto', lineHeight: '1.6' }}>
           IPL Auction Online is a fan-made simulator. 
           Data and ratings are attributed to <a href="https://www.iplt20.com" target="_blank" rel="noreferrer" style={{ color: GOLD, textDecoration: 'none' }}>iplt20.com</a> & <a href="https://cricapi.com" target="_blank" rel="noreferrer" style={{ color: GOLD, textDecoration: 'none' }}>CricAPI</a>.
         </div>
@@ -657,11 +658,11 @@ function SquadTab({ gs, mti, mode, teams, activeId, setActiveId, team, displayLi
     <div className="res-shell">
       {/* Disqualified Alert */}
       {isDisqualified && (
-        <div style={{ background: '#1a1113', border: '1px solid #4b1f26', borderRadius: 16, padding: '16px 20px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 16, animation: 'fadeUp 0.4s ease' }}>
-          <div style={{ fontSize: 28 }}>🚨</div>
+        <div style={{ background: '#1a1e28', border: '1px solid #4b1f26', borderRadius: 16, padding: '16px 20px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 16, animation: 'fadeUp 0.4s ease' }}>
+          <AlertTriangle size={20} strokeWidth={1.5} />
           <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: "'Bebas Neue'", fontSize: 24, color: '#ef4444', letterSpacing: 1 }}>SQUAD DISQUALIFIED</div>
-            <div style={{ color: '#ef4444aa', fontSize: 13, letterSpacing: 1, marginTop: 2 }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, color: '#e5484d', letterSpacing: 0 }}>Squad disqualified</div>
+            <div style={{ color: '#ef4444aa', fontSize: 13, letterSpacing: 0, marginTop: 2 }}>
               {disqualificationReason || 'This team fails the minimum required criteria: 2 Batters, 2 Bowlers, 1 Wicketkeeper.'}
             </div>
           </div>
@@ -672,7 +673,7 @@ function SquadTab({ gs, mti, mode, teams, activeId, setActiveId, team, displayLi
         {teams.map(t => (
           <button key={t.id} className="res-team-pill"
             onClick={() => setActiveId(t.id)}
-            style={{ background: activeId === t.id ? t.color : '#0d1117', border: `1px solid ${activeId === t.id ? t.color : '#243041'}`, color: activeId === t.id ? '#000' : '#d6dde8' }}>
+            style={{ background: activeId === t.id ? t.color : '#1a1e28', border: `1px solid ${activeId === t.id ? t.color : '#243041'}`, color: activeId === t.id ? '#000' : '#c9cdd6' }}>
             {getTeamLabel(t, { short: true })}{t.id === mti ? ' (YOU)' : ''}
           </button>
         ))}
@@ -692,14 +693,14 @@ function SquadTab({ gs, mti, mode, teams, activeId, setActiveId, team, displayLi
               : 'This franchise did not complete a usable lineup in this auction snapshot.'}
           </div>
           {fullSquad.length > 0 && playingXI.length !== fullSquad.length && (
-            <div style={{ marginTop: 12, color: '#7c8799', fontSize: 12, letterSpacing: 1.2 }}>
+            <div style={{ marginTop: 12, color: '#7c8799', fontSize: 12, letterSpacing: 0 }}>
               {fullSquad.length} players in squad • {playingXI.length} selected in XI
             </div>
           )}
         </div>
         <div className="res-metric-grid">
           <ResultMetric label="Total Rating" value={`${teamTotalRating} pts`} accent={GOLD} />
-          <ResultMetric label="Average Rating" value={`${teamAvgRating} pts`} accent="#22D3EE" />
+          <ResultMetric label="Average Rating" value={`${teamAvgRating} pts`} accent='#a3a9b8' />
           <ResultMetric label="Purse Used" value={fmt(spent)} accent="#d7dee8" />
           <ResultMetric label="Purse Left" value={fmt(gs.purses?.[activeId] || 0)} accent="#4ade80" />
         </div>
@@ -708,7 +709,7 @@ function SquadTab({ gs, mti, mode, teams, activeId, setActiveId, team, displayLi
       <div className="res-layout">
         <div className="res-panel res-players-card">
           {playingXI.length < 11 && playingXI.length > 0 && (
-            <div style={{ background: '#15110a', border: '1px solid #4a3920', borderRadius: 12, padding: '12px 14px', marginBottom: 16, color: '#f3c547', fontSize: 12, letterSpacing: 1.2 }}>
+            <div style={{ background: '#1a1e28', border: '1px solid #4a3920', borderRadius: 12, padding: '12px 14px', marginBottom: 16, color: '#f3c547', fontSize: 12, letterSpacing: 0 }}>
               Only {playingXI.length} players are available in this XI. A full Playing XI needs 11 players.
             </div>
           )}
@@ -716,7 +717,7 @@ function SquadTab({ gs, mti, mode, teams, activeId, setActiveId, team, displayLi
             <div style={{ minHeight: 260, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', color: '#7c8799', fontSize: 14, lineHeight: 1.8 }}>
               No players were acquired by {team ? getTeamLabel(team) : 'this team'}.
               <br />
-              Remaining purse: {fmt(gs.purses?.[activeId] || initialPurse)}
+              Remaining purse: {fmt(gs.purses?.[activeId] ?? (gs.initialPurse || 120))}
             </div>
           ) : (
             <div className="res-player-list">
@@ -747,7 +748,7 @@ function SquadTab({ gs, mti, mode, teams, activeId, setActiveId, team, displayLi
                     </div>
                     <div className="res-player-stats">
                       <div className="res-player-price">{p.soldFor ? fmt(p.soldFor) : (p.base ? fmt(p.base) : '—')}</div>
-                      <div className="res-player-rating" style={{ color: rating >= 85 ? GOLD : rating >= 70 ? '#4ade80' : '#8b95a7' }}>{rating} rating</div>
+                      <div className="res-player-rating" style={{ color: rating >= 85 ? GOLD : rating >= 70 ? '#4cc38a' : '#8b95a7' }}>{rating} rating</div>
                     </div>
                   </div>
                 );
@@ -758,20 +759,20 @@ function SquadTab({ gs, mti, mode, teams, activeId, setActiveId, team, displayLi
 
         <div style={{ display: 'grid', gap: 18 }}>
           <div className="res-panel-muted res-side-card">
-            <div className="res-section-label">Lineup Check</div>
-            <div className="res-section-title" style={{ fontSize: 28 }}>Squad Balance</div>
+            <div className="res-section-label">Lineup check</div>
+            <div className="res-section-title" style={{ fontSize: 28 }}>Squad balance</div>
             <div className="res-checklist">
-              <CheckItem label="Players in XI" value={`${playingXI.length}/11`} tone={playingXI.length === 11 ? '#4ade80' : '#f3c547'} />
-              <CheckItem label="Batters" value={String(roleBreakdown.batters)} tone={roleBreakdown.batters >= 2 ? '#4ade80' : '#ef4444'} />
-              <CheckItem label="Bowlers" value={String(roleBreakdown.bowlers)} tone={roleBreakdown.bowlers >= 2 ? '#4ade80' : '#ef4444'} />
-              <CheckItem label="Wicketkeepers" value={String(roleBreakdown.wicketkeepers)} tone={roleBreakdown.wicketkeepers >= 1 ? '#4ade80' : '#ef4444'} />
+              <CheckItem label="Players in XI" value={`${playingXI.length}/11`} tone={playingXI.length === 11 ? '#4cc38a' : '#f3c547'} />
+              <CheckItem label="Batters" value={String(roleBreakdown.batters)} tone={roleBreakdown.batters >= 2 ? '#4cc38a' : '#e5484d'} />
+              <CheckItem label="Bowlers" value={String(roleBreakdown.bowlers)} tone={roleBreakdown.bowlers >= 2 ? '#4cc38a' : '#e5484d'} />
+              <CheckItem label="Wicketkeepers" value={String(roleBreakdown.wicketkeepers)} tone={roleBreakdown.wicketkeepers >= 1 ? '#4cc38a' : '#e5484d'} />
               <CheckItem label="All-rounders" value={String(roleBreakdown.allRounders)} tone="#8b95a7" />
             </div>
           </div>
 
           <div className="res-panel-muted res-side-card">
-            <div className="res-section-label">Auction Snapshot</div>
-            <div className="res-section-title" style={{ fontSize: 28 }}>Room Summary</div>
+            <div className="res-section-label">Auction snapshot</div>
+            <div className="res-section-title" style={{ fontSize: 28 }}>Room summary</div>
             <div className="res-checklist">
               <CheckItem label="Players bought" value={String(fullSquad.length)} tone="#d7dee8" />
               <CheckItem label="Players sold" value={String(soldCount)} tone="#d7dee8" />
@@ -784,8 +785,8 @@ function SquadTab({ gs, mti, mode, teams, activeId, setActiveId, team, displayLi
             <div className="res-section-label">Actions</div>
             <div className="res-section-title" style={{ fontSize: 28 }}>Share or Save</div>
             <div className="res-actions-grid">
-              <ActionBtn onClick={downloadSheet} bg="#d7dee8" label="DOWNLOAD TXT" />
-              <ActionBtn onClick={shareWhatsApp} bg="#d7dee8" label="SHARE ON WHATSAPP" />
+              <ActionBtn onClick={downloadSheet} bg="#d7dee8" label="Download txt" />
+              <ActionBtn onClick={shareWhatsApp} bg="#d7dee8" label="Share on whatsapp" />
               <ActionBtn onClick={shareText} bg="#d7dee8" label="COPY / SHARE" />
             </div>
           </div>
@@ -818,28 +819,28 @@ function LeaderboardTab({ gs, mode, mti, teams, isRivals, getTeamLabel }) {
   return (
     <div style={{ maxWidth: 1400, margin: '0 auto' }}>
       {/* Formula explanation */}
-      <div style={{ background: '#0a0d15', border: `1px solid ${BORDER}`, borderRadius: 10, padding: '12px 18px', marginBottom: 20, fontSize: 12, color: '#555', letterSpacing: 1, lineHeight: 1.8 }}>
-        <span style={{ color: GOLD, fontWeight: 700 }}>HOW SCORES ARE CALCULATED</span>
+      <div style={{ background: '#1a1e28', border: `1px solid ${BORDER}`, borderRadius: 10, padding: '12px 18px', marginBottom: 20, fontSize: 12, color: '#7a8296', letterSpacing: 0, lineHeight: 1.8 }}>
+        <span style={{ color: GOLD, fontWeight: 600 }}>How scores are calculated</span>
         <br />
-        Each team's <strong style={{ color: '#aaa' }}>Playing XI</strong> is evaluated: every player has a pre-set rating (out of 100) based on IPL 2025 performance &amp; expert analysis.
-        The <strong style={{ color: '#aaa' }}>Total Score</strong> is the sum of all 11 player ratings. The <strong style={{ color: '#aaa' }}>Average Score</strong> is Total ÷ XI size.
+        Each team's <strong style={{ color: '#a3a9b8' }}>Playing XI</strong> is evaluated: every player has a pre-set rating (out of 100) based on IPL 2025 performance &amp; expert analysis.
+        The <strong style={{ color: '#a3a9b8' }}>Total score</strong> is the sum of all 11 player ratings. The <strong style={{ color: '#a3a9b8' }}>Average score</strong> is Total ÷ XI size.
         {mode?.toLowerCase() === 'mini' ? (
-          <span style={{ color: '#777' }}>Minimum criteria: full configured squad size, 2 Batters, 2 Bowlers, 1 Wicketkeeper. Teams failing this are <span style={{ color: '#ef4444' }}>DISQUALIFIED</span>.</span>
+          <span style={{ color: '#7a8296' }}>Minimum criteria: full configured squad size, 2 Batters, 2 Bowlers, 1 Wicketkeeper. Teams failing this are <span style={{ color: '#e5484d' }}>Disqualified</span>.</span>
         ) : isRivals ? (
-          <span style={{ color: '#777' }}>Rivals rules: build a valid 11-player XI with at least 2 Batters, 2 Bowlers, and 1 Wicketkeeper.</span>
+          <span style={{ color: '#7a8296' }}>Rivals rules: build a valid 11-player XI with at least 2 Batters, 2 Bowlers, and 1 Wicketkeeper.</span>
         ) : (
-          <span style={{ color: '#777' }}>Selection rules: full configured squad size, best-rated 11 players, at least 1 wicket-keeper.</span>
+          <span style={{ color: '#7a8296' }}>Selection rules: full configured squad size, best-rated 11 players, at least 1 wicket-keeper.</span>
         )}
         <br />
         {isRivals ? 'Teams that fail to field a valid Playing XI are disqualified.' : 'Teams that bought fewer than the selected squad limit are disqualified.'}
         <br />
-        <span style={{ color: '#333' }}>Rating scale: 90–100 Elite · 80–89 Excellent · 70–79 Good · 60–69 Average · 50–59 Below Avg · &lt;50 Reserve</span>
+        <span style={{ color: '#7a8296' }}>Rating scale: 90–100 Elite · 80–89 Excellent · 70–79 Good · 60–69 Average · 50–59 Below Avg · &lt;50 Reserve</span>
       </div>
 
-      <div style={{ fontFamily: "'Bebas Neue'", fontSize: 14, color: '#333', letterSpacing: 4, marginBottom: 10 }}>{isRivals ? 'RIVALS SHOWDOWN — CLICK TO EXPAND XI' : 'ALL TEAM RANKINGS — CLICK TO EXPAND XI'}</div>
+      <div style={{ fontFamily: 'var(--font-display)', fontSize: 14, color: '#7a8296', letterSpacing: 0, marginBottom: 10 }}>{isRivals ? 'Rivals showdown, click to expand XI' : 'All team rankings, click to expand XI'}</div>
 
       {rankings.length === 0 && (
-        <div style={{ color: '#555', textAlign: 'center', padding: 40, fontSize: 14, letterSpacing: 2 }}>Calculating leaderboard…</div>
+        <div style={{ color: '#7a8296', textAlign: 'center', padding: 40, fontSize: 14, letterSpacing: 0 }}>Calculating leaderboard…</div>
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -853,10 +854,10 @@ function LeaderboardTab({ gs, mode, mti, teams, isRivals, getTeamLabel }) {
           return (
             <div key={r.teamId}
               onClick={() => toggle(r.teamId)}
-              style={{ background: CARD, border: `1px solid ${isMyTeam ? color : borderC}`, borderRadius: 12, overflow: 'hidden', cursor: 'pointer', transition: 'transform .15s', boxShadow: isMyTeam ? `0 0 20px ${color}20` : 'none' }}>
+              style={{ background: CARD, border: `1px solid ${isMyTeam ? color : borderC}`, borderRadius: 12, overflow: 'hidden', cursor: 'pointer', transition: 'transform .15s', boxShadow: isMyTeam ? `0 0 0 transparent` : 'none' }}>
               {/* Row header */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', background: idx === 0 ? `${GOLD}06` : 'transparent' }}>
-                <div style={{ fontFamily: "'Bebas Neue'", fontSize: 24, minWidth: 40, textAlign: 'center', color: medalColor(idx), lineHeight: 1 }}>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, minWidth: 40, textAlign: 'center', color: medalColor(idx), lineHeight: 1 }}>
                   {idx < 3 ? MEDAL[idx] : `#${idx + 1}`}
                 </div>
                 {/* Team logo */}
@@ -868,61 +869,61 @@ function LeaderboardTab({ gs, mode, mti, teams, isRivals, getTeamLabel }) {
                     onError={e => { e.target.style.display='none'; e.target.previousSibling && (e.target.previousSibling.style.display='block'); }}
                   />
                 ) : (
-                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: color, boxShadow: `0 0 8px ${color}`, flexShrink: 0 }} />
+                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: color, boxShadow: `0 0 0 transparent`, flexShrink: 0 }} />
                 )}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontFamily: "'Bebas Neue'", fontSize: 18, color, letterSpacing: 2, lineHeight: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, color, letterSpacing: 0, lineHeight: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
                     {getTeamLabel(r.teamId)}{isMyTeam ? ' (YOU)' : ''}
                     {r.isDisqualified && (
-                      <span style={{ background: '#ef4444', color: '#fff', fontSize: 9, padding: '2px 6px', borderRadius: 4, letterSpacing: 1 }}>DISQUALIFIED</span>
+                      <span style={{ background: '#e5484d', color: '#fff', fontSize: 12, padding: '2px 6px', borderRadius: 4, letterSpacing: 0 }}>Disqualified</span>
                     )}
                   </div>
-                  <div style={{ color: '#444', fontSize: 11, marginTop: 2, letterSpacing: 1 }}>
-                    Avg: <strong style={{ color: '#777' }}>{r.averageScore}</strong> pts · {r.playingXI.length} players in XI
+                  <div style={{ color: '#7a8296', fontSize: 12, marginTop: 2, letterSpacing: 0 }}>
+                    Avg: <strong style={{ color: '#7a8296' }}>{r.averageScore}</strong> pts · {r.playingXI.length} players in XI
                     {r.squadLimit ? ` · Squad ${r.squadSize}/${r.squadLimit}` : ''}
                     {r.disqualificationReason ? ` · ${r.disqualificationReason}` : ''}
                   </div>
                 </div>
                 {/* Score */}
                 <div style={{ textAlign: 'center', minWidth: 70, flexShrink: 0 }}>
-                  <div style={{ fontFamily: "'Bebas Neue'", fontSize: 28, color: medalColor(idx), lineHeight: 1 }}>{r.totalScore}</div>
-                  <div style={{ fontSize: 8, color: '#333', letterSpacing: 2 }}>TOTAL PTS</div>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: 28, color: medalColor(idx), lineHeight: 1 }}>{r.totalScore}</div>
+                  <div style={{ fontSize: 12, color: '#7a8296', letterSpacing: 0 }}>Total pts</div>
                 </div>
                 {/* Rating bar */}
                 <div style={{ minWidth: 80, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 3 }}>
-                  <div style={{ height: 4, borderRadius: 2, background: '#111', overflow: 'hidden' }}>
+                  <div style={{ height: 4, borderRadius: 2, background: '#1a1e28', overflow: 'hidden' }}>
                     <div style={{ height: '100%', width: `${Math.min(100, (r.averageScore / 100) * 100)}%`, background: color, borderRadius: 2, transition: 'width .5s' }} />
                   </div>
-                  <div style={{ fontSize: 9, color: '#333', letterSpacing: 1 }}>TEAM STRENGTH</div>
+                  <div style={{ fontSize: 12, color: '#7a8296', letterSpacing: 0 }}>Team strength</div>
                 </div>
-                <div style={{ color: '#444', fontSize: 14, marginLeft: 4 }}>{isOpen ? '▲' : '▼'}</div>
+                <div style={{ color: '#7a8296', fontSize: 14, marginLeft: 4 }}>{isOpen ? '▲' : '▼'}</div>
               </div>
 
               {/* Expanded XI scorecard */}
               {isOpen && (
                 <div style={{ padding: '0 18px 16px', borderTop: `1px solid ${BORDER}` }}>
                   <div style={{ margin: '14px 0 10px', background: '#ffffff04', borderRadius: 8, padding: '12px 16px', borderLeft: `3px solid ${color}` }}>
-                    <div style={{ fontSize: 10, color, letterSpacing: 3, fontWeight: 700, marginBottom: 10 }}>PLAYING XI SCORECARD</div>
+                    <div style={{ fontSize: 12, color, letterSpacing: 0, fontWeight: 600, marginBottom: 10 }}>Playing XI scorecard</div>
                     {r.playerScores.length === 0 ? (
-                      <div style={{ color: '#555', fontSize: 12 }}>No players acquired by this team.</div>
+                      <div style={{ color: '#7a8296', fontSize: 12 }}>No players acquired by this team.</div>
                     ) : (
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 24px' }}>
                         {r.playerScores.map((p, i) => (
-                          <div key={i} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #1a1a1a', paddingBottom: 4 }}>
+                          <div key={i} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #1a1e28', paddingBottom: 4 }}>
                             <div>
-                              <span style={{ color: '#bbb', fontSize: 13 }}>{p.name}</span>
-                              {p.rating >= 85 && <span style={{ fontSize: 9, color: GOLD, marginLeft: 6, letterSpacing: 1 }}>ELITE</span>}
+                              <span style={{ color: '#a3a9b8', fontSize: 13 }}>{p.name}</span>
+                              {p.rating >= 85 && <span style={{ fontSize: 12, color: GOLD, marginLeft: 6, letterSpacing: 0 }}>Elite</span>}
                             </div>
-                            <span style={{ color: p.rating >= 85 ? GOLD : p.rating >= 70 ? '#4ade80' : '#888', fontSize: 13, fontFamily: "'Bebas Neue'", letterSpacing: 1, flexShrink: 0 }}>
+                            <span style={{ color: p.rating >= 85 ? GOLD : p.rating >= 70 ? '#4cc38a' : '#7a8296', fontSize: 13, fontFamily: 'var(--font-display)', letterSpacing: 0, flexShrink: 0 }}>
                               {p.rating} PTS
                             </span>
                           </div>
                         ))}
                       </div>
                     )}
-                    <div style={{ marginTop: 12, paddingTop: 8, borderTop: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: '#444', fontSize: 11, letterSpacing: 2 }}>TEAM TOTAL</span>
-                      <span style={{ color: idx === 0 ? GOLD : '#888', fontFamily: "'Bebas Neue'", fontSize: 16, letterSpacing: 2 }}>{r.totalScore} PTS</span>
+                    <div style={{ marginTop: 12, paddingTop: 8, borderTop: '1px solid #1a1e28', display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: '#7a8296', fontSize: 12, letterSpacing: 0 }}>Team total</span>
+                      <span style={{ color: idx === 0 ? GOLD : '#7a8296', fontFamily: 'var(--font-display)', fontSize: 16, letterSpacing: 0 }}>{r.totalScore} PTS</span>
                     </div>
                   </div>
                 </div>
@@ -949,7 +950,7 @@ function LeaderboardTab({ gs, mode, mti, teams, isRivals, getTeamLabel }) {
             a.click();
             URL.revokeObjectURL(url);
           }}
-          bg="#22D3EE" label="⬇ DOWNLOAD FULL LEADERBOARD" />
+          bg='#a3a9b8' label="Download full leaderboard" />
       </div>
     </div>
   );
@@ -959,8 +960,8 @@ function LeaderboardTab({ gs, mode, mti, teams, isRivals, getTeamLabel }) {
 function StatBubble({ label, val, color }) {
   return (
     <div style={{ textAlign: 'center' }}>
-      <div style={{ color, fontFamily: "'Bebas Neue'", fontSize: 20, letterSpacing: 1 }}>{val}</div>
-      <div style={{ color: '#444', fontSize: 9, letterSpacing: 3 }}>{label}</div>
+      <div style={{ color, fontFamily: 'var(--font-display)', fontSize: 20, letterSpacing: 0 }}>{val}</div>
+      <div style={{ color: '#7a8296', fontSize: 12, letterSpacing: 0 }}>{label}</div>
     </div>
   );
 }
@@ -986,17 +987,17 @@ function CheckItem({ label, value, tone }) {
 function ActionBtn({ onClick, bg, label }) {
   return (
     <button className="res-action-btn" onClick={onClick} style={{ 
-      background: '#0a0e13', 
+      background: '#1a1e28', 
       border: '1px solid #202938', 
       borderRadius: 12, 
       padding: '12px 28px', 
       color: bg, 
-      fontWeight: 700, 
+      fontWeight: 600, 
       cursor: 'pointer', 
       fontSize: 13, 
-      letterSpacing: 2, 
-      fontFamily: "'Barlow Condensed'",
-      transition: 'all 0.2s ease-out',
+      letterSpacing: 0, 
+      fontFamily: 'var(--font-display)',
+      transition: 'background-color 0.15s, color 0.15s, transform 0.15s',
       display: 'inline-flex',
       alignItems: 'center'
     }}>

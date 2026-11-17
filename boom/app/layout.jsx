@@ -2,11 +2,14 @@ import { Suspense } from 'react';
 import Script from 'next/script';
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Barlow, Barlow_Condensed } from 'next/font/google';
 import './globals.css';
 import { GameProvider } from './GameContext';
-import ClickSpark from './components/ClickSpark';
 import ChaiSupport from './components/ChaiSupport';
 import { createMetadata, SITE_URL } from './lib/seo';
+
+const barlow = Barlow({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-barlow', display: 'swap' });
+const barlowCondensed = Barlow_Condensed({ subsets: ['latin'], weight: ['500', '600'], variable: '--font-barlow-condensed', display: 'swap' });
 
 export const metadata = {
   ...createMetadata({
@@ -35,29 +38,16 @@ export const metadata = {
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  themeColor: '#0b0d14',
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={`${barlow.variable} ${barlowCondensed.variable}`} suppressHydrationWarning>
       <head>
         <meta name="google-adsense-account" content="ca-pub-2556312199314107" />
         <link rel="dns-prefetch" href="https://images.icc-cricket.com" />
         <link rel="dns-prefetch" href="https://documents.iplt20.com" />
-        <link rel="preload" as="image" href="/assets/Hero_players.png" fetchPriority="high" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          rel="preload"
-          as="style"
-          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Barlow+Condensed:wght@300;400;600;700;900&family=Courier+Prime:wght@400;700&family=Montserrat:wght@700&family=Orbitron:wght@600;700;800&display=swap"
-        />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Barlow+Condensed:wght@300;400;600;700;900&family=Courier+Prime:wght@400;700&family=Montserrat:wght@700&family=Orbitron:wght@600;700;800&display=swap"
-        />
         {/* Google tag (gtag.js) */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-K3B8D7K8YY"
@@ -81,15 +71,7 @@ export default function RootLayout({ children }) {
         </Script>
       </head>
       <body>
-        <ClickSpark
-          sparkColor="#E8B84B"
-          sparkSize={12}
-          sparkRadius={15}
-          sparkCount={8}
-          duration={400}
-        >
-          <GameProvider>{children}</GameProvider>
-        </ClickSpark>
+        <GameProvider>{children}</GameProvider>
         <ChaiSupport />
         <Analytics />
         <SpeedInsights />

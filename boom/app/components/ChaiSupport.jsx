@@ -10,9 +10,7 @@ export default function ChaiSupport() {
       aria-label="Buy me a chai to help keep the server alive"
     >
       <span className="chai-support-icon" aria-hidden="true" />
-      <span className="chai-support-note">
-        <span>buy me a chai</span>
-      </span>
+      <span>Buy me a chai</span>
     </a>
   );
 }

@@ -1,8 +1,8 @@
 'use client';
 
 const GOLD = '#E8B84B';
-const DANGER = '#ef4444';
-const INFO = '#22D3EE';
+const DANGER = '#e5484d';
+const INFO = '#a3a9b8';
 
 function getAccent(tone) {
   if (tone === 'danger') return DANGER;
@@ -13,9 +13,9 @@ function getAccent(tone) {
 function getButtonStyle(variant, accent) {
   if (variant === 'secondary') {
     return {
-      background: '#121317',
+      background: '#1a1e28',
       border: '1px solid #2a2d34',
-      color: '#c9ced6',
+      color: '#c9cdd6',
     };
   }
 
@@ -61,7 +61,7 @@ export default function AppDialog({ isOpen, title, message, tone = 'default', ac
         style={{
           width: '100%',
           maxWidth: 420,
-          background: '#0b0d10',
+          background: '#11141c',
           border: `1px solid ${accent}44`,
           borderRadius: 16,
           boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
@@ -69,12 +69,12 @@ export default function AppDialog({ isOpen, title, message, tone = 'default', ac
         }}
       >
         <div style={{ padding: '18px 20px 14px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, letterSpacing: 2, color: accent }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, letterSpacing: 0, color: accent }}>
             {title}
           </div>
         </div>
 
-        <div style={{ padding: '18px 20px', color: '#c9ced6', fontSize: 14, lineHeight: 1.6, whiteSpace: 'pre-line' }}>
+        <div style={{ padding: '18px 20px', color: '#c9cdd6', fontSize: 14, lineHeight: 1.6, whiteSpace: 'pre-line' }}>
           {message}
         </div>
 
@@ -88,10 +88,10 @@ export default function AppDialog({ isOpen, title, message, tone = 'default', ac
                 padding: '11px 16px',
                 borderRadius: 10,
                 cursor: 'pointer',
-                fontFamily: "'Barlow Condensed', sans-serif",
-                fontWeight: 800,
+                fontFamily: 'var(--font-display)',
+                fontWeight: 600,
                 fontSize: 13,
-                letterSpacing: '0.08em',
+                letterSpacing: 0,
                 transition: 'transform 0.15s ease, filter 0.15s ease',
                 ...getButtonStyle(action.variant, accent),
               }}
