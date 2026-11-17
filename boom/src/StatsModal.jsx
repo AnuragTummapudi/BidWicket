@@ -24,7 +24,7 @@ export function StatsModal({ isOpen, gs, onClose }) {
     ];
 
     return (
-        <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", justifyContent: "center", alignItems: "center", fontFamily: "'Rajdhani',sans-serif", padding: 20 }}>
+        <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", justifyContent: "center", alignItems: "center", fontFamily: "var(--font-main), sans-serif", padding: 20 }}>
             {/* Backdrop */}
             <div onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(5,7,13,0.85)", backdropFilter: "blur(8px)", animation: "fadeIn .2s" }} />
 
@@ -33,8 +33,8 @@ export function StatsModal({ isOpen, gs, onClose }) {
                 <style>{`
           @keyframes fadeIn{from{opacity:0}to{opacity:1}}
           @keyframes popIn{from{opacity:0;transform:scale(0.96) translateY(20px)}to{opacity:1;transform:none}}
-          .st-tab{padding:14px 20px;font-family:'Bebas Neue';font-size:22px;letter-spacing:2px;cursor:pointer;transition:all .2s;text-align:center;flex:1}
-          .st-tab:hover{background:rgba(212,175,55,0.05)}
+          .st-tab{padding:14px 20px;font-family:var(--font-main), sans-serif;font-size:22px;letter-spacing:2px;cursor:pointer;transition:all .2s;text-align:center;flex:1}
+          .st-tab:hover{background:rgba(232, 96, 60,0.05)}
         `}</style>
 
                 {/* Header Tabs */}
@@ -68,7 +68,7 @@ export function StatsModal({ isOpen, gs, onClose }) {
                                                 </div>
                                             </div>
                                             <div style={{ textAlign: "right" }}>
-                                                <div style={{ color: GOLD, fontFamily: "'Bebas Neue'", fontSize: 20, letterSpacing: 1 }}>{fmt(p.base)}</div>
+                                                <div style={{ color: GOLD, fontFamily: "var(--font-main), sans-serif", fontSize: 20, letterSpacing: 1 }}>{fmt(p.base)}</div>
                                                 <div style={{ color: "#444", fontSize: 10, letterSpacing: 2 }}>BASE PRICE</div>
                                             </div>
                                         </div>
@@ -94,7 +94,7 @@ export function StatsModal({ isOpen, gs, onClose }) {
                                             </div>
                                         </div>
                                         <div style={{ textAlign: "right" }}>
-                                            <div style={{ color: GOLD, fontFamily: "'Bebas Neue'", fontSize: 24, letterSpacing: 1 }}>{fmt(l.price)}</div>
+                                            <div style={{ color: GOLD, fontFamily: "var(--font-main), sans-serif", fontSize: 24, letterSpacing: 1 }}>{fmt(l.price)}</div>
                                             <div style={{ color: "#666", fontSize: 11 }}>Base: {fmt(l.player.base)}</div>
                                         </div>
                                     </div>
@@ -117,7 +117,7 @@ export function StatsModal({ isOpen, gs, onClose }) {
                                         </div>
                                     </div>
                                     <div style={{ textAlign: "right" }}>
-                                        <div style={{ color: "#ef4444", fontFamily: "'Bebas Neue'", fontSize: 20, letterSpacing: 1 }}>UNSOLD</div>
+                                        <div style={{ color: "#ef4444", fontFamily: "var(--font-main), sans-serif", fontSize: 20, letterSpacing: 1 }}>UNSOLD</div>
                                         <div style={{ color: "#555", fontSize: 11 }}>Base: {fmt(l.player.base)}</div>
                                     </div>
                                 </div>
@@ -132,8 +132,8 @@ export function StatsModal({ isOpen, gs, onClose }) {
                             {leaderboard.map((l, i) => {
                                 const team = TEAMS.find(t => t.id === l.bidder);
                                 return (
-                                    <div key={i} style={{ background: i === 0 ? `linear-gradient(90deg, ${GOLD}22, ${CARD})` : CARD, border: `1px solid ${i === 0 ? GOLD : BORDER}`, borderRadius: 12, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16 }}>
-                                        <div style={{ fontFamily: "'Bebas Neue'", fontSize: 32, color: i === 0 ? GOLD : "#888", width: 30, textAlign: "center" }}>#{i + 1}</div>
+                                    <div key={i} style={{ background: i === 0 ? `${CARD}` : CARD, border: `1px solid ${i === 0 ? GOLD : BORDER}`, borderRadius: 12, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16 }}>
+                                        <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 32, color: i === 0 ? GOLD : "#888", width: 30, textAlign: "center" }}>#{i + 1}</div>
                                         <span style={{ fontSize: 24, background: `${ROLE_C[l.player.role]}1a`, borderRadius: "50%", display: "flex", width: 50, height: 50, alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{ROLE_EMOJI[l.player.role]}</span>
                                         <div style={{ flex: 1 }}>
                                             <div style={{ fontSize: 18, fontWeight: 700, color: i === 0 ? GOLD : "#eee" }}>{l.player.name}</div>
@@ -144,7 +144,7 @@ export function StatsModal({ isOpen, gs, onClose }) {
                                             </div>
                                         </div>
                                         <div style={{ textAlign: "right" }}>
-                                            <div style={{ color: GOLD, fontFamily: "'Bebas Neue'", fontSize: 28, letterSpacing: 1, textShadow: i === 0 ? `0 0 20px ${GOLD}66` : "none" }}>{fmt(l.price)}</div>
+                                            <div style={{ color: GOLD, fontFamily: "var(--font-main), sans-serif", fontSize: 28, letterSpacing: 1, textShadow: i === 0 ? `0 0 20px ${GOLD}66` : "none" }}>{fmt(l.price)}</div>
                                         </div>
                                     </div>
                                 );

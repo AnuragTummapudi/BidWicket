@@ -1,4 +1,5 @@
 import express from 'express';
+import compression from 'compression';
 import { createServer } from 'http';
 import { createRequire } from 'module';
 import { Server } from 'socket.io';
@@ -30,11 +31,16 @@ app.use((req, res, next) => {
     }
     return next();
 });
-app.use(express.json());
+app.use(compression());
+app.use(express.json({ limit: '100kb' }));
 
+if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+    console.error("Missing UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN. See auction-backend/.env.example.");
+    process.exit(1);
+}
 const redis = new Redis({
-    url: process.env.UPSTASH_REDIS_REST_URL || "https://tidy-bass-146618.upstash.io",
-    token: process.env.UPSTASH_REDIS_REST_TOKEN || "gQAAAAAAAjy6AAIgcDJmMTM2Y2QwNWM5MmY0NmQ0YjBiYzRlNzM2MjQ3YzlmNw"
+    url: process.env.UPSTASH_REDIS_REST_URL,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN
 });
 
 const httpServer = createServer(app);
@@ -54,6 +60,10 @@ const io = new Server(httpServer, {
     pingInterval: 15000,
     transports: ['websocket', 'polling'],
     upgradeTimeout: 10000,
+    // game-state payloads are repetitive JSON; deflate cuts socket egress several times over
+    perMessageDeflate: { threshold: 1024 },
+    httpCompression: { threshold: 1024 },
+    maxHttpBufferSize: 1e6,
 });
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
@@ -254,7 +264,10 @@ const finishedGames = [];
 const disconnectTimers = new Map();
 const pendingPersistTimers = new Map();
 let publicRoomsCache = null;
-const PUBLIC_ROOMS_CACHE_MS = 2500;
+const PUBLIC_ROOMS_CACHE_MS = 5000;
+// finished rooms only change when a game ends, so they are cached much longer
+let finishedRoomsCache = null;
+const FINISHED_ROOMS_CACHE_MS = 60_000;
 
 function getDefaultSquadLimit(auctionMode) {
     const normalized = String(auctionMode || '').toLowerCase();
@@ -264,7 +277,6 @@ function getDefaultSquadLimit(auctionMode) {
 
 function markRoomDirty(room) {
     if (!room) return 0;
-    publicRoomsCache = null;
     room.revision = (room.revision || 0) + 1;
     room.updatedAt = Date.now();
     return room.revision;
@@ -341,7 +353,8 @@ app.get('/api/completed-rooms/:code', async (req, res) => {
 
 app.get('/api/rivals/matches', async (req, res) => {
     try {
-        res.setHeader('Cache-Control', 'no-store');
+        // schedule data changes a few times a day; let browsers and CDNs reuse it briefly
+        res.setHeader('Cache-Control', 'public, max-age=60');
         const now = new Date();
         res.json({
             now: now.toISOString(),
@@ -353,9 +366,22 @@ app.get('/api/rivals/matches', async (req, res) => {
     }
 });
 
+async function peekRoom(code) {
+    if (!code) return null;
+    const ucCode = code.toUpperCase();
+    if (rooms.has(ucCode)) return rooms.get(ucCode);
+    try {
+        const data = await redis.get(`room:${ucCode}`);
+        return data ? (typeof data === 'string' ? JSON.parse(data) : data) : null;
+    } catch (e) {
+        console.error('[REDIS] Peek error:', e);
+        return null;
+    }
+}
+
 // GET /api/rooms/:code — room details
 app.get('/api/rooms/:code', async (req, res) => {
-    const room = await getRoom(req.params.code?.toUpperCase());
+    const room = await peekRoom(req.params.code);
     if (!room) return res.status(404).json({ error: 'Room not found' });
     res.json({
         code: room.code,
@@ -382,7 +408,8 @@ app.get('/api/admin/rooms', async (req, res) => {
 
         const activeRooms = [];
         for (const code of activeCodes) {
-            const room = await getRoom(code);
+            // read-only: listing rooms must not load them into memory or restart their clocks
+            const room = await peekRoom(code);
             if (!room) continue;
             activeRooms.push(summarizeRoom(room, { source: 'active' }));
         }
@@ -483,10 +510,12 @@ async function removeFromPublicIndex(code) {
 }
 async function addToFinishedIndex(code) {
     publicRoomsCache = null;
+    finishedRoomsCache = null;
     try { await redis.sadd(FINISHED_ROOM_SET_KEY, code); } catch (e) { }
 }
 async function removeFromFinishedIndex(code) {
     publicRoomsCache = null;
+    finishedRoomsCache = null;
     try { await redis.srem(FINISHED_ROOM_SET_KEY, code); } catch (e) { }
 }
 
@@ -494,7 +523,7 @@ async function removeRoom(code) {
     if (!code) return;
     clearScheduledPersist(code);
     rooms.delete(code.toUpperCase());
-    await redis.del(`room:${code.toUpperCase()}`);
+    await redis.del(`room:${code.toUpperCase()}`, `room_queue:${code.toUpperCase()}`, `room_rev:${code.toUpperCase()}`);
     await removeFromPublicIndex(code.toUpperCase());
     console.log(`[ROOM] ${code} fully removed from memory and Redis`);
 }
@@ -533,10 +562,17 @@ async function getFinishedRoomSnapshot(code) {
 }
 
 async function getFinishedRooms() {
+    const now = Date.now();
+    if (finishedRoomsCache && now - finishedRoomsCache.createdAt < FINISHED_ROOMS_CACHE_MS) {
+        return finishedRoomsCache.snapshots;
+    }
     try {
         const codes = await redis.smembers(FINISHED_ROOM_SET_KEY);
         const loaded = await Promise.all(codes.map(async (code) => {
-            const snapshot = await getFinishedRoomSnapshot(code);
+            const rawSummary = await redis.get(`finished_summary:${code.toUpperCase()}`);
+            const snapshot = rawSummary
+                ? (typeof rawSummary === 'string' ? JSON.parse(rawSummary) : rawSummary)
+                : await getFinishedRoomSnapshot(code); // rooms finished before summaries existed
             if (!snapshot) {
                 await removeFromFinishedIndex(code);
                 return null;
@@ -546,6 +582,7 @@ async function getFinishedRooms() {
         const snapshots = loaded.filter(Boolean);
 
         snapshots.sort((a, b) => (b.finishedAt || 0) - (a.finishedAt || 0));
+        finishedRoomsCache = { createdAt: now, snapshots };
         return snapshots;
     } catch (e) {
         console.error("[REDIS] Finished rooms fetch error:", e);
@@ -557,7 +594,7 @@ async function deleteFinishedRoomSnapshot(code) {
     if (!code) return;
     const ucCode = code.toUpperCase();
     try {
-        await redis.del(`finished_room:${ucCode}`);
+        await redis.del(`finished_room:${ucCode}`, `finished_summary:${ucCode}`);
         await removeFromFinishedIndex(ucCode);
     } catch (e) {
         console.error('[REDIS] Finished room delete error:', e);
@@ -639,15 +676,21 @@ async function persistRoom(room) {
     try {
         const roomKey = `room:${room.code}`;
         const localRevision = room.revision || 0;
-        const existing = await redis.get(roomKey);
-        if (existing) {
-            const existingData = typeof existing === 'string' ? JSON.parse(existing) : existing;
-            const existingRevision = existingData?.revision || 0;
-            if (existingRevision > localRevision) {
-                console.warn(`[REDIS] Skip stale persist for room ${room.code}: local revision ${localRevision}, remote revision ${existingRevision}`);
-                return;
-            }
+        // Read only the revision number, not the whole room document (that doubled Redis bandwidth).
+        const existingRevision = Number(await redis.get(`room_rev:${room.code}`)) || 0;
+        if (existingRevision > localRevision) {
+            console.warn(`[REDIS] Skip stale persist for room ${room.code}: local revision ${localRevision}, remote revision ${existingRevision}`);
+            return;
         }
+
+        // The player queue never changes after the auction starts, so it is written once
+        // under its own key instead of with every save.
+        const queue = room.gameState?.playerQueue;
+        if (Array.isArray(queue) && room._persistedQueueRef !== queue) {
+            await redis.set(`room_queue:${room.code}`, JSON.stringify(queue), { ex: 3600 * 24 });
+            room._persistedQueueRef = queue;
+        }
+        const gameState = room.gameState ? { ...room.gameState, playerQueue: undefined, queueStored: Array.isArray(queue) } : room.gameState;
 
         const data = {
             code: room.code,
@@ -663,7 +706,7 @@ async function persistRoom(room) {
             rivalsMatch: room.rivalsMatch || null,
             chatLog: room.chatLog || [],
             players: room.players,
-            gameState: room.gameState,
+            gameState,
             started: room.started || false,
             finishedAt: room.finishedAt || null,
             endReason: room.endReason || null,
@@ -672,6 +715,7 @@ async function persistRoom(room) {
         };
         // Save room with 24-hour expiry
         await redis.set(roomKey, JSON.stringify(data), { ex: 3600 * 24 });
+        await redis.set(`room_rev:${room.code}`, localRevision, { ex: 3600 * 24 });
 
         // Keep rooms discoverable only while someone is online.
         if (!data.isPrivate && !isRoomOver(data) && getVisiblePlayers(data).length > 0) {
@@ -695,6 +739,11 @@ async function getRoom(code) {
                     ...rData,
                     timerInterval: null
                 };
+                if (room.gameState?.queueStored && !Array.isArray(room.gameState.playerQueue)) {
+                    const queueData = await redis.get(`room_queue:${ucCode}`);
+                    room.gameState.playerQueue = queueData ? (typeof queueData === 'string' ? JSON.parse(queueData) : queueData) : [];
+                    room._persistedQueueRef = room.gameState.playerQueue;
+                }
                 room.revision = room.revision || 0;
                 room.updatedAt = room.updatedAt || Date.now();
                 room.roomType = room.roomType || 'standard';
@@ -819,19 +868,20 @@ function finishCurrent(room) {
     }
 
     markRoomDirty(room);
-    io.to(room.code).emit('game-state', getClientState(room));
+    io.to(room.code).emit('game-state', getClientState(room, { includePlayerQueue: false, includeSelectionState: false }));
     schedulePersistRoom(room, 50);
     setTimeout(() => advanceToNext(room), 2500);
 }
 
 function advanceToNext(room) {
     const gs = room.gameState;
-    if (!gs) return;
+    // the host may have ended the auction during the 2.5s sold/unsold pause
+    if (!gs || (gs.phase !== 'sold' && gs.phase !== 'unsold')) return;
 
     const nextIdx = gs.currentIdx + 1;
     if (nextIdx >= gs.playerQueue.length) {
         startTradePhase(room, { reason: 'completed' });
-        io.to(room.code).emit('game-state', getClientState(room));
+        io.to(room.code).emit('game-state', getClientState(room, { includePlayerQueue: false }));
         schedulePersistRoom(room, 50);
         return;
     }
@@ -846,7 +896,7 @@ function advanceToNext(room) {
     gs.currentSetName = np.setName;
 
     markRoomDirty(room);
-    io.to(room.code).emit('game-state', getClientState(room));
+    io.to(room.code).emit('game-state', getClientState(room, { includePlayerQueue: false, includeSelectionState: false }));
     schedulePersistRoom(room, 50);
 }
 
@@ -1034,10 +1084,18 @@ function saveFinishedGame(room, gs) {
         spectators: Object.values(room.players || {}).filter(p => p.isSpectator).length,
         totalSold: gs.auctionLog.filter(l => l.sold).length,
         topBuy: gs.auctionLog.filter(l => l.sold).sort((a, b) => b.price - a.price)[0] || null,
-        gameState: gs
+        // results only need squads, purses and the sale log, not the 500-player queue
+        gameState: {
+            ...gs,
+            playerQueue: undefined,
+            auctionLog: (gs.auctionLog || []).map(entry => ({ sold: entry.sold, price: entry.price, bidder: entry.bidder, player: { name: entry.player?.name, role: entry.player?.role } })),
+        },
     };
+    // small listing record so the rooms list never has to download full results
+    const { gameState: _omit, ...summary } = snapshot;
 
     redis.set(`finished_room:${roomCode}`, JSON.stringify(snapshot), { ex: FINISHED_ROOM_TTL_SECONDS })
+        .then(() => redis.set(`finished_summary:${roomCode}`, JSON.stringify(summary), { ex: FINISHED_ROOM_TTL_SECONDS }))
         .then(() => addToFinishedIndex(roomCode))
         .catch(e => console.error("[REDIS] Finished room save error:", e));
 }
@@ -1100,6 +1158,17 @@ function startGameTick(room) {
     room.timerInterval = setInterval(() => {
         const gs = room.gameState;
         if (!gs || gs.phase !== "bidding" || gs.isPaused) return;
+        // A room revived from Redis with nobody connected would otherwise tick forever.
+        const anyoneConnected = Object.values(room.players || {}).some(p => hasLiveSocket(p.socketId));
+        room._idleTicks = anyoneConnected ? 0 : (room._idleTicks || 0) + 1;
+        if (room._idleTicks >= 30) {
+            room._idleTicks = 0;
+            clearInterval(room.timerInterval);
+            room.timerInterval = null;
+            rooms.delete(room.code.toUpperCase());
+            persistRoom(room);
+            return;
+        }
 
         gs.timer--;
 
@@ -1112,10 +1181,16 @@ function startGameTick(room) {
     }, 1000);
 }
 
+let roomListBroadcastTimer = null;
 function broadcastRoomList() {
-    // Emit to all connected sockets that public rooms changed
+    // Tell browsing clients the public list changed, at most once every 3s.
+    // Every broadcast makes each browsing client refetch /api/rooms.
     publicRoomsCache = null;
-    io.emit('public-rooms-updated');
+    if (roomListBroadcastTimer) return;
+    roomListBroadcastTimer = setTimeout(() => {
+        roomListBroadcastTimer = null;
+        io.emit('public-rooms-updated');
+    }, 3000);
 }
 
 // ─── Socket.IO ───────────────────────────────────────────────────────────────
@@ -1833,6 +1908,12 @@ io.on('connection', (socket) => {
         const noTeam = activePlayers.find(p => !p.teamId);
         if (noTeam) return cb?.({ ok: false, error: `${noTeam.name} hasn't selected a team` });
 
+        const validQueue = Array.isArray(playerQueue)
+            && playerQueue.length > 0
+            && playerQueue.length <= 800
+            && playerQueue.every(p => p && typeof p.name === 'string' && Number.isFinite(Number(p.base)) && Number(p.base) > 0 && Number(p.base) <= 30);
+        if (!validQueue) return cb?.({ ok: false, error: 'Invalid player list' });
+
         room.started = true;
         room.status = 'active';
         room.squadLimit = room.squadLimit || getDefaultSquadLimit(room.auctionMode);
@@ -1879,7 +1960,7 @@ io.on('connection', (socket) => {
         if (!room || currentPlayerId !== room.hostId || !room.gameState) return;
         pushSystemMessage(room, `Auction ended early by ${room.players[currentPlayerId]?.name || 'the host'}`);
         startTradePhase(room, { reason: 'host-ended-early' });
-        io.to(currentRoom).emit('game-state', getClientState(room));
+        io.to(currentRoom).emit('game-state', getClientState(room, { includePlayerQueue: false }));
         await persistRoom(room);
         if (!room.isPrivate) broadcastRoomList();
     });
@@ -1907,11 +1988,13 @@ io.on('connection', (socket) => {
         const room = await getRoom(currentRoom);
         if (!room) return;
         const player = room.players[currentPlayerId];
+        const text = typeof payload?.text === 'string' ? payload.text.trim().slice(0, payload?.isGif ? 500 : 300) : '';
+        if (!text) return;
         if (!room.chatLog) room.chatLog = [];
         room.chatLog.push({
             id: Math.random().toString(36).substr(2, 9),
             type: payload.isGif ? 'gif' : 'text',
-            text: payload.text,
+            text,
             senderId: currentPlayerId,
             senderName: player?.name || "Unknown",
             senderTeam: player?.teamId || null,
@@ -1955,8 +2038,8 @@ io.on('connection', (socket) => {
         if (gs.squads[teamId].length >= maxSquadSize) return cb?.({ ok: false, error: 'Squad full (' + maxSquadSize + ' max)' });
 
         const playerOnAuction = gs.playerQueue[gs.currentIdx];
-        const osCount = gs.squads[teamId].filter(p => p.overseas).length;
-        if (playerOnAuction?.overseas && osCount >= maxOverseas) return cb?.({ ok: false, error: 'Max ' + maxOverseas + ' overseas players' });
+        const osCount = gs.squads[teamId].filter(isOverseasPlayer).length;
+        if (playerOnAuction && isOverseasPlayer(playerOnAuction) && osCount >= maxOverseas) return cb?.({ ok: false, error: 'Max ' + maxOverseas + ' overseas players' });
 
         // Apply state immediately
         gs.currentBid = nb;
@@ -2018,7 +2101,7 @@ io.on('connection', (socket) => {
         gs.tradeReady[fromTeamId] = false;
         pushSystemMessage(room, `${getTeamShort(fromTeamId)} proposed a swap with ${getTeamShort(toTeamId)}`);
         markRoomDirty(room);
-        io.to(currentRoom).emit('game-state', getClientState(room));
+        io.to(currentRoom).emit('game-state', getClientState(room, { includePlayerQueue: false }));
         await persistRoom(room);
         cb?.({ ok: true, proposal });
     });
@@ -2048,7 +2131,7 @@ io.on('connection', (socket) => {
         if (offeredIdx < 0 || requestedIdx < 0) {
             gs.tradeProposals[idx] = { ...proposal, status: 'cancelled', reason: 'This player is no longer available' };
             markRoomDirty(room);
-            io.to(currentRoom).emit('game-state', getClientState(room));
+            io.to(currentRoom).emit('game-state', getClientState(room, { includePlayerQueue: false }));
             await persistRoom(room);
             return cb?.({ ok: false, error: 'This player is no longer available' });
         }
@@ -2067,7 +2150,7 @@ io.on('connection', (socket) => {
         cancelRelatedPendingProposals(gs, [offeredPlayer.name, requestedPlayer.name], proposal.id);
         pushSystemMessage(room, `${getTeamShort(proposal.fromTeamId)} and ${getTeamShort(proposal.toTeamId)} completed a player swap`);
         markRoomDirty(room);
-        io.to(currentRoom).emit('game-state', getClientState(room));
+        io.to(currentRoom).emit('game-state', getClientState(room, { includePlayerQueue: false }));
         await persistRoom(room);
         cb?.({ ok: true });
     });
@@ -2086,7 +2169,7 @@ io.on('connection', (socket) => {
         if (proposal.toTeamId !== player.teamId) return cb?.({ ok: false, error: 'Only the receiving team can decline this proposal' });
         gs.tradeProposals[idx] = { ...proposal, status: 'declined', declinedAt: Date.now() };
         markRoomDirty(room);
-        io.to(currentRoom).emit('game-state', getClientState(room));
+        io.to(currentRoom).emit('game-state', getClientState(room, { includePlayerQueue: false }));
         await persistRoom(room);
         cb?.({ ok: true });
     });
@@ -2105,7 +2188,7 @@ io.on('connection', (socket) => {
         if (proposal.fromTeamId !== player.teamId) return cb?.({ ok: false, error: 'Only the sending team can cancel this proposal' });
         gs.tradeProposals[idx] = { ...proposal, status: 'cancelled', cancelledAt: Date.now() };
         markRoomDirty(room);
-        io.to(currentRoom).emit('game-state', getClientState(room));
+        io.to(currentRoom).emit('game-state', getClientState(room, { includePlayerQueue: false }));
         await persistRoom(room);
         cb?.({ ok: true });
     });
@@ -2123,7 +2206,7 @@ io.on('connection', (socket) => {
         gs.tradeReady[player.teamId] = true;
         const movedToSelection = maybeStartSelectionIfTradesReady(room);
         markRoomDirty(room);
-        io.to(currentRoom).emit('game-state', getClientState(room));
+        io.to(currentRoom).emit('game-state', getClientState(room, { includePlayerQueue: false }));
         await persistRoom(room);
         ack?.({ ok: true, movedToSelection });
     });
@@ -2136,7 +2219,7 @@ io.on('connection', (socket) => {
         if (room.gameState.phase !== 'trade') return ack?.({ ok: false, error: 'Trade phase is not active' });
         pushSystemMessage(room, `Player swaps ended by ${room.players[currentPlayerId]?.name || 'the host'}`);
         startSelectionPhase(room, { reason: room.endReason || 'completed' });
-        io.to(currentRoom).emit('game-state', getClientState(room));
+        io.to(currentRoom).emit('game-state', getClientState(room, { includePlayerQueue: false }));
         await persistRoom(room);
         ack?.({ ok: true });
     });
@@ -2183,7 +2266,7 @@ io.on('connection', (socket) => {
             if (!room.isPrivate) broadcastRoomList();
             await persistRoom(room);
         } else {
-            io.to(currentRoom).emit('game-state', getClientState(room));
+            io.to(currentRoom).emit('game-state', getClientState(room, { includePlayerQueue: false }));
             await persistRoom(room);
         }
 

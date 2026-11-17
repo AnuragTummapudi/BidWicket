@@ -171,7 +171,7 @@ const HERO_STACK_PLAYERS = [
   { name: 'MS Dhoni', accent: '#F9CA24', tag: 'FINISHER ICON' },
   { name: 'Rohit Sharma', accent: '#4FC3F7', tag: 'TACTICAL CAPTAIN' },
   { name: 'Jasprit Bumrah', accent: '#FF5252', tag: 'DEATH OVERS ACE' },
-  { name: 'Virat Kohli', accent: '#E8B84B', tag: 'POWER OPENER' },
+  { name: 'Virat Kohli', accent: '#E8603C', tag: 'POWER OPENER' },
 ];
 
 /* ── Components ── */
@@ -189,7 +189,7 @@ function PlayerCard({ name, role, path }) {
     <div className="l-card">
       <div className="l-card-img">
         <svg className="l-card-svg" viewBox="0 0 100 100">
-          <path d={path} fill="none" stroke="#E8B84B" strokeWidth="2" strokeLinecap="square" />
+          <path d={path} fill="none" stroke="#E8603C" strokeWidth="2" strokeLinecap="square" />
         </svg>
       </div>
       <div className="l-card-info">
@@ -341,7 +341,7 @@ export default function LandingPage() {
             <div className="l-stats-grid">
               <div className="l-stat-item">
                 <span className="l-stat-val">10</span>
-                <span className="l-stat-name" style={{ color: '#E8B84B' }}>FRANCHISES</span>
+                <span className="l-stat-name" style={{ color: '#E8603C' }}>FRANCHISES</span>
               </div>
               <div className="l-stat-item">
                 <span className="l-stat-val">120CR</span>
@@ -398,13 +398,13 @@ export default function LandingPage() {
       </section>
 
       <section style={{ padding: '0 24px 28px', position: 'relative', zIndex: 2 }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', background: 'linear-gradient(160deg, rgba(232,184,75,0.12), rgba(9,10,14,0.96))', border: '1px solid rgba(232,184,75,0.18)', borderRadius: 28, padding: '22px 20px 24px', boxShadow: '0 24px 60px rgba(0,0,0,0.28)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', background: 'rgba(9,10,14,0.96)', border: '1px solid rgba(232, 96, 60,0.18)', borderRadius: 28, padding: '22px 20px 24px', boxShadow: '0 24px 60px rgba(0,0,0,0.28)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 16 }}>
             <div>
-              <div style={{ color: '#E8B84B', fontSize: 11, letterSpacing: 3, fontWeight: 800, marginBottom: 6 }}>NEW DAILY MODE</div>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(28px, 4vw, 42px)', letterSpacing: 1.5, color: '#fff' }}>TODAY IN RIVALS MODE</div>
+              <div style={{ color: '#E8603C', fontSize: 11, letterSpacing: 3, fontWeight: 800, marginBottom: 6 }}>NEW DAILY MODE</div>
+              <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 'clamp(28px, 4vw, 42px)', letterSpacing: 1.5, color: '#fff' }}>TODAY IN RIVALS MODE</div>
             </div>
-            <button onClick={() => router.push(rivalsHref)} style={{ border: 'none', borderRadius: 999, padding: '12px 18px', background: 'linear-gradient(135deg, #E8B84B, #c8921b)', color: '#000', fontWeight: 900, letterSpacing: 1.2, cursor: 'pointer' }}>
+            <button onClick={() => router.push(rivalsHref)} style={{ border: 'none', borderRadius: 999, padding: '12px 18px', background: '#E8603C', color: '#000', fontWeight: 900, letterSpacing: 1.2, cursor: 'pointer' }}>
               PLAY AUCTION NOW
             </button>
           </div>
@@ -419,13 +419,13 @@ export default function LandingPage() {
             const matchMeta = formatMatchMeta(featuredRival.startAt);
 
             return (
-              <div style={{ background: '#0b0d12', border: `1px solid ${featuredRival.isHighProfile ? 'rgba(232,184,75,0.28)' : '#1b2030'}`, borderRadius: 22, padding: '18px 20px' }}>
+              <div style={{ background: '#0b0d12', border: `1px solid ${featuredRival.isHighProfile ? 'rgba(232, 96, 60,0.28)' : '#1b2030'}`, borderRadius: 22, padding: '18px 20px' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: isCompactCard ? 'minmax(0, 1fr)' : '1fr auto', gap: 16, alignItems: 'center' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                      <div style={{ color: '#E8B84B', fontSize: 12, letterSpacing: 2.5, fontWeight: 800 }}>RIVALS</div>
+                      <div style={{ color: '#E8603C', fontSize: 12, letterSpacing: 2.5, fontWeight: 800 }}>RIVALS</div>
                       <div style={{ color: '#94A3B8', fontSize: 12, letterSpacing: 1.4 }}>{matchMeta} IST</div>
-                      <div style={{ color: featuredRival.isHighProfile ? '#E8B84B' : '#64748B', fontSize: 12, letterSpacing: 1.4 }}>
+                      <div style={{ color: featuredRival.isHighProfile ? '#E8603C' : '#64748B', fontSize: 12, letterSpacing: 1.4 }}>
                         {featuredRival.isHighProfile ? 'HIGHLIGHT CLASH' : featuredRival.venue}
                       </div>
                     </div>
@@ -434,14 +434,14 @@ export default function LandingPage() {
                       <Image src={home?.logo || '/assets/CSK.png'} alt={`${home?.name || home?.short} logo`} width={58} height={58} style={{ width: isCompactCard ? 44 : 58, height: isCompactCard ? 44 : 58, objectFit: 'contain', flexShrink: 0 }} />
                       <div style={{ minWidth: 0 }}>
                         <div style={{ color: home?.color, fontWeight: 800, letterSpacing: 1.4, fontSize: isCompactCard ? 10 : 13 }}>{home?.short}</div>
-                        <div style={{ color: '#fff', fontFamily: "'Bebas Neue', sans-serif", fontSize: isCompactCard ? 16 : 26, letterSpacing: 1, lineHeight: isCompactCard ? 0.96 : 1, whiteSpace: isCompactCard ? 'normal' : 'initial', wordBreak: 'break-word', maxWidth: isCompactCard ? 110 : 'none' }}>{home?.name}</div>
+                        <div style={{ color: '#fff', fontFamily: "var(--font-main), sans-serif", fontSize: isCompactCard ? 16 : 26, letterSpacing: 1, lineHeight: isCompactCard ? 0.96 : 1, whiteSpace: isCompactCard ? 'normal' : 'initial', wordBreak: 'break-word', maxWidth: isCompactCard ? 110 : 'none' }}>{home?.name}</div>
                       </div>
                     </div>
-                    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: isCompactCard ? 18 : 34, color: '#94A3B8', letterSpacing: isCompactCard ? 1.5 : 4, flexShrink: 0, alignSelf: isCompactCard ? 'flex-start' : 'center', marginTop: isCompactCard ? 18 : 0 }}>VS</div>
+                    <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: isCompactCard ? 18 : 34, color: '#94A3B8', letterSpacing: isCompactCard ? 1.5 : 4, flexShrink: 0, alignSelf: isCompactCard ? 'flex-start' : 'center', marginTop: isCompactCard ? 18 : 0 }}>VS</div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: isCompactCard ? 6 : 12, minWidth: 0, flex: 1, justifyContent: 'flex-end' }}>
                       <div style={{ textAlign: 'right', minWidth: 0 }}>
                         <div style={{ color: away?.color, fontWeight: 800, letterSpacing: 1.4, fontSize: isCompactCard ? 10 : 13 }}>{away?.short}</div>
-                        <div style={{ color: '#fff', fontFamily: "'Bebas Neue', sans-serif", fontSize: isCompactCard ? 16 : 26, letterSpacing: 1, lineHeight: isCompactCard ? 0.96 : 1, whiteSpace: isCompactCard ? 'normal' : 'initial', wordBreak: 'break-word', maxWidth: isCompactCard ? 110 : 'none', marginLeft: 'auto' }}>{away?.name}</div>
+                        <div style={{ color: '#fff', fontFamily: "var(--font-main), sans-serif", fontSize: isCompactCard ? 16 : 26, letterSpacing: 1, lineHeight: isCompactCard ? 0.96 : 1, whiteSpace: isCompactCard ? 'normal' : 'initial', wordBreak: 'break-word', maxWidth: isCompactCard ? 110 : 'none', marginLeft: 'auto' }}>{away?.name}</div>
                       </div>
                       <Image src={away?.logo || '/assets/MI.png'} alt={`${away?.name || away?.short} logo`} width={58} height={58} style={{ width: isCompactCard ? 44 : 58, height: isCompactCard ? 44 : 58, objectFit: 'contain', flexShrink: 0 }} />
                     </div>
@@ -449,8 +449,8 @@ export default function LandingPage() {
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: isCompactCard ? 'stretch' : 'flex-end', gap: 10, textAlign: isCompactCard ? 'center' : 'right' }}>
                     <div style={{ color: '#94A3B8', fontSize: 11, fontWeight: 800, letterSpacing: 2 }}>{timerLabel}</div>
-                    <div style={{ color: accent, fontFamily: "'Bebas Neue', sans-serif", fontSize: isCompactCard ? 30 : 34, letterSpacing: 1.2 }}>{state === 'locked' ? 'LIVE' : countdown}</div>
-                    <button onClick={() => router.push(rivalsHref)} style={{ border: 'none', borderRadius: 999, padding: '12px 18px', background: 'linear-gradient(135deg, #E8B84B, #c8921b)', color: '#000', fontWeight: 900, letterSpacing: 1.2, cursor: 'pointer', width: isCompactCard ? '100%' : 'auto' }}>
+                    <div style={{ color: accent, fontFamily: "var(--font-main), sans-serif", fontSize: isCompactCard ? 30 : 34, letterSpacing: 1.2 }}>{state === 'locked' ? 'LIVE' : countdown}</div>
+                    <button onClick={() => router.push(rivalsHref)} style={{ border: 'none', borderRadius: 999, padding: '12px 18px', background: '#E8603C', color: '#000', fontWeight: 900, letterSpacing: 1.2, cursor: 'pointer', width: isCompactCard ? '100%' : 'auto' }}>
                       PLAY AUCTION NOW
                     </button>
                   </div>
@@ -462,7 +462,7 @@ export default function LandingPage() {
               <div style={{ color: '#94A3B8', lineHeight: 1.7 }}>
                 Rivals mode now refreshes with a daily fantasy team matchup. Jump in from here to find an online rival or create a private duel room.
               </div>
-              <button onClick={() => router.push('/room?action=browse')} style={{ border: 'none', borderRadius: 999, padding: '12px 18px', background: 'linear-gradient(135deg, #E8B84B, #c8921b)', color: '#000', fontWeight: 900, letterSpacing: 1.2, cursor: 'pointer' }}>
+              <button onClick={() => router.push('/room?action=browse')} style={{ border: 'none', borderRadius: 999, padding: '12px 18px', background: '#E8603C', color: '#000', fontWeight: 900, letterSpacing: 1.2, cursor: 'pointer' }}>
                 PLAY AUCTION NOW
               </button>
             </div>
@@ -496,9 +496,9 @@ export default function LandingPage() {
           <CircularGallery
             items={GALLERY_ITEMS}
             bend={3}
-            textColor="#E8B84B"
+            textColor="#E8603C"
             borderRadius={0.05}
-            font="700 32px 'Montserrat', sans-serif"
+            font="700 32px var(--font-main)"
           />
         </div>
         <div className="l-mobile-marquee">
@@ -506,7 +506,7 @@ export default function LandingPage() {
             {GALLERY_ITEMS.map((item, i) => (
               <div key={i} style={{ minWidth: 220, flexShrink: 0, scrollSnapAlign: 'start', borderRadius: 12, overflow: 'hidden', background: '#111', border: '1px solid #222' }}>
                 <img src={item.image} style={{ width: '100%', height: 280, objectFit: 'cover' }} alt={item.alt} loading="lazy" />
-                <div style={{ padding: 12, textAlign: 'center', background: '#0a0a0c', color: '#E8B84B', fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, letterSpacing: 1 }}>{item.text}</div>
+                <div style={{ padding: 12, textAlign: 'center', background: '#0a0a0c', color: '#E8603C', fontFamily: "var(--font-main), sans-serif", fontSize: 24, letterSpacing: 1 }}>{item.text}</div>
               </div>
             ))}
           </div>
@@ -655,7 +655,7 @@ export default function LandingPage() {
 
             <div style={{ fontSize: '10px', color: '#888', letterSpacing: '1px', lineHeight: '1.6', maxWidth: '600px', marginTop: '4px' }}>
               IPL Auction Online is a fan-made simulator and is not affiliated with the BCCI, IPL, or any official franchise.
-              Data and player information are attributed to <a href="https://www.iplt20.com" target="_blank" rel="noreferrer" style={{ color: '#E8B84B', textDecoration: 'none' }}>iplt20.com</a> & <a href="https://cricapi.com" target="_blank" rel="noreferrer" style={{ color: '#E8B84B', textDecoration: 'none' }}>CricAPI</a>.
+              Data and player information are attributed to <a href="https://www.iplt20.com" target="_blank" rel="noreferrer" style={{ color: '#E8603C', textDecoration: 'none' }}>iplt20.com</a> & <a href="https://cricapi.com" target="_blank" rel="noreferrer" style={{ color: '#E8603C', textDecoration: 'none' }}>CricAPI</a>.
             </div>
 
             <span style={{ fontSize: '9px', color: '#666', letterSpacing: '2px', textTransform: 'lowercase', marginTop: '8px' }}>

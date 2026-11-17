@@ -28,23 +28,25 @@ export function setAudioMuted(nextMuted) {
     if (typeof window !== "undefined") {
         try {
             localStorage.setItem(AUDIO_MUTE_STORAGE_KEY, audioMuted ? "1" : "0");
-        } catch { }
+        } catch { /* storage unavailable */ }
     }
 }
 
-export function useSocket() {
+export function useSocket(enabled = true) {
     const sock = useRef(null);
 
     useEffect(() => {
         const socketUrl = getSocketUrl();
-        console.log("Connecting to Auction Server:", socketUrl);
+        // Created without connecting: listeners attach now, the connection opens
+        // only once a game page needs it (see the effect below).
         sock.current = io(socketUrl, {
             path: "/socket.io",
+            autoConnect: false,
             transports: ["websocket", "polling"],
             reconnection: true,
             reconnectionAttempts: Infinity,
-            reconnectionDelay: 500,
-            reconnectionDelayMax: 3000,
+            reconnectionDelay: 1000,
+            reconnectionDelayMax: 10000,
             timeout: 20000,
         });
 
@@ -60,6 +62,12 @@ export function useSocket() {
 
         return () => { sock.current?.disconnect(); };
     }, []);
+
+    useEffect(() => {
+        if (enabled && sock.current && !sock.current.connected && !sock.current.active) {
+            sock.current.connect();
+        }
+    }, [enabled]);
 
     const emit = useCallback((ev, data, cb) => {
         if (typeof data === 'function' && cb === undefined) {
@@ -93,7 +101,7 @@ export function playPulse() {
         osc.start();
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
         osc.stop(audioCtx.currentTime + 0.15);
-    } catch (e) { /* ignore audio errors */ }
+    } catch { /* ignore audio errors */ }
 }
 
 export function playSaleSound(isSold = true) {
@@ -102,5 +110,5 @@ export function playSaleSound(isSold = true) {
         const audio = new Audio(isSold ? '/assets/tadaa.mp3' : '/assets/fahhh.mp3');
         audio.volume = 0.6;
         audio.play().catch(e => console.warn("Audio play failed:", e));
-    } catch (e) { }
+    } catch { /* audio unsupported */ }
 }

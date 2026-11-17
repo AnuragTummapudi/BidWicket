@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGame } from '../GameContext';
 
-const GOLD = '#E8B84B';
+const GOLD = '#E8603C';
 const BG   = '#080808';
 
 const modes = [
@@ -22,7 +22,7 @@ const modes = [
     ),
     stats: [{ val: '500+', label: 'PLAYERS' }, { val: '10', label: 'TEAMS' }, { val: '40+', label: 'SETS' }, { val: '₹120CR', label: 'PURSE' }],
     accentColor: GOLD,
-    glowColor: 'rgba(232,184,75,0.10)',
+    glowColor: 'rgba(232, 96, 60,0.10)',
   },
   {
     id: 'mini',
@@ -59,7 +59,6 @@ export default function ModePage() {
   return (
     <div style={{ minHeight: '100vh', background: BG, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 16px 40px' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600&family=Courier+Prime:wght@400;700&display=swap');
 
         * { box-sizing: border-box; }
 
@@ -74,7 +73,7 @@ export default function ModePage() {
         }
         .back-btn {
           background: none; border: 1px solid #2a2a2a; color: #666;
-          font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+          font-family: var(--font-main), sans-serif; font-weight: 600;
           font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
           padding: 8px 16px; cursor: pointer; transition: color .2s, border-color .2s;
           display: flex; align-items: center; gap: 6px;
@@ -82,7 +81,7 @@ export default function ModePage() {
         .back-btn:hover { color: #fff; border-color: #fff; }
 
         .brand {
-          font-family: 'Bebas Neue', sans-serif;
+          font-family: var(--font-main), sans-serif;
           font-size: 1.1rem; letter-spacing: 0.3em; color: #333;
         }
         .brand span { color: ${GOLD}; }
@@ -94,19 +93,19 @@ export default function ModePage() {
           width: 100%; max-width: 600px;
         }
         .mode-eyebrow {
-          font-family: 'Courier Prime', monospace; font-weight: 700;
+          font-family: var(--font-main), sans-serif; font-weight: 700;
           font-size: 11px; color: ${GOLD}; letter-spacing: 4px;
           text-transform: uppercase; display: block; margin-bottom: 12px;
         }
         .mode-h1 {
-          font-family: 'Bebas Neue', sans-serif;
+          font-family: var(--font-main), sans-serif;
           font-size: clamp(2.8rem, 10vw, 5rem);
           letter-spacing: -0.02em; line-height: 0.9;
           color: #fff; margin: 0 0 16px;
         }
         .mode-h1 span { color: ${GOLD}; }
         .mode-sub {
-          font-family: 'Courier Prime', monospace;
+          font-family: var(--font-main), sans-serif;
           font-size: 13px; color: #555; line-height: 1.6;
           margin: 0;
         }
@@ -149,7 +148,7 @@ export default function ModePage() {
         }
 
         .card-tag {
-          font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+          font-family: var(--font-main), sans-serif; font-weight: 600;
           font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
           margin-bottom: 16px;
           display: flex; align-items: center; gap: 8px;
@@ -160,18 +159,18 @@ export default function ModePage() {
         .mode-card:hover .card-icon { opacity: 1; }
 
         .card-title {
-          font-family: 'Bebas Neue', sans-serif;
+          font-family: var(--font-main), sans-serif;
           font-size: clamp(1.6rem, 5vw, 2rem);
           color: #fff; line-height: 1; margin-bottom: 4px;
         }
         .card-subtitle {
-          font-family: 'Courier Prime', monospace;
+          font-family: var(--font-main), sans-serif;
           font-size: 11px; color: #555; margin-bottom: 14px;
           line-height: 1.5;
         }
         .card-divider { height: 1px; background: #1a1a1a; margin-bottom: 14px; }
         .card-desc {
-          font-family: 'Courier Prime', monospace;
+          font-family: var(--font-main), sans-serif;
           font-size: 12px; color: #666; line-height: 1.65;
           margin-bottom: 20px;
         }
@@ -187,13 +186,13 @@ export default function ModePage() {
           transition: border-color .25s;
         }
         .stat-val {
-          font-family: 'Bebas Neue', sans-serif;
+          font-family: var(--font-main), sans-serif;
           font-size: 1.1rem; color: #fff; line-height: 1;
           transition: color .25s;
           white-space: nowrap;
         }
         .stat-label {
-          font-family: 'Courier Prime', monospace;
+          font-family: var(--font-main), sans-serif;
           font-size: 8px; color: #444; letter-spacing: 1px;
           text-transform: uppercase; margin-top: 3px;
           white-space: nowrap;
@@ -202,7 +201,7 @@ export default function ModePage() {
         /* CTA button */
         .card-cta {
           width: 100%;
-          font-family: 'Bebas Neue', sans-serif;
+          font-family: var(--font-main), sans-serif;
           font-size: 1.1rem; letter-spacing: 0.08em;
           padding: 14px 12px;
           border: none; cursor: pointer;
@@ -214,7 +213,7 @@ export default function ModePage() {
 
         .bottom-hint {
           margin-top: 32px;
-          font-family: 'Courier Prime', monospace;
+          font-family: var(--font-main), sans-serif;
           font-size: 11px; color: #2a2a2a;
           letter-spacing: 0.1em; text-transform: uppercase;
           text-align: center;

@@ -1,6 +1,6 @@
 'use client';
 
-const GOLD = '#E8B84B';
+const GOLD = '#E8603C';
 const DANGER = '#ef4444';
 const INFO = '#22D3EE';
 
@@ -69,7 +69,7 @@ export default function AppDialog({ isOpen, title, message, tone = 'default', ac
         }}
       >
         <div style={{ padding: '18px 20px 14px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 24, letterSpacing: 2, color: accent }}>
+          <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 24, letterSpacing: 2, color: accent }}>
             {title}
           </div>
         </div>
@@ -88,7 +88,7 @@ export default function AppDialog({ isOpen, title, message, tone = 'default', ac
                 padding: '11px 16px',
                 borderRadius: 10,
                 cursor: 'pointer',
-                fontFamily: "'Barlow Condensed', sans-serif",
+                fontFamily: "var(--font-main), sans-serif",
                 fontWeight: 800,
                 fontSize: 13,
                 letterSpacing: '0.08em',

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-const GOLD = "#D4AF37", BG = "#05070D", CARD = "#0C0F18", BORDER = "rgba(212,175,55,0.12)";
+const GOLD = "#E8603C", BG = "#05070D", CARD = "#0C0F18", BORDER = "rgba(232, 96, 60,0.12)";
 
 const TEAMS = [
     { id: "CSK", name: "Chennai Super Kings", short: "CSK", color: "#F9CA24" },
@@ -17,7 +17,7 @@ const TEAMS = [
     { id: "LSG", name: "Lucknow Super Giants", short: "LSG", color: "#81D4FA" },
 ];
 
-const ROLE_C = { BAT: "#22D3EE", WK: "#FBBF24", AR: "#C084FC", BOWL: "#4ADE80" };
+const ROLE_C = { BAT: "#22D3EE", WK: "#E8603C", AR: "#C084FC", BOWL: "#4ADE80" };
 const ROLE_L = { BAT: "Batter", WK: "WK-Batter", AR: "All-rounder", BOWL: "Bowler" };
 const ROLE_EMOJI = { BAT: "🏏", WK: "🧤", AR: "⚡", BOWL: "🎯" };
 
@@ -31,10 +31,10 @@ export function PlayModeScreen({ onSingle, onMulti }) {
         { id: "multi", title: "MULTIPLAYER", desc: "Create or join a room with friends. Real-time bidding!", icon: "🌐", color: GOLD },
     ];
     return (
-        <div style={{ minHeight: "100vh", background: BG, fontFamily: "'Rajdhani',sans-serif", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative" }}>
+        <div style={{ minHeight: "100vh", background: BG, fontFamily: "var(--font-main), sans-serif", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative" }}>
             <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}`}</style>
             <div style={{ textAlign: "center", marginBottom: 50, animation: "fadeUp .4s ease-out" }}>
-                <div style={{ fontFamily: "'Bebas Neue'", fontSize: "clamp(28px,4vw,48px)", letterSpacing: 8, color: GOLD }}>HOW DO YOU WANT TO PLAY?</div>
+                <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: "clamp(28px,4vw,48px)", letterSpacing: 8, color: GOLD }}>HOW DO YOU WANT TO PLAY?</div>
             </div>
             <div style={{ display: "flex", gap: 24, animation: "fadeUp .5s ease-out", flexWrap: "wrap", justifyContent: "center", padding: "0 20px" }}>
                 {modes.map(m => (
@@ -42,7 +42,7 @@ export function PlayModeScreen({ onSingle, onMulti }) {
                         onMouseEnter={() => setHov(m.id)} onMouseLeave={() => setHov(null)}
                         style={{ width: 300, background: hov === m.id ? `${m.color}10` : CARD, border: `1px solid ${hov === m.id ? m.color : BORDER}`, borderRadius: 16, padding: "40px 28px", cursor: "pointer", transition: "all .25s", textAlign: "center", boxShadow: hov === m.id ? `0 0 50px ${m.color}22` : "none", transform: hov === m.id ? "translateY(-6px)" : "none" }}>
                         <div style={{ fontSize: 56, marginBottom: 16 }}>{m.icon}</div>
-                        <div style={{ fontFamily: "'Bebas Neue'", fontSize: 30, color: m.color, letterSpacing: 3 }}>{m.title}</div>
+                        <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 30, color: m.color, letterSpacing: 3 }}>{m.title}</div>
                         <div style={{ color: "#555", fontSize: 12, marginTop: 12, lineHeight: 1.5 }}>{m.desc}</div>
                         <div style={{ height: 3, background: "#111", borderRadius: 2, marginTop: 24, overflow: "hidden" }}>
                             <div style={{ height: "100%", width: hov === m.id ? "100%" : "0%", background: m.color, transition: "width .5s" }} />
@@ -69,8 +69,6 @@ export function RoomScreen({ emit, onJoined, playerId }) {
             emit("get-rooms", (data) => {
                 if (data) setServerData(data);
             });
-            // Optionally listen for live updates
-            const off = emit ? (() => { }) : null; // simplified, we just fetch once on mount
         }
     }, [mode, emit]);
 
@@ -112,28 +110,28 @@ export function RoomScreen({ emit, onJoined, playerId }) {
         });
     };
 
-    const inputStyle = { width: "100%", padding: "14px 18px", background: "#0a0c14", border: `1px solid ${BORDER}`, borderRadius: 8, color: "#fff", fontSize: 16, fontFamily: "'Rajdhani'", letterSpacing: 1, outline: "none", boxSizing: "border-box" };
-    const btnStyle = (c) => ({ width: "100%", padding: "14px", background: `linear-gradient(135deg, ${c}, ${c}88)`, border: "none", borderRadius: 8, color: "#000", fontSize: 16, fontWeight: 900, cursor: "pointer", letterSpacing: 2, fontFamily: "'Barlow Condensed'" });
+    const inputStyle = { width: "100%", padding: "14px 18px", background: "#0a0c14", border: `1px solid ${BORDER}`, borderRadius: 8, color: "#fff", fontSize: 16, fontFamily: "var(--font-main), sans-serif", letterSpacing: 1, outline: "none", boxSizing: "border-box" };
+    const btnStyle = (c) => ({ width: "100%", padding: "14px", background: `linear-gradient(135deg, ${c}, ${c}88)`, border: "none", borderRadius: 8, color: "#000", fontSize: 16, fontWeight: 900, cursor: "pointer", letterSpacing: 2, fontFamily: "var(--font-main), sans-serif" });
 
     return (
-        <div style={{ minHeight: "100vh", background: BG, fontFamily: "'Rajdhani',sans-serif", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ minHeight: "100vh", background: BG, fontFamily: "var(--font-main), sans-serif", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
             <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}`}</style>
             {!mode ? (
                 <div style={{ animation: "fadeUp .4s ease-out", textAlign: "center" }}>
-                    <div style={{ fontFamily: "'Bebas Neue'", fontSize: "clamp(28px,4vw,48px)", color: GOLD, letterSpacing: 6, marginBottom: 40 }}>MULTIPLAYER</div>
+                    <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: "clamp(28px,4vw,48px)", color: GOLD, letterSpacing: 6, marginBottom: 40 }}>MULTIPLAYER</div>
                     <div style={{ display: "flex", gap: 20, flexWrap: "wrap", justifyContent: "center" }}>
                         {[["CREATE ROOM", "🏟️", "#22D3EE"], ["JOIN ROOM", "🔗", GOLD]].map(([label, icon, c]) => (
                             <div key={label} onClick={() => setMode(label.includes("CREATE") ? "create" : "join")}
                                 style={{ width: 220, background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, padding: "36px 20px", cursor: "pointer", textAlign: "center", transition: "all .2s" }}>
                                 <div style={{ fontSize: 42, marginBottom: 12 }}>{icon}</div>
-                                <div style={{ fontFamily: "'Bebas Neue'", fontSize: 22, color: c, letterSpacing: 2 }}>{label}</div>
+                                <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 22, color: c, letterSpacing: 2 }}>{label}</div>
                             </div>
                         ))}
                     </div>
                 </div>
             ) : (
                 <div style={{ width: mode === "create" ? 360 : 660, animation: "fadeUp .3s ease-out" }}>
-                    <div style={{ fontFamily: "'Bebas Neue'", fontSize: 36, color: GOLD, letterSpacing: 4, textAlign: "center", marginBottom: 30 }}>
+                    <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 36, color: GOLD, letterSpacing: 4, textAlign: "center", marginBottom: 30 }}>
                         {mode === "create" ? "CREATE ROOM" : "SERVER BROWSER"}
                     </div>
 
@@ -159,7 +157,7 @@ export function RoomScreen({ emit, onJoined, playerId }) {
                             <div style={{ display: "flex", gap: 20 }}>
                                 {/* Active Public Rooms */}
                                 <div style={{ flex: 1, background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20 }}>
-                                    <div style={{ fontFamily: "'Bebas Neue'", fontSize: 22, color: "#22D3EE", letterSpacing: 2, marginBottom: 14 }}>ACTIVE LOBBIES</div>
+                                    <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 22, color: "#22D3EE", letterSpacing: 2, marginBottom: 14 }}>ACTIVE LOBBIES</div>
                                     <div style={{ display: "flex", flexDirection: "column", gap: 10, maxHeight: 300, overflowY: "auto" }}>
                                         {serverData.active.length === 0 ? <div style={{ color: "#555", fontSize: 13, textAlign: "center", padding: 20 }}>No public rooms right now. Create one!</div> :
                                             serverData.active.map((r, i) => (
@@ -178,14 +176,14 @@ export function RoomScreen({ emit, onJoined, playerId }) {
                                 {/* Join Private */}
                                 <div style={{ width: 220, display: "flex", flexDirection: "column", gap: 14 }}>
                                     <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20 }}>
-                                        <div style={{ fontFamily: "'Bebas Neue'", fontSize: 22, color: GOLD, letterSpacing: 2, marginBottom: 14 }}>JOIN PRIVATE</div>
-                                        <input value={code} onChange={e => setCode(e.target.value.toUpperCase())} placeholder="CODE" style={{ ...inputStyle, letterSpacing: 6, fontSize: 22, textAlign: "center", fontFamily: "'Bebas Neue'", marginBottom: 14 }} maxLength={6} />
+                                        <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 22, color: GOLD, letterSpacing: 2, marginBottom: 14 }}>JOIN PRIVATE</div>
+                                        <input value={code} onChange={e => setCode(e.target.value.toUpperCase())} placeholder="CODE" style={{ ...inputStyle, letterSpacing: 6, fontSize: 22, textAlign: "center", fontFamily: "var(--font-main), sans-serif", marginBottom: 14 }} maxLength={6} />
                                         <button onClick={handleJoinCode} disabled={loading} style={btnStyle(GOLD)}>JOIN CODE</button>
                                     </div>
 
                                     {/* Recent Finishes */}
                                     <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 14, flex: 1 }}>
-                                        <div style={{ fontFamily: "'Bebas Neue'", fontSize: 18, color: "#C084FC", letterSpacing: 2, marginBottom: 10 }}>RECENT RESULTS</div>
+                                        <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 18, color: "#C084FC", letterSpacing: 2, marginBottom: 10 }}>RECENT RESULTS</div>
                                         <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 150, overflowY: "auto" }}>
                                             {serverData.history.length === 0 ? <div style={{ color: "#555", fontSize: 11, textAlign: "center" }}>No recent games</div> :
                                                 serverData.history.map((h, i) => (
@@ -232,10 +230,10 @@ export function LobbyScreen({ roomCode, players, isHost, auctionMode, emit, onMo
     };
 
     return (
-        <div style={{ minHeight: "100vh", background: BG, fontFamily: "'Rajdhani',sans-serif", padding: "30px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <div style={{ minHeight: "100vh", background: BG, fontFamily: "var(--font-main), sans-serif", padding: "30px", display: "flex", flexDirection: "column", alignItems: "center" }}>
             <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}`}</style>
             <div style={{ animation: "fadeUp .4s ease-out", textAlign: "center", marginBottom: 20 }}>
-                <div style={{ fontFamily: "'Bebas Neue'", fontSize: "clamp(24px,3.5vw,42px)", color: GOLD, letterSpacing: 6 }}>IPL AUCTION LOBBY</div>
+                <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: "clamp(24px,3.5vw,42px)", color: GOLD, letterSpacing: 6 }}>IPL AUCTION LOBBY</div>
                 <div style={{ display: "flex", gap: 14, justifyContent: "center", alignItems: "center", marginTop: 12 }}>
                     <span style={{ color: "#AAA", fontSize: 12, letterSpacing: 2 }}>ROOM CODE</span>
                     <span
@@ -244,11 +242,11 @@ export function LobbyScreen({ roomCode, players, isHost, auctionMode, emit, onMo
                             setCopied(true);
                             setTimeout(() => setCopied(false), 2000);
                         }}
-                        style={{ fontFamily: "'Bebas Neue'", fontSize: 32, color: "#22D3EE", letterSpacing: 8, background: `#22D3EE10`, padding: "4px 18px", borderRadius: 8, border: "1px solid #22D3EE30", cursor: "pointer", position: "relative" }}
+                        style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 32, color: "#22D3EE", letterSpacing: 8, background: `#22D3EE10`, padding: "4px 18px", borderRadius: 8, border: "1px solid #22D3EE30", cursor: "pointer", position: "relative" }}
                         title="Click to copy room code"
                     >
                         {roomCode}
-                        {copied && <div style={{ position: "absolute", top: -25, left: "50%", transform: "translateX(-50%)", background: "#22D3EE", color: "#000", fontSize: 10, padding: "2px 8px", borderRadius: 4, letterSpacing: 1, fontFamily: "'Rajdhani',sans-serif" }}>COPIED!</div>}
+                        {copied && <div style={{ position: "absolute", top: -25, left: "50%", transform: "translateX(-50%)", background: "#22D3EE", color: "#000", fontSize: 10, padding: "2px 8px", borderRadius: 4, letterSpacing: 1, fontFamily: "var(--font-main), sans-serif" }}>COPIED!</div>}
                     </span>
                     <a href={`https://wa.me/?text=Join%20my%20IPL%20Auction%20room!%20Code:%20${roomCode}`} target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 6, background: "#25D36622", border: "1px solid #25D36650", padding: "6px 14px", borderRadius: 8, color: "#25D366", fontSize: 13, fontWeight: 700, textDecoration: "none", transition: "all .2s" }}>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" /></svg>
@@ -279,7 +277,7 @@ export function LobbyScreen({ roomCode, players, isHost, auctionMode, emit, onMo
                     <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
                         {[["mega", "MEGA (500+)", GOLD], ["mini", "MINI (40)", "#22D3EE"]].map(([m, label, c]) => (
                             <button key={m} onClick={() => onModeSelect(m)}
-                                style={{ background: auctionMode === m ? c : "transparent", border: `1px solid ${c}`, borderRadius: 6, padding: "8px 20px", color: auctionMode === m ? "#000" : c, cursor: "pointer", fontWeight: 700, fontSize: 13, fontFamily: "'Rajdhani'" }}>
+                                style={{ background: auctionMode === m ? c : "transparent", border: `1px solid ${c}`, borderRadius: 6, padding: "8px 20px", color: auctionMode === m ? "#000" : c, cursor: "pointer", fontWeight: 700, fontSize: 13, fontFamily: "var(--font-main), sans-serif" }}>
                                 {label}
                             </button>
                         ))}
@@ -298,7 +296,7 @@ export function LobbyScreen({ roomCode, players, isHost, auctionMode, emit, onMo
                         <div key={t.id} onClick={() => !taken || isMine ? selectTeam(t.id) : null}
                             onMouseEnter={() => setHov(t.id)} onMouseLeave={() => setHov(null)}
                             style={{ background: isMine ? `${t.color}20` : taken ? "#0a0a0a" : hov === t.id ? `${t.color}10` : CARD, border: `1px solid ${isMine ? t.color : taken ? "#1a1a1a" : BORDER}`, borderRadius: 10, padding: "16px 12px", cursor: taken && !isMine ? "not-allowed" : "pointer", textAlign: "center", opacity: taken && !isMine ? 0.35 : 1, transition: "all .2s" }}>
-                            <div style={{ fontFamily: "'Bebas Neue'", fontSize: 26, color: t.color, letterSpacing: 1 }}>{t.short}</div>
+                            <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 26, color: t.color, letterSpacing: 1 }}>{t.short}</div>
                             <div style={{ fontSize: 10, color: "#999", marginTop: 4 }}>{t.name}</div>
                             {taken && !isMine && <div style={{ fontSize: 9, color: "#ef4444", marginTop: 4 }}>TAKEN</div>}
                             {isMine && <div style={{ fontSize: 9, color: t.color, marginTop: 4 }}>YOUR TEAM</div>}
@@ -311,7 +309,7 @@ export function LobbyScreen({ roomCode, players, isHost, auctionMode, emit, onMo
 
             {isHost && (
                 <button onClick={startGame}
-                    style={{ background: `linear-gradient(135deg, ${GOLD}, #9a7610)`, border: "none", borderRadius: 6, padding: "14px 50px", color: "#000", fontWeight: 900, fontSize: 16, letterSpacing: 4, cursor: "pointer", fontFamily: "'Barlow Condensed'" }}>
+                    style={{ background: `#E8603C`, border: "none", borderRadius: 6, padding: "14px 50px", color: "#000", fontWeight: 900, fontSize: 16, letterSpacing: 4, cursor: "pointer", fontFamily: "var(--font-main), sans-serif" }}>
                     START AUCTION
                 </button>
             )}

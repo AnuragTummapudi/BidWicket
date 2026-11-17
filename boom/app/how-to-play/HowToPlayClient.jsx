@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-const GOLD = '#E8B84B';
+const GOLD = '#E8603C';
 const CYAN = '#22D3EE';
 const CARD = '#0d0f14';
 const BORDER = '#1d2330';
@@ -149,12 +149,11 @@ export default function HowToPlayClient({ faqSchemaJson }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqSchemaJson }} />
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap');
         .htp-page {
           min-height: 100vh;
           background: #000;
           color: #f7f7f7;
-          font-family: 'Rajdhani', sans-serif;
+          font-family: var(--font-main), sans-serif;
         }
         .htp-shell {
           width: min(1180px, calc(100% - 32px));
@@ -182,7 +181,7 @@ export default function HowToPlayClient({ faqSchemaJson }) {
           flex-wrap: wrap;
         }
         .htp-brand {
-          font-family: 'Bebas Neue', sans-serif;
+          font-family: var(--font-main), sans-serif;
           font-size: clamp(1.4rem, 3vw, 1.9rem);
           letter-spacing: .16em;
           text-decoration: none;
@@ -195,7 +194,7 @@ export default function HowToPlayClient({ faqSchemaJson }) {
           min-height: 44px;
           padding: 0 18px;
           border-radius: 999px;
-          font-family: 'Bebas Neue', sans-serif;
+          font-family: var(--font-main), sans-serif;
           letter-spacing: .08em;
           font-size: 1.05rem;
           text-decoration: none;
@@ -207,14 +206,14 @@ export default function HowToPlayClient({ faqSchemaJson }) {
         }
         .htp-kicker {
           color: ${CYAN};
-          font-family: 'Barlow Condensed', sans-serif;
+          font-family: var(--font-main), sans-serif;
           font-size: 0.9rem;
           letter-spacing: .22em;
           text-transform: uppercase;
         }
         .htp-title {
           margin-top: 12px;
-          font-family: 'Bebas Neue', sans-serif;
+          font-family: var(--font-main), sans-serif;
           font-size: clamp(3.2rem, 8vw, 6.2rem);
           line-height: .9;
           letter-spacing: .04em;
@@ -245,11 +244,11 @@ export default function HowToPlayClient({ faqSchemaJson }) {
           font-size: .8rem;
           letter-spacing: .18em;
           text-transform: uppercase;
-          font-family: 'Barlow Condensed', sans-serif;
+          font-family: var(--font-main), sans-serif;
         }
         .htp-fact-value {
           margin-top: 10px;
-          font-family: 'Bebas Neue', sans-serif;
+          font-family: var(--font-main), sans-serif;
           font-size: 2rem;
           color: ${GOLD};
           letter-spacing: .04em;
@@ -285,7 +284,7 @@ export default function HowToPlayClient({ faqSchemaJson }) {
         }
         .htp-card-title {
           margin-top: 10px;
-          font-family: 'Barlow Condensed', sans-serif;
+          font-family: var(--font-main), sans-serif;
           font-size: clamp(2rem, 4vw, 2.8rem);
           font-weight: 700;
           letter-spacing: .02em;
@@ -319,7 +318,7 @@ export default function HowToPlayClient({ faqSchemaJson }) {
           font-size: 1.02rem;
         }
         .htp-step-number {
-          font-family: 'Bebas Neue', sans-serif;
+          font-family: var(--font-main), sans-serif;
           color: ${GOLD};
           font-size: 2rem;
           letter-spacing: .08em;

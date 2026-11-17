@@ -7,6 +7,9 @@ import { GameProvider } from './GameContext';
 import ClickSpark from './components/ClickSpark';
 import ChaiSupport from './components/ChaiSupport';
 import { createMetadata, SITE_URL } from './lib/seo';
+import { Archivo } from 'next/font/google';
+
+const archivo = Archivo({ subsets: ['latin'], variable: '--font-main', display: 'swap' });
 
 export const metadata = {
   ...createMetadata({
@@ -41,23 +44,12 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={archivo.variable} suppressHydrationWarning>
       <head>
         <meta name="google-adsense-account" content="ca-pub-2556312199314107" />
         <link rel="dns-prefetch" href="https://images.icc-cricket.com" />
         <link rel="dns-prefetch" href="https://documents.iplt20.com" />
         <link rel="preload" as="image" href="/assets/Hero_players.png" fetchPriority="high" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          rel="preload"
-          as="style"
-          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Barlow+Condensed:wght@300;400;600;700;900&family=Courier+Prime:wght@400;700&family=Montserrat:wght@700&family=Orbitron:wght@600;700;800&display=swap"
-        />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Barlow+Condensed:wght@300;400;600;700;900&family=Courier+Prime:wght@400;700&family=Montserrat:wght@700&family=Orbitron:wght@600;700;800&display=swap"
-        />
         {/* Google tag (gtag.js) */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-K3B8D7K8YY"
@@ -82,7 +74,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <ClickSpark
-          sparkColor="#E8B84B"
+          sparkColor="#E8603C"
           sparkSize={12}
           sparkRadius={15}
           sparkCount={8}

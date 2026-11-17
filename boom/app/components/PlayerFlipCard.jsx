@@ -17,7 +17,7 @@ export default function PlayerFlipCard({ player }) {
   else if (role === 'wicket_keeper') { roleText = 'WK'; roleColor = '#00bcd4'; } // cyan
 
   // Special team coloring to match CricBid style slightly closer
-  let teamColor = '#E8B84B'; // default gold
+  let teamColor = '#E8603C'; // default gold
   if (ipl_team_code === 'CSK') teamColor = '#F9CD05';
   else if (ipl_team_code === 'RCB') teamColor = '#EC1C24';
   else if (ipl_team_code === 'MI') teamColor = '#004BA0';
@@ -134,7 +134,7 @@ export default function PlayerFlipCard({ player }) {
                  <div className="p-bar-row">
                    <span className="p-bar-lbl">RUN</span>
                    <div className="p-bar-track">
-                     <div className="p-bar-fill" style={{ width: `${runPct}%`, background: '#FFC107' }} />
+                     <div className="p-bar-fill" style={{ width: `${runPct}%`, background: '#E8603C' }} />
                    </div>
                    <span className="p-bar-val">{stats.runs || 0}</span>
                  </div>

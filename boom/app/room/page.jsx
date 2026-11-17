@@ -7,7 +7,7 @@ import AppDialog from '../components/AppDialog';
 import BrandLink from '../components/BrandLink';
 import { getBackendUrl } from '../lib/backendUrl';
 
-const GOLD  = '#E8B84B';
+const GOLD  = '#E8603C';
 const CYAN  = '#22D3EE';
 const GREEN = '#4ade80';
 const BG    = '#080808';
@@ -119,7 +119,6 @@ const MATCHMAKING_LINES = [
 
 // ── Global styles ───────────────────────────────────────────────────────────
 const globalStyles = `
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Rajdhani:wght@500;600;700&family=Courier+Prime:wght@400;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; background: ${BG}; }
 
@@ -137,7 +136,7 @@ const globalStyles = `
   @keyframes rivalsRightIn { 0%{opacity:0;transform:translateX(120px) scale(.88)} 100%{opacity:1;transform:translateX(0) scale(1)} }
 
   .rp-particles { position:fixed; top:0;left:0;right:0;bottom:0; overflow:hidden; pointer-events:none; z-index:0; }
-  .particle { position:absolute; border-radius:50%; background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.8),rgba(232,184,75,.4) 40%,rgba(0,0,0,0) 80%); opacity:0; animation:floatOrb linear infinite; }
+  .particle { position:absolute; border-radius:50%; background:transparent; opacity:0; animation:floatOrb linear infinite; }
   .p1{left:10%;width:12px;height:12px;animation-duration:15s}
   .p2{left:30%;width:8px;height:8px;animation-duration:22s;animation-delay:3s;filter:hue-rotate(180deg)}
   .p3{left:50%;width:16px;height:16px;animation-duration:18s;animation-delay:7s}
@@ -150,19 +149,18 @@ const globalStyles = `
     padding:14px 24px; border-bottom:1px solid #111;
     background:${BG}ee; backdrop-filter:blur(10px);
   }
-  .rp-brand { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:.3em; color:#333; }
+  .rp-brand { font-family:var(--font-main), sans-serif; font-size:1.1rem; letter-spacing:.3em; color:#333; }
   .rp-brand span { color:${GOLD}; }
-  .rp-back { background:none; border:1px solid #222; color:#555; font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:12px; letter-spacing:.15em; padding:7px 14px; cursor:pointer; transition:color .2s,border-color .2s; border-radius:4px; }
+  .rp-back { background:none; border:1px solid #222; color:#555; font-family:var(--font-main), sans-serif; font-weight:600; font-size:12px; letter-spacing:.15em; padding:7px 14px; cursor:pointer; transition:color .2s,border-color .2s; border-radius:4px; }
   .rp-back:hover { color:#fff; border-color:#555; }
 
   .rp-eyebrow {
-    font-family:'Courier Prime',monospace; font-weight:700; font-size:11px; letter-spacing:4px; text-transform:uppercase; display:block; margin-bottom:10px;
-    background:linear-gradient(90deg,${GOLD} 0%,#fff 50%,${GOLD} 100%); background-size:200% auto;
-    color:transparent; -webkit-background-clip:text; background-clip:text; animation:shimmer 3s linear infinite;
+    font-family:var(--font-main), sans-serif; font-weight:700; font-size:11px; letter-spacing:4px; text-transform:uppercase; display:block; margin-bottom:10px;
+    color:;
   }
-  .rp-h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(2.5rem,7vw,4.5rem); letter-spacing:-.02em; line-height:.9; color:#fff; }
+  .rp-h1 { font-family:var(--font-main), sans-serif; font-size:clamp(2.5rem,7vw,4.5rem); letter-spacing:-.02em; line-height:.9; color:#fff; }
   .rp-h1 span { color:${GOLD}; }
-  .rp-live-counter { display:inline-flex; align-items:center; gap:8px; font-family:'Barlow Condensed',sans-serif; font-size:12px; letter-spacing:1px; color:${CYAN}; background:rgba(34,211,238,.1); padding:4px 10px; border-radius:4px; border:1px solid rgba(34,211,238,.2); margin:10px 0 22px; font-weight:700; }
+  .rp-live-counter { display:inline-flex; align-items:center; gap:8px; font-family:var(--font-main), sans-serif; font-size:12px; letter-spacing:1px; color:${CYAN}; background:rgba(34,211,238,.1); padding:4px 10px; border-radius:4px; border:1px solid rgba(34,211,238,.2); margin:10px 0 22px; font-weight:700; }
   .rp-live-dot { width:6px; height:6px; border-radius:50%; background:${CYAN}; box-shadow:0 0 8px ${CYAN}; animation:pulse 1.5s ease-in-out infinite; }
   .rivals-screen {
     min-height:100vh;
@@ -210,25 +208,25 @@ const globalStyles = `
     width:126px;
     height:126px;
     border-radius:999px;
-    border:1px solid rgba(232,184,75,0.4);
+    border:1px solid rgba(232, 96, 60,0.4);
     display:flex;
     align-items:center;
     justify-content:center;
-    background:radial-gradient(circle, rgba(232,184,75,0.24), rgba(34,211,238,0.12), transparent 72%);
-    box-shadow:0 0 48px rgba(232,184,75,0.2);
+    background:transparent;
+    box-shadow:0 0 48px rgba(232, 96, 60,0.2);
     animation:rivalsVsPop .9s ease .25s both;
   }
   .rivals-search-card {
-    border:1px solid rgba(232,184,75,0.18);
+    border:1px solid rgba(232, 96, 60,0.18);
     border-radius:26px;
     padding:28px 24px;
-    background:linear-gradient(160deg, rgba(232,184,75,0.10), rgba(8,8,8,0.96));
+    background:rgba(8,8,8,0.96);
     box-shadow:0 24px 60px rgba(0,0,0,0.24);
   }
   .rivals-search-line {
     min-height:32px;
     color:#fff;
-    font-family:'Bebas Neue',sans-serif;
+    font-family:var(--font-main), sans-serif;
     font-size:clamp(28px, 5vw, 42px);
     letter-spacing:1.2px;
   }
@@ -244,7 +242,7 @@ const globalStyles = `
     display:block;
     height:100%;
     border-radius:999px;
-    background:linear-gradient(90deg, ${GOLD}, ${CYAN});
+    background:${GOLD};
     animation:rivalsSweep 1.2s ease-in-out infinite alternate;
   }
   @media (max-width: 768px) {
@@ -259,19 +257,19 @@ const globalStyles = `
   @media(max-width:768px){ .rp-choices{grid-template-columns:1fr 1fr} }
   @media(max-width:560px){ .rp-choices{grid-template-columns:1fr} }
   .rp-choice { padding:22px 18px; border:1px solid #1a1a1a; cursor:pointer; background:#0a0a0a; transition:all .3s cubic-bezier(.175,.885,.32,1.275); position:relative; overflow:hidden; border-radius:10px; }
-  .rp-choice.create-card:hover { transform:translateY(-6px); border-color:${GOLD}; box-shadow:0 12px 32px rgba(232,184,75,.18); }
+  .rp-choice.create-card:hover { transform:translateY(-6px); border-color:${GOLD}; box-shadow:0 12px 32px rgba(232, 96, 60,.18); }
   .rp-choice.join-card:hover   { transform:translateY(-6px); border-color:${CYAN}; box-shadow:0 12px 32px rgba(34,211,238,.18); }
   .rp-choice.browse-card:hover { transform:translateY(-6px); border-color:#818cf8; box-shadow:0 12px 32px rgba(129,140,248,.18); }
-  .rp-choice-label { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:10px; letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; }
-  .rp-choice-title { font-family:'Bebas Neue',sans-serif; font-size:1.85rem; color:#fff; margin-bottom:6px; }
-  .rp-choice-desc  { font-family:'Courier Prime',monospace; font-size:11px; color:#94A3B8; line-height:1.6; }
+  .rp-choice-label { font-family:var(--font-main), sans-serif; font-weight:700; font-size:10px; letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; }
+  .rp-choice-title { font-family:var(--font-main), sans-serif; font-size:1.85rem; color:#fff; margin-bottom:6px; }
+  .rp-choice-desc  { font-family:var(--font-main), sans-serif; font-size:11px; color:#94A3B8; line-height:1.6; }
 
   /* ── Form elements ── */
-  .rp-label { font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:3px; color:#94A3B8; text-transform:uppercase; margin-bottom:7px; margin-top:22px; display:block; }
-  .rp-input { width:100%; padding:15px 16px; background:#0c0c0c; border-radius:6px; border:1px solid #1e1e1e; color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:17px; letter-spacing:.06em; outline:none; transition:border-color .2s,box-shadow .2s; }
+  .rp-label { font-family:var(--font-main), sans-serif; font-size:10px; letter-spacing:3px; color:#94A3B8; text-transform:uppercase; margin-bottom:7px; margin-top:22px; display:block; }
+  .rp-input { width:100%; padding:15px 16px; background:#0c0c0c; border-radius:6px; border:1px solid #1e1e1e; color:#fff; font-family:var(--font-main), sans-serif; font-size:17px; letter-spacing:.06em; outline:none; transition:border-color .2s,box-shadow .2s; }
   .rp-input:focus { border-color:${GOLD}; box-shadow:0 0 0 1px ${GOLD} inset; }
   .rp-input::placeholder { color:#666; }
-  .rp-input.code-input { letter-spacing:.35em; font-family:'Bebas Neue',sans-serif; font-size:1.6rem; text-align:center; }
+  .rp-input.code-input { letter-spacing:.35em; font-family:var(--font-main), sans-serif; font-size:1.6rem; text-align:center; }
   .rp-input.code-input:focus { border-color:${CYAN}; box-shadow:0 0 0 1px ${CYAN} inset; }
 
   /* ── Toggle cards (tactile selection) ── */
@@ -284,10 +282,10 @@ const globalStyles = `
     display:flex; flex-direction:column; gap:4px;
   }
   .rp-toggle-card:hover { border-color:#333; background:#111; }
-  .rp-toggle-card.selected-gold { border-color:${GOLD}; border-left-color:${GOLD}; background:rgba(232,184,75,.07); }
+  .rp-toggle-card.selected-gold { border-color:${GOLD}; border-left-color:${GOLD}; background:rgba(232, 96, 60,.07); }
   .rp-toggle-card.selected-cyan { border-color:${GREEN}; border-left-color:${GREEN}; background:rgba(74,222,128,.07); }
-  .rp-toggle-card-title { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:.08em; color:#fff; }
-  .rp-toggle-card-sub   { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:1px; color:#888; }
+  .rp-toggle-card-title { font-family:var(--font-main), sans-serif; font-size:1.1rem; letter-spacing:.08em; color:#fff; }
+  .rp-toggle-card-sub   { font-family:var(--font-main), sans-serif; font-size:9px; letter-spacing:1px; color:#888; }
   .rp-toggle-check { position:absolute; top:8px; right:10px; width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; transition:all .18s; }
   .rp-toggle-card.mode-card {
     min-height: 104px;
@@ -318,8 +316,8 @@ const globalStyles = `
     opacity: 1;
   }
   .rp-toggle-card.mode-card.selected-gold {
-    background: linear-gradient(180deg, rgba(232,184,75,0.14), rgba(232,184,75,0.05));
-    box-shadow: 0 14px 36px rgba(232,184,75,0.16);
+    background: rgba(232, 96, 60,0.05);
+    box-shadow: 0 14px 36px rgba(232, 96, 60,0.16);
   }
   .rp-toggle-card.mode-card.selected-cyan {
     background: linear-gradient(180deg, rgba(74,222,128,0.14), rgba(74,222,128,0.05));
@@ -336,7 +334,7 @@ const globalStyles = `
     margin-bottom:2px;
   }
   .rp-toggle-mode-eyebrow {
-    font-family:'Courier Prime',monospace;
+    font-family:var(--font-main), sans-serif;
     font-size:9px;
     letter-spacing:2px;
     text-transform:uppercase;
@@ -373,29 +371,29 @@ const globalStyles = `
   }
 
   /* ── Buttons ── */
-  .rp-btn { width:100%; padding:16px; background:${GOLD}; border:none; border-radius:6px; font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:.1em; color:#000; cursor:pointer; margin-top:24px; transition:transform .2s,box-shadow .2s; display:flex; align-items:center; justify-content:center; gap:10px; }
-  .rp-btn:hover    { transform:translateY(-3px); box-shadow:0 8px 24px rgba(232,184,75,.4); }
+  .rp-btn { width:100%; padding:16px; background:${GOLD}; border:none; border-radius:6px; font-family:var(--font-main), sans-serif; font-size:1.3rem; letter-spacing:.1em; color:#000; cursor:pointer; margin-top:24px; transition:transform .2s,box-shadow .2s; display:flex; align-items:center; justify-content:center; gap:10px; }
+  .rp-btn:hover    { transform:translateY(-3px); box-shadow:0 8px 24px rgba(232, 96, 60,.4); }
   .rp-btn:active   { transform:none; }
   .rp-btn:disabled { opacity:.35; pointer-events:none; }
   .rp-btn.cyan-btn { background:${CYAN}; }
   .rp-btn.cyan-btn:hover { box-shadow:0 8px 24px rgba(34,211,238,.4); }
 
-  .rp-error { font-family:'Courier Prime',monospace; font-size:12px; color:#ef4444; margin-top:10px; padding:10px; background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); border-radius:4px; letter-spacing:.04em; }
+  .rp-error { font-family:var(--font-main), sans-serif; font-size:12px; color:#ef4444; margin-top:10px; padding:10px; background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); border-radius:4px; letter-spacing:.04em; }
   .rp-hr { height:1px; background:#131313; margin:20px 0; }
 
   /* ── Room list items ── */
   .rp-room-item { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; background:${CARD}; border:1px solid #181818; margin-bottom:8px; border-radius:8px; transition:border-color .2s; }
   .rp-room-item:hover { border-color:#333; }
-  .rp-room-join-btn    { padding:8px 16px; background:rgba(34,211,238,.08); border:1px solid rgba(34,211,238,.3); color:${CYAN}; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; cursor:pointer; transition:all .2s; border-radius:4px; }
+  .rp-room-join-btn    { padding:8px 16px; background:rgba(34,211,238,.08); border:1px solid rgba(34,211,238,.3); color:${CYAN}; font-family:var(--font-main), sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; cursor:pointer; transition:all .2s; border-radius:4px; }
   .rp-room-join-btn:hover { background:${CYAN}; color:#000; }
-  .rp-room-rejoin-btn  { padding:8px 16px; background:rgba(232,184,75,.08); border:1px solid rgba(232,184,75,.3); color:${GOLD}; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; cursor:pointer; transition:all .2s; border-radius:4px; }
+  .rp-room-rejoin-btn  { padding:8px 16px; background:rgba(232, 96, 60,.08); border:1px solid rgba(232, 96, 60,.3); color:${GOLD}; font-family:var(--font-main), sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; cursor:pointer; transition:all .2s; border-radius:4px; }
   .rp-room-rejoin-btn:hover { background:${GOLD}; color:#000; }
 
   /* ── BROWSE ROOMS (mobile-native) ── */
   .rb-shell {
     min-height: 100vh; background: #0a0a0a;
     display: flex; flex-direction: column;
-    font-family: 'Barlow Condensed', sans-serif;
+    font-family: var(--font-main), sans-serif;
   }
   .rb-header {
     position: sticky; top: 0;
@@ -405,11 +403,11 @@ const globalStyles = `
   .rb-header-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .rb-back-btn { background: none; border: none; color: #ccc; font-size: 20px; cursor: pointer; padding: 0 4px; flex-shrink: 0; line-height:1; }
   .rb-title-block { flex: 1; }
-  .rb-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #fff; letter-spacing: 1px; line-height: 1; }
+  .rb-title { font-family: var(--font-main), sans-serif; font-size: 22px; color: #fff; letter-spacing: 1px; line-height: 1; }
   .rb-subtitle { font-size: 12px; color: #555; margin-top: 1px; }
   .rb-icon-btn { background: none; border: 1px solid #1e1e1e; color: #888; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; flex-shrink: 0; transition: all .2s; }
   .rb-icon-btn:hover { border-color: #444; color: #ccc; }
-  .rb-create-btn { background: ${GOLD}; border: none; border-radius: 8px; color: #000; font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 1px; padding: 8px 14px; cursor: pointer; display: flex; align-items: center; gap: 5px; flex-shrink: 0; transition: filter .2s; white-space:nowrap; }
+  .rb-create-btn { background: ${GOLD}; border: none; border-radius: 8px; color: #000; font-family: var(--font-main), sans-serif; font-size: 14px; letter-spacing: 1px; padding: 8px 14px; cursor: pointer; display: flex; align-items: center; gap: 5px; flex-shrink: 0; transition: filter .2s; white-space:nowrap; }
   .rb-create-btn:hover { filter: brightness(1.1); }
 
   .rb-sport-pills { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
@@ -426,7 +424,7 @@ const globalStyles = `
     background: #111; border: 1px solid #242424; border-bottom: 2px solid transparent; color: #777;
     border-radius: 12px 12px 0 0; appearance: none; -webkit-appearance: none; box-shadow: none;
   }
-  .rb-tab.active { color: #fff; border-color: #3a3214; border-bottom-color: ${GOLD}; background: linear-gradient(180deg, #19150a 0%, #111 100%); }
+  .rb-tab.active { color: #fff; border-color: #2a2a2a; border-bottom-color: ; background: #111; }
   .rb-tab.live-tab.active { border-color: #3a1818; border-bottom-color: #ef4444; background: linear-gradient(180deg, #1a1010 0%, #111 100%); }
   .rb-tab:not(.active) { color: #666; }
   .rb-tab-count { background: #222; color: #888; font-size: 11px; padding: 1px 6px; border-radius: 10px; }
@@ -435,7 +433,7 @@ const globalStyles = `
 
   .rb-name-box { padding: 24px 32px; }
   .rb-name-label { font-size: 10px; letter-spacing: 2px; color: #555; text-transform: uppercase; margin-bottom: 6px; display: block; }
-  .rb-name-input { width: 100%; padding: 12px 14px; background: #141414; border: 1px solid #1e1e1e; border-radius: 10px; color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 16px; letter-spacing: .06em; outline: none; transition: border-color .2s; }
+  .rb-name-input { width: 100%; padding: 12px 14px; background: #141414; border: 1px solid #1e1e1e; border-radius: 10px; color: #fff; font-family: var(--font-main), sans-serif; font-size: 16px; letter-spacing: .06em; outline: none; transition: border-color .2s; }
   .rb-name-input:focus { border-color: ${GOLD}; }
   .rb-name-input::placeholder { color: #444; }
 
@@ -455,20 +453,20 @@ const globalStyles = `
   .rb-status-dot.live { background: #ef4444; animation: pulse .8s ease-in-out infinite; }
   .rb-status-dot.waiting { background: #22c55e; }
 
-  .rb-room-code { font-family: 'Courier Prime', monospace; font-size: 10px; color: #444; letter-spacing: 2px; }
-  .rb-team-count { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: #fff; line-height: 1; }
+  .rb-room-code { font-family: var(--font-main), sans-serif; font-size: 10px; color: #444; letter-spacing: 2px; }
+  .rb-team-count { font-family: var(--font-main), sans-serif; font-size: 20px; color: #fff; line-height: 1; }
   .rb-team-count span { font-size: 13px; color: #555; }
   .rb-team-label { font-size: 9px; letter-spacing: 2px; color: #555; text-transform: uppercase; }
 
-  .rb-room-name { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #fff; letter-spacing: 1px; line-height: 1.1; margin-bottom: 2px; }
+  .rb-room-name { font-family: var(--font-main), sans-serif; font-size: 22px; color: #fff; letter-spacing: 1px; line-height: 1.1; margin-bottom: 2px; }
   .rb-room-desc { font-size: 12px; color: #555; margin-bottom: 10px; }
 
   .rb-team-bubbles { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-  .rb-team-bubble { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 9px; letter-spacing: .5px; flex-shrink: 0; cursor: default; }
+  .rb-team-bubble { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-main), sans-serif; font-size: 9px; letter-spacing: .5px; flex-shrink: 0; cursor: default; }
 
   .rb-join-btn {
     width: 100%; padding: 13px; background: ${GOLD}; border: none; border-radius: 10px;
-    font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; color: #000;
+    font-family: var(--font-main), sans-serif; font-size: 16px; letter-spacing: 2px; color: #000;
     cursor: pointer; transition: filter .18s, transform .12s; display: flex; align-items: center; justify-content: center; gap: 8px;
   }
   .rb-join-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
@@ -477,7 +475,7 @@ const globalStyles = `
 
   .rb-spectate-btn {
     width: 100%; padding: 11px; background: transparent; border: 1px solid #282828; border-radius: 10px;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #888;
+    font-family: var(--font-main), sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #888;
     cursor: pointer; transition: all .18s; display: flex; align-items: center; justify-content: center; gap: 6px;
   }
   .rb-spectate-btn:hover { border-color: #555; color: #ccc; }
@@ -506,20 +504,20 @@ const globalStyles = `
   .lobby-col-right { border-left:1px solid #111; }
   .lobby-col-center { padding:24px 20px; }
 
-  .lobby-section-label { font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:3px; color:#888; text-transform:uppercase; margin-bottom:12px; }
+  .lobby-section-label { font-family:var(--font-main), sans-serif; font-size:10px; letter-spacing:3px; color:#888; text-transform:uppercase; margin-bottom:12px; }
 
   /* ── Code block ── */
-  .lobby-code-chip { font-family:'Bebas Neue',sans-serif; font-size:2.4rem; letter-spacing:.28em; color:${CYAN}; background:rgba(34,211,238,.06); border:1px solid rgba(34,211,238,.2); padding:8px 18px; border-radius:8px; cursor:pointer; transition:background .2s,box-shadow .2s; display:inline-block; }
+  .lobby-code-chip { font-family:var(--font-main), sans-serif; font-size:2.4rem; letter-spacing:.28em; color:${CYAN}; background:rgba(34,211,238,.06); border:1px solid rgba(34,211,238,.2); padding:8px 18px; border-radius:8px; cursor:pointer; transition:background .2s,box-shadow .2s; display:inline-block; }
   .lobby-code-chip:hover { background:rgba(34,211,238,.12); box-shadow:0 0 16px rgba(34,211,238,.2); }
-  .lobby-copy-btn { padding:9px 16px; background:rgba(34,211,238,.1); border:1px solid rgba(34,211,238,.3); border-radius:6px; color:${CYAN}; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; cursor:pointer; transition:all .2s; }
+  .lobby-copy-btn { padding:9px 16px; background:rgba(34,211,238,.1); border:1px solid rgba(34,211,238,.3); border-radius:6px; color:${CYAN}; font-family:var(--font-main), sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; cursor:pointer; transition:all .2s; }
   .lobby-copy-btn:hover { background:${CYAN}; color:#000; }
-  .lobby-wa-btn { padding:9px 16px; background:rgba(37,211,102,.1); border:1px solid rgba(37,211,102,.3); border-radius:6px; color:#25D366; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; cursor:pointer; transition:all .2s; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
+  .lobby-wa-btn { padding:9px 16px; background:rgba(37,211,102,.1); border:1px solid rgba(37,211,102,.3); border-radius:6px; color:#25D366; font-family:var(--font-main), sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; cursor:pointer; transition:all .2s; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
   .lobby-wa-btn:hover { background:#25D366; color:#000; }
 
   /* ── Player list ── */
   .lobby-player-row { display:flex; align-items:center; gap:10px; padding:10px 12px; background:${CARD}; border:1px solid #181818; border-radius:8px; margin-bottom:6px; animation:slideIn .3s ease both; }
   .lobby-player-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-  .lobby-player-badge { font-family:'Bebas Neue',sans-serif; font-size:.8rem; padding:2px 6px; border-radius:3px; letter-spacing:.05em; }
+  .lobby-player-badge { font-family:var(--font-main), sans-serif; font-size:.8rem; padding:2px 6px; border-radius:3px; letter-spacing:.05em; }
 
   /* ── Franchise grid ── */
   .franchise-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
@@ -548,14 +546,14 @@ const globalStyles = `
     z-index:1;
   }
 
-  .franchise-short { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:.04em; }
-  .franchise-name  { font-family:'Courier Prime',monospace; font-size:7px; line-height:1.3; color:#94A3B8; }
-  .franchise-mine-badge { font-family:'Courier Prime',monospace; font-size:8px; letter-spacing:1px; font-weight:700; }
+  .franchise-short { font-family:var(--font-main), sans-serif; font-size:1.4rem; letter-spacing:.04em; }
+  .franchise-name  { font-family:var(--font-main), sans-serif; font-size:7px; line-height:1.3; color:#94A3B8; }
+  .franchise-mine-badge { font-family:var(--font-main), sans-serif; font-size:8px; letter-spacing:1px; font-weight:700; }
 
   /* ── RIGHT col stats ── */
   .lobby-stat-card { background:${CARD}; border:1px solid #181818; border-radius:10px; padding:16px; margin-bottom:10px; }
-  .lobby-stat-val  { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:.05em; line-height:1; }
-  .lobby-stat-lbl  { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:2px; color:#888; margin-top:3px; }
+  .lobby-stat-val  { font-family:var(--font-main), sans-serif; font-size:1.8rem; letter-spacing:.05em; line-height:1; }
+  .lobby-stat-lbl  { font-family:var(--font-main), sans-serif; font-size:9px; letter-spacing:2px; color:#888; margin-top:3px; }
 
   /* ── Fixed bottom start bar ── */
   .lobby-bottom-bar {
@@ -564,13 +562,13 @@ const globalStyles = `
     padding:12px 24px; display:flex; align-items:center; justify-content:center; gap:16px;
   }
   .lobby-start-btn {
-    padding:14px 48px; border:none; border-radius:6px; font-family:'Bebas Neue',sans-serif;
+    padding:14px 48px; border:none; border-radius:6px; font-family:var(--font-main), sans-serif;
     font-size:1.3rem; letter-spacing:.1em; cursor:pointer; color:#000; background:${GOLD};
     transition:transform .2s, box-shadow .2s; min-width:240px;
   }
-  .lobby-start-btn:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 8px 24px rgba(232,184,75,.4); }
+  .lobby-start-btn:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 8px 24px rgba(232, 96, 60,.4); }
   .lobby-start-btn:disabled { opacity:.4; cursor:not-allowed; }
-  .lobby-waiting { font-family:'Courier Prime',monospace; font-size:13px; color:#888; letter-spacing:.1em; text-align:center; padding:14px 32px; border:1px dashed #222; border-radius:6px; animation:pulse 2.5s ease-in-out infinite; }
+  .lobby-waiting { font-family:var(--font-main), sans-serif; font-size:13px; color:#888; letter-spacing:.1em; text-align:center; padding:14px 32px; border:1px dashed #222; border-radius:6px; animation:pulse 2.5s ease-in-out infinite; }
 
   /* ── LOBBY CHAT ── */
   .lc-panel {
@@ -597,7 +595,7 @@ const globalStyles = `
     background: ${CYAN}; animation: pulse 2.2s ease-in-out infinite;
   }
   .lc-title {
-    font-family: 'Courier Prime', monospace;
+    font-family: var(--font-main), sans-serif;
     font-size: 9px; letter-spacing: 3px; color: ${CYAN}; text-transform: uppercase;
   }
   .lc-messages {
@@ -634,7 +632,7 @@ const globalStyles = `
   .lc-input {
     flex: 1; background: #0e1118; border: 1px solid #1e2433;
     color: #e5e7eb; padding: 7px 11px; border-radius: 9px;
-    font-size: 12px; outline: none; min-width: 0; font-family: inherit;
+    font-size: 12px; outline: none; min-width: 0; font-family:var(--font-main), sans-serif;
   }
   .lc-input::placeholder { color: #374151; }
   .lc-send {
@@ -682,7 +680,7 @@ const globalStyles = `
     padding: 13px 16px 10px; border-bottom: 1px solid #171a24; flex-shrink: 0;
   }
   .lc-drawer-title {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: var(--font-main), sans-serif;
     font-size: 17px; letter-spacing: 2.5px; color: ${CYAN};
   }
   .lc-drawer-close {
@@ -737,7 +735,7 @@ const globalStyles = `
   }
   .create-room-summary-value {
     color:#F8FAFC;
-    font-family:'Bebas Neue',sans-serif;
+    font-family:var(--font-main), sans-serif;
     font-size:22px;
     letter-spacing:1.4px;
     margin-top:6px;
@@ -1010,7 +1008,7 @@ const LobbyChatBox = memo(function LobbyChatBox({ chatLog, emit, roomCode, myNam
   );
 });
 
-function BrowseRooms({ name, setName, nameRef, serverRooms, completedRooms, fetchRooms, loading, error, doJoin, onRequireName, onViewCompleted, liveStats, onBack, onCreate, TEAMS, GOLD, CYAN }) {
+function BrowseRooms({ name, setName, nameRef, serverRooms, completedRooms, fetchRooms, loading, error, doJoin, onViewCompleted, liveStats, onBack, onCreate, GOLD }) {
   const [activeTab, setActiveTab] = useState('waiting'); // Show joinable rooms first!
   const privateActivity = getPrivateActivityEstimate(liveStats.rooms, liveStats.players);
 
@@ -1072,19 +1070,19 @@ function BrowseRooms({ name, setName, nameRef, serverRooms, completedRooms, fetc
           <button className={`rb-tab${activeTab === 'waiting' ? ' active' : ''}`} 
             onClick={() => setActiveTab('waiting')}
             style={{ paddingBottom: 14 }}>
-            <span style={{ fontFamily: "'Bebas Neue'", fontSize: 18, letterSpacing: 1 }}>JOINABLE</span>
+            <span style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 18, letterSpacing: 1 }}>JOINABLE</span>
             <span className="rb-tab-count" style={{ marginLeft: 6 }}>{waitingRooms.length}</span>
           </button>
           <button className={`rb-tab live-tab${activeTab === 'live' ? ' active' : ''}`} 
             onClick={() => setActiveTab('live')}
             style={{ paddingBottom: 14 }}>
-            <span style={{ fontFamily: "'Bebas Neue'", fontSize: 18, letterSpacing: 1 }}>IN PROGRESS</span>
+            <span style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 18, letterSpacing: 1 }}>IN PROGRESS</span>
             <span className="rb-tab-count" style={{ marginLeft: 6, background: '#ef444422', color: '#ef4444' }}>{liveRooms.length}</span>
           </button>
           <button className={`rb-tab${activeTab === 'completed' ? ' active' : ''}`} 
             onClick={() => setActiveTab('completed')}
             style={{ paddingBottom: 14 }}>
-            <span style={{ fontFamily: "'Bebas Neue'", fontSize: 18, letterSpacing: 1 }}>COMPLETED ROOMS</span>
+            <span style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 18, letterSpacing: 1 }}>COMPLETED ROOMS</span>
             <span className="rb-tab-count" style={{ marginLeft: 6, background: '#22c55e22', color: '#22c55e' }}>{archivedRooms.length}</span>
           </button>
         </div>
@@ -1123,7 +1121,7 @@ function BrowseRooms({ name, setName, nameRef, serverRooms, completedRooms, fetc
           ) : displayRooms.length === 0 ? (
             <div className="rb-empty" style={{ padding: '80px 20px', border: '1px dashed #222', borderRadius: 20 }}>
                <div style={{ fontSize: 40, marginBottom: 16 }}>{activeTab === 'live' ? '🍿' : activeTab === 'completed' ? '🏁' : '🏟️'}</div>
-               <div style={{ fontFamily: "'Bebas Neue'", fontSize: 24, letterSpacing: 2, color: '#444' }}>
+               <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: 24, letterSpacing: 2, color: '#444' }}>
                 {activeTab === 'live' ? 'NO LIVE MATCHES' : activeTab === 'completed' ? 'NO COMPLETED ROOMS YET' : 'NO PUBLIC LOBBIES'}
                </div>
                <div style={{ fontSize: 11, color: '#222', marginTop: 8, letterSpacing: 2 }}>
@@ -1459,10 +1457,14 @@ function RoomContent() {
   useEffect(() => {
     if (phase === 'home' || phase === 'join') {
       fetchRooms();
-      const t = setInterval(fetchRooms, 8000);
+      // Socket pushes 'public-rooms-updated' on changes; the slow poll is only a fallback while the tab is visible.
+      const refreshIfVisible = () => { if (document.visibilityState === 'visible') fetchRooms(); };
+      const t = setInterval(refreshIfVisible, 30000);
       const off = on('public-rooms-updated', fetchRooms);
+      document.addEventListener('visibilitychange', refreshIfVisible);
       return () => {
         clearInterval(t);
+        document.removeEventListener('visibilitychange', refreshIfVisible);
         if (off) off();
       };
     }
@@ -1476,7 +1478,7 @@ function RoomContent() {
       recents = [{ code, name: roomName }, ...recents.filter(r => r.code !== code)].slice(0, 3);
       localStorage.setItem('ipl_recent_rooms', JSON.stringify(recents));
       setRecentRooms(recents);
-    } catch(e) {}
+    } catch { /* ignore */ }
   };
 
   const viewCompletedRoom = useCallback((room) => {
@@ -1870,11 +1872,11 @@ function RoomContent() {
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:18, flexWrap:'wrap', margin:'18px 0 20px' }}>
                   <div style={{ display:'flex', alignItems:'center', gap:12 }}>
                     <img src={`/assets/${activeRivalsMatch.homeTeam}.png`} alt={activeRivalsMatch.homeTeam} style={{ width:64, height:64, objectFit:'contain' }} />
-                    <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:32, color:'#fff', letterSpacing:1 }}>{activeRivalsMatch.homeTeam}</div>
+                    <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:32, color:'#fff', letterSpacing:1 }}>{activeRivalsMatch.homeTeam}</div>
                   </div>
-                  <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:38, color:'#94A3B8', letterSpacing:4 }}>VS</div>
+                  <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:38, color:'#94A3B8', letterSpacing:4 }}>VS</div>
                   <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-                    <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:32, color:'#fff', letterSpacing:1 }}>{activeRivalsMatch.awayTeam}</div>
+                    <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:32, color:'#fff', letterSpacing:1 }}>{activeRivalsMatch.awayTeam}</div>
                     <img src={`/assets/${activeRivalsMatch.awayTeam}.png`} alt={activeRivalsMatch.awayTeam} style={{ width:64, height:64, objectFit:'contain' }} />
                   </div>
                 </div>
@@ -1914,7 +1916,7 @@ function RoomContent() {
         <div className="rivals-screen">
           <div className="rivals-found-shell">
             <div style={{ color: GOLD, fontSize: 11, letterSpacing: 3, fontWeight: 800 }}>OPPONENT FOUND</div>
-            <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:'clamp(38px, 8vw, 74px)', color:'#fff', letterSpacing:1.5, lineHeight:.9 }}>
+            <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:'clamp(38px, 8vw, 74px)', color:'#fff', letterSpacing:1.5, lineHeight:.9 }}>
               THE AUCTION <span style={{ color: CYAN }}>BEGINS</span>
             </div>
             <div className="rivals-found-arena">
@@ -1922,19 +1924,19 @@ function RoomContent() {
                 <img src={`/assets/${activeRivalsMatch.homeTeam}.png`} alt={activeRivalsMatch.homeTeam} style={{ width:88, height:88, objectFit:'contain' }} />
                 <div>
                   <div style={{ color: TEAMS.find((team) => team.id === activeRivalsMatch.homeTeam)?.color || GOLD, fontSize: 12, fontWeight: 800, letterSpacing: 2 }}>HOME</div>
-                  <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:42, letterSpacing:1.4 }}>{activeRivalsMatch.homeTeam}</div>
+                  <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:42, letterSpacing:1.4 }}>{activeRivalsMatch.homeTeam}</div>
                   <div style={{ color:'#94A3B8', fontSize:13, letterSpacing:1.2, marginTop:6 }}>
                     {formatDuelLabel(activeRivalsMatch.homeTeam, rivalsHomePlayer)}
                   </div>
                 </div>
               </div>
               <div className="rivals-vs-burst">
-                <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:44, color:'#fff', letterSpacing:4 }}>VS</div>
+                <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:44, color:'#fff', letterSpacing:4 }}>VS</div>
               </div>
               <div className="rivals-team-entry right" style={{ borderColor: `${TEAMS.find((team) => team.id === activeRivalsMatch.awayTeam)?.color || CYAN}50` }}>
                 <div>
                   <div style={{ color: TEAMS.find((team) => team.id === activeRivalsMatch.awayTeam)?.color || CYAN, fontSize: 12, fontWeight: 800, letterSpacing: 2 }}>AWAY</div>
-                  <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:42, letterSpacing:1.4 }}>{activeRivalsMatch.awayTeam}</div>
+                  <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:42, letterSpacing:1.4 }}>{activeRivalsMatch.awayTeam}</div>
                   <div style={{ color:'#94A3B8', fontSize:13, letterSpacing:1.2, marginTop:6 }}>
                     {formatDuelLabel(activeRivalsMatch.awayTeam, rivalsAwayPlayer)}
                   </div>
@@ -1954,7 +1956,7 @@ function RoomContent() {
           <div className="rivals-shell">
             <span className="rp-eyebrow">Daily Rivals Auction</span>
             <h1 className="rp-h1">PLAY TODAY&apos;S<br /><span>RIVALS MATCH</span></h1>
-            <p style={{ fontFamily:"'Courier Prime',monospace", fontSize:11, color:'#94A3B8', margin:'10px 0 22px', lineHeight:1.8 }}>
+            <p style={{ fontFamily:"var(--font-main), sans-serif", fontSize:11, color:'#94A3B8', margin:'10px 0 22px', lineHeight:1.8 }}>
               Jump straight into today&apos;s 1v1 duel. We&apos;ll assign one of the two teams automatically and start the auction as soon as both rivals are in.
             </p>
 
@@ -1965,15 +1967,15 @@ function RoomContent() {
               const awayTeam = TEAMS.find((team) => team.id === selectedRivalsMatch.awayTeam);
               const timerLabel = state === 'locked' ? 'MATCH LIVE' : state === 'open' ? 'AUCTION LOCKS IN' : 'MATCH STARTS IN';
               return (
-                <div style={{ background:'linear-gradient(160deg, rgba(232,184,75,0.1), rgba(8,8,8,0.96))', border:'1px solid rgba(232,184,75,0.18)', borderRadius:24, padding:'24px 22px', boxShadow:'0 24px 60px rgba(0,0,0,0.22)' }}>
+                <div style={{ background:'rgba(8,8,8,0.96)', border:'1px solid rgba(232, 96, 60,0.18)', borderRadius:24, padding:'24px 22px', boxShadow:'0 24px 60px rgba(0,0,0,0.22)' }}>
                   <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:18, flexWrap:'wrap', marginBottom:18 }}>
                     <div>
-                      <div style={{ color:'#E8B84B', fontSize:11, letterSpacing:2.5, fontWeight:800, marginBottom:6 }}>TODAY&apos;S FIXTURE</div>
+                      <div style={{ color:'#E8603C', fontSize:11, letterSpacing:2.5, fontWeight:800, marginBottom:6 }}>TODAY&apos;S FIXTURE</div>
                       <div style={{ color:'#94A3B8', fontSize:12, letterSpacing:1.4 }}>{formatRivalsMeta(selectedRivalsMatch.startAt)} IST • {selectedRivalsMatch.venue}</div>
                     </div>
                     <div style={{ textAlign:'right' }}>
                       <div style={{ color:'#94A3B8', fontSize:10, letterSpacing:2, fontWeight:800 }}>{timerLabel}</div>
-                      <div style={{ color: state === 'locked' ? '#ef4444' : state === 'open' ? '#4ade80' : CYAN, fontFamily:"'Bebas Neue',sans-serif", fontSize:34, letterSpacing:1.5 }}>
+                      <div style={{ color: state === 'locked' ? '#ef4444' : state === 'open' ? '#4ade80' : CYAN, fontFamily:"var(--font-main), sans-serif", fontSize:34, letterSpacing:1.5 }}>
                         {state === 'locked' ? 'LIVE' : countdown}
                       </div>
                     </div>
@@ -1984,14 +1986,14 @@ function RoomContent() {
                       <img src={`/assets/${selectedRivalsMatch.homeTeam}.png`} alt={homeTeam?.short} style={{ width:72, height:72, objectFit:'contain' }} />
                       <div>
                         <div style={{ color:homeTeam?.color || GOLD, fontSize:12, fontWeight:800, letterSpacing:1.5 }}>{homeTeam?.short}</div>
-                        <div style={{ color:'#fff', fontFamily:"'Bebas Neue',sans-serif", fontSize:30, letterSpacing:1 }}>{homeTeam?.name}</div>
+                        <div style={{ color:'#fff', fontFamily:"var(--font-main), sans-serif", fontSize:30, letterSpacing:1 }}>{homeTeam?.name}</div>
                       </div>
                     </div>
-                    <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:42, color:'#94A3B8', letterSpacing:4 }}>VS</div>
+                    <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:42, color:'#94A3B8', letterSpacing:4 }}>VS</div>
                     <div style={{ display:'flex', alignItems:'center', gap:14 }}>
                       <div style={{ textAlign:'right' }}>
                         <div style={{ color:awayTeam?.color || CYAN, fontSize:12, fontWeight:800, letterSpacing:1.5 }}>{awayTeam?.short}</div>
-                        <div style={{ color:'#fff', fontFamily:"'Bebas Neue',sans-serif", fontSize:30, letterSpacing:1 }}>{awayTeam?.name}</div>
+                        <div style={{ color:'#fff', fontFamily:"var(--font-main), sans-serif", fontSize:30, letterSpacing:1 }}>{awayTeam?.name}</div>
                       </div>
                       <img src={`/assets/${selectedRivalsMatch.awayTeam}.png`} alt={awayTeam?.short} style={{ width:72, height:72, objectFit:'contain' }} />
                     </div>
@@ -2076,16 +2078,16 @@ function RoomContent() {
             {/* Public lobbies preview */}
             {serverRooms.length > 0 && (
               <div style={{ marginTop:28 }}>
-                <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:10, letterSpacing:3, color:'#888', textTransform:'uppercase', marginBottom:10, borderBottom:'1px solid #111', paddingBottom:8 }}>PUBLIC LOBBIES</div>
+                <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:10, letterSpacing:3, color:'#888', textTransform:'uppercase', marginBottom:10, borderBottom:'1px solid #111', paddingBottom:8 }}>PUBLIC LOBBIES</div>
                 {serverRooms.slice(0,3).map((r, i) => (
                   <div key={i} className="rp-room-item">
                     <div>
-                      <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, fontSize:16, color:'#eee' }}>{r.name}</div>
-                      <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:10, color:'#94A3B8', marginTop:2 }}>Host: {r.host} · {r.players}/10</div>
+                      <div style={{ fontFamily:"var(--font-main), sans-serif", fontWeight:700, fontSize:16, color:'#eee' }}>{r.name}</div>
+                      <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:10, color:'#94A3B8', marginTop:2 }}>Host: {r.host} · {r.players}/10</div>
                     </div>
                     <button className="rp-room-join-btn" onClick={() => {
                       if (!name.trim()) {
-                        onRequireName?.();
+                        setError('Enter your name to join room');
                         nameRef.current?.focus();
                         return;
                       }
@@ -2099,16 +2101,16 @@ function RoomContent() {
             {/* Recent rooms */}
             {recentRooms.length > 0 && (
               <div style={{ marginTop:24 }}>
-                <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:10, letterSpacing:3, color:'#888', textTransform:'uppercase', marginBottom:10, borderBottom:'1px solid #111', paddingBottom:8 }}>RECENT ROOMS</div>
+                <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:10, letterSpacing:3, color:'#888', textTransform:'uppercase', marginBottom:10, borderBottom:'1px solid #111', paddingBottom:8 }}>RECENT ROOMS</div>
                 {recentRooms.map((r, i) => (
                   <div key={i} className="rp-room-item">
                     <div>
-                      <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, fontSize:16, color:'#aaa' }}>{r.name}</div>
-                      <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:10, color:'#94A3B8', marginTop:2 }}>Code: {r.code}</div>
+                      <div style={{ fontFamily:"var(--font-main), sans-serif", fontWeight:700, fontSize:16, color:'#aaa' }}>{r.name}</div>
+                      <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:10, color:'#94A3B8', marginTop:2 }}>Code: {r.code}</div>
                     </div>
                     <button className="rp-room-rejoin-btn" onClick={() => {
                       if (!name.trim()) {
-                        onRequireName?.();
+                        setError('Enter your name to join room');
                         nameRef.current?.focus();
                         return;
                       }
@@ -2139,7 +2141,7 @@ function RoomContent() {
                 <h1 className="rp-h1" style={{ fontSize:'clamp(2.3rem,6vw,4.6rem)', marginBottom:8 }}>
                   {phase === 'rivals-create' ? <>SET UP THE<br /><span>DUEL</span></> : <>SET UP YOUR<br /><span>ROOM</span></>}
                 </h1>
-                <p style={{ fontFamily:"'Courier Prime',monospace", fontSize:11, color:'#94A3B8', margin:'10px 0 0', lineHeight:1.8, maxWidth:420 }}>
+                <p style={{ fontFamily:"var(--font-main), sans-serif", fontSize:11, color:'#94A3B8', margin:'10px 0 0', lineHeight:1.8, maxWidth:420 }}>
                   {phase === 'rivals-create'
                     ? `${selectedRivalsMatch?.homeTeam || ''} vs ${selectedRivalsMatch?.awayTeam || ''} will be locked in automatically. Invite one friend or keep it public and let another rival join.`
                     : 'Configure your auction room, choose the format, set the squad size, and share the room with up to 10 friends.'}
@@ -2222,7 +2224,7 @@ function RoomContent() {
                             border:`1px solid ${squadLimit === limit ? GOLD : '#262626'}`,
                             background:squadLimit === limit ? `${GOLD}12` : '#111',
                             color:squadLimit === limit ? GOLD : '#cbd5e1',
-                            fontFamily:"'Bebas Neue',sans-serif",
+                            fontFamily:"var(--font-main), sans-serif",
                             fontSize:24,
                             letterSpacing:2,
                             cursor:'pointer',
@@ -2247,7 +2249,7 @@ function RoomContent() {
                                 border:`1px solid ${purse === amount ? GOLD : '#262626'}`,
                                 background:purse === amount ? `${GOLD}12` : '#111',
                                 color:purse === amount ? GOLD : '#cbd5e1',
-                                fontFamily:"'Bebas Neue',sans-serif",
+                                fontFamily:"var(--font-main), sans-serif",
                                 fontSize:24,
                                 letterSpacing:2,
                                 cursor:'pointer',
@@ -2358,7 +2360,7 @@ function RoomContent() {
                   </svg> SHARE
                 </a>
               </div>
-              <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:10, color:'#666', wordBreak:'break-all', marginBottom:20 }}>{shareUrl}</div>
+              <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:10, color:'#666', wordBreak:'break-all', marginBottom:20 }}>{shareUrl}</div>
 
               <div className="rp-hr" />
 
@@ -2368,7 +2370,7 @@ function RoomContent() {
                   <div className="lobby-section-label">RIVALS MATCH</div>
                   <div style={{ display:'flex', alignItems:'center', gap:10, padding:'12px 14px', border:'1px solid #1b2030', borderRadius:12, background:'#0b0d12' }}>
                     <img src={`/assets/${rivalsHomeTeam}.png`} alt="" style={{ width:32, height:32, objectFit:'contain' }} />
-                    <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:24, letterSpacing:1.5, color:'#fff' }}>{rivalsHomeTeam} VS {rivalsAwayTeam}</div>
+                    <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:24, letterSpacing:1.5, color:'#fff' }}>{rivalsHomeTeam} VS {rivalsAwayTeam}</div>
                     <img src={`/assets/${rivalsAwayTeam}.png`} alt="" style={{ width:32, height:32, objectFit:'contain' }} />
                   </div>
                 </div>
@@ -2408,7 +2410,7 @@ function RoomContent() {
                           border:`1px solid ${option.active ? option.color : '#232323'}`,
                           background:option.active ? `${option.color}14` : '#101010',
                           color:option.active ? option.color : '#cbd5e1',
-                          fontFamily:"'Bebas Neue',sans-serif",
+                          fontFamily:"var(--font-main), sans-serif",
                           fontSize:20,
                           letterSpacing:2,
                           cursor:'pointer',
@@ -2432,7 +2434,7 @@ function RoomContent() {
                           border:`1px solid ${squadLimit === limit ? GOLD : '#232323'}`,
                           background:squadLimit === limit ? `${GOLD}14` : '#101010',
                           color:squadLimit === limit ? GOLD : '#cbd5e1',
-                          fontFamily:"'Bebas Neue',sans-serif",
+                          fontFamily:"var(--font-main), sans-serif",
                           fontSize:20,
                           letterSpacing:2,
                           cursor:'pointer',
@@ -2457,7 +2459,7 @@ function RoomContent() {
                               border:`1px solid ${purse === amount ? GOLD : '#232323'}`,
                               background:purse === amount ? `${GOLD}14` : '#101010',
                               color:purse === amount ? GOLD : '#cbd5e1',
-                              fontFamily:"'Bebas Neue',sans-serif",
+                              fontFamily:"var(--font-main), sans-serif",
                               fontSize:20,
                               letterSpacing:2,
                               cursor:'pointer',
@@ -2471,7 +2473,7 @@ function RoomContent() {
                   )}
                 </>
               ) : (
-                <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:12, color:'#888', marginBottom:16 }}>
+                <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:12, color:'#888', marginBottom:16 }}>
                   Mode: <span style={{ color: (lobbyMode || aMode) === 'mega' ? GOLD : CYAN }}>{(lobbyMode || aMode || 'mega') === 'mega' ? 'IPL MEGA Auction' : 'IPL MINI Auction'}</span>
                   <br />
                   Player Ratings: <span style={{ color: showPlayerRatings ? GOLD : '#94A3B8' }}>{showPlayerRatings ? 'Shown during auction' : 'Hidden during auction'}</span>
@@ -2492,10 +2494,10 @@ function RoomContent() {
                   return (
                     <div key={p.id || i} className="lobby-player-row" style={{ animationDelay:`${i * 0.04}s` }}>
                       <div className="lobby-player-dot" style={{ background: team?.color || '#333' }} />
-                      <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, fontSize:15, color: team?.color || '#ddd', flex:1, letterSpacing:'.04em' }}>
+                      <span style={{ fontFamily:"var(--font-main), sans-serif", fontWeight:700, fontSize:15, color: team?.color || '#ddd', flex:1, letterSpacing:'.04em' }}>
                         {p.name}
-                        {p.isHost && <span style={{ fontFamily:"'Courier Prime',monospace", fontSize:8, color:GOLD, marginLeft:6, letterSpacing:'2px' }}>HOST</span>}
-                        {p.isSpectator && <span style={{ fontFamily:"'Courier Prime',monospace", fontSize:8, color:'#94A3B8', marginLeft:6, letterSpacing:'2px' }}>SPEC</span>}
+                        {p.isHost && <span style={{ fontFamily:"var(--font-main), sans-serif", fontSize:8, color:GOLD, marginLeft:6, letterSpacing:'2px' }}>HOST</span>}
+                        {p.isSpectator && <span style={{ fontFamily:"var(--font-main), sans-serif", fontSize:8, color:'#94A3B8', marginLeft:6, letterSpacing:'2px' }}>SPEC</span>}
                       </span>
                       {team && (
                         <span className="lobby-player-badge" style={{ background:`${team.color}18`, color:team.color, border:`1px solid ${team.color}50` }}>
@@ -2530,10 +2532,10 @@ function RoomContent() {
               </div>
               {isRivalsLobby ? (
                 <>
-                  <h2 style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:'clamp(1.6rem,4vw,2.8rem)', color:'#fff', letterSpacing:2, marginBottom:6 }}>
+                  <h2 style={{ fontFamily:"var(--font-main), sans-serif", fontSize:'clamp(1.6rem,4vw,2.8rem)', color:'#fff', letterSpacing:2, marginBottom:6 }}>
                     RIVALS <span style={{ color:GOLD }}>SHOWDOWN</span>
                   </h2>
-                  <p style={{ fontFamily:"'Courier Prime',monospace", fontSize:11, color:'#888', marginBottom:24, lineHeight:1.6 }}>
+                  <p style={{ fontFamily:"var(--font-main), sans-serif", fontSize:11, color:'#888', marginBottom:24, lineHeight:1.6 }}>
                     Teams are assigned automatically for this 1v1 match. Once the second player joins, the duel starts immediately.
                     {myTeamId && <span style={{ color:GOLD }}> You are playing as <strong>{TEAMS.find(t=>t.id===myTeamId)?.name}</strong>.</span>}
                   </p>
@@ -2555,7 +2557,7 @@ function RoomContent() {
                             <img src={`/assets/${teamId}.png`} alt={team?.short} style={{ width:48, height:48, objectFit:'contain' }} />
                             {isMine && <div style={{ fontSize:10, letterSpacing:2, color:team?.color, fontWeight:800 }}>YOUR TEAM</div>}
                           </div>
-                          <div style={{ color:team?.color, fontFamily:"'Bebas Neue',sans-serif", fontSize:28, letterSpacing:1.2 }}>{team?.short}</div>
+                          <div style={{ color:team?.color, fontFamily:"var(--font-main), sans-serif", fontSize:28, letterSpacing:1.2 }}>{team?.short}</div>
                           <div style={{ color:'#fff', fontSize:14, marginTop:4 }}>{team?.name}</div>
                           <div style={{ color:'#94A3B8', fontSize:11, marginTop:12, letterSpacing:1 }}>
                             {owner ? `Assigned to ${owner}` : 'Waiting for rival'}
@@ -2567,10 +2569,10 @@ function RoomContent() {
                 </>
               ) : (
                 <>
-                  <h2 style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:'clamp(1.6rem,4vw,2.8rem)', color:'#fff', letterSpacing:2, marginBottom:6 }}>
+                  <h2 style={{ fontFamily:"var(--font-main), sans-serif", fontSize:'clamp(1.6rem,4vw,2.8rem)', color:'#fff', letterSpacing:2, marginBottom:6 }}>
                     PICK YOUR <span style={{ color:GOLD }}>FRANCHISE</span>
                   </h2>
-                  <p style={{ fontFamily:"'Courier Prime',monospace", fontSize:11, color:'#888', marginBottom:24, lineHeight:1.6 }}>
+                  <p style={{ fontFamily:"var(--font-main), sans-serif", fontSize:11, color:'#888', marginBottom:24, lineHeight:1.6 }}>
                     Select the IPL team you want to bid for. Each franchise can only be claimed by one player.
                     {myTeamId && <span style={{ color:GOLD }}> You picked <strong>{TEAMS.find(t=>t.id===myTeamId)?.name}</strong>.</span>}
                   </p>
@@ -2666,7 +2668,7 @@ function RoomContent() {
               {/* Claimed franchises summary */}
               <div className="lobby-section-label">CLAIMED FRANCHISES</div>
               {Object.entries(takenMap).length === 0 ? (
-                <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:10, color:'#666', lineHeight:1.8 }}>
+                <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:10, color:'#666', lineHeight:1.8 }}>
                   {isRivalsLobby ? 'Waiting for the first team assignment to appear.' : <>No franchise selected yet.<br />Be the first!</>}
                 </div>
               ) : (
@@ -2674,8 +2676,8 @@ function RoomContent() {
                   <div key={t.id} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6, padding:'8px 12px', background:`${t.color}08`, border:`1px solid ${t.color}25`, borderRadius:6 }}>
                     <div style={{ width:8, height:8, borderRadius:'50%', background:t.color, flexShrink:0 }} />
                     <div style={{ flex:1 }}>
-                      <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:'1rem', color:t.color, letterSpacing:1 }}>{t.short}</div>
-                      <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:9, color:'#888' }}>{takenMap[t.id]}</div>
+                      <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:'1rem', color:t.color, letterSpacing:1 }}>{t.short}</div>
+                      <div style={{ fontFamily:"var(--font-main), sans-serif", fontSize:9, color:'#888' }}>{takenMap[t.id]}</div>
                     </div>
                   </div>
                 ))
@@ -2732,7 +2734,7 @@ function RoomContent() {
         <div className="lobby-bottom-bar">
           {isRivalsLobby ? (
             <div style={{ display:'flex', flexDirection:'column', gap:10, width:'100%', alignItems:'center' }}>
-              <span style={{ fontFamily:"'Courier Prime',monospace", fontSize:11, color:'#888', letterSpacing:2, textAlign:'center' }}>
+              <span style={{ fontFamily:"var(--font-main), sans-serif", fontSize:11, color:'#888', letterSpacing:2, textAlign:'center' }}>
                 {multiGS
                   ? 'Both rivals are locked in. Enter the auction room.'
                   : lobbyPlayers.length >= 2
@@ -2756,7 +2758,7 @@ function RoomContent() {
             </div>
           ) : isHost ? (
             <>
-              <span style={{ fontFamily:"'Courier Prime',monospace", fontSize:11, color:'#888', letterSpacing:2 }}>
+              <span style={{ fontFamily:"var(--font-main), sans-serif", fontSize:11, color:'#888', letterSpacing:2 }}>
                 {multiGS ? 'Auction is ongoing' : (canStart ? 'Ready to go!' : 'Waiting for players…')}
               </span>
               <button

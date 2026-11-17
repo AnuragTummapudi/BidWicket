@@ -85,13 +85,13 @@ export default function JoinPage() {
   const inputStyle = {
     width: "100%", padding: "16px 18px", background: "#0a0c14",
     border: `1px solid ${BORDER}`, borderRadius: 10, color: "#fff",
-    fontSize: 18, fontFamily: "'Rajdhani'", letterSpacing: 2,
+    fontSize: 18, fontFamily: "var(--font-main), sans-serif", letterSpacing: 2,
     outline: "none", boxSizing: "border-box", textAlign: "center"
   };
 
   return (
     <div style={{
-      minHeight: "100vh", background: BG, fontFamily: "'Rajdhani',sans-serif",
+      minHeight: "100vh", background: BG, fontFamily: "var(--font-main), sans-serif",
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"
     }}>
       <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}`}</style>
@@ -99,7 +99,7 @@ export default function JoinPage() {
       <div style={{ animation: "fadeUp .4s ease-out", textAlign: "center", maxWidth: 400, width: "90%" }}>
         {/* Header */}
         <div style={{ marginBottom: 40 }}>
-          <div style={{ fontFamily: "'Bebas Neue'", fontSize: "clamp(28px,4vw,48px)", color: GOLD, letterSpacing: 6 }}>
+          <div style={{ fontFamily: "var(--font-main), sans-serif", fontSize: "clamp(28px,4vw,48px)", color: GOLD, letterSpacing: 6 }}>
             JOIN AUCTION
           </div>
           <div style={{ color: "#555", fontSize: 12, letterSpacing: 3, marginTop: 8 }}>
@@ -114,7 +114,7 @@ export default function JoinPage() {
         }}>
           <div style={{ fontSize: 10, color: "#888", letterSpacing: 3, marginBottom: 8 }}>ROOM CODE</div>
           <div style={{
-            fontFamily: "'Bebas Neue'", fontSize: 48, color: "#22D3EE",
+            fontFamily: "var(--font-main), sans-serif", fontSize: 48, color: "#22D3EE",
             letterSpacing: 10, lineHeight: 1
           }}>
             {code}
@@ -141,10 +141,10 @@ export default function JoinPage() {
               disabled={loading}
               style={{
                 width: "100%", padding: "16px",
-                background: `linear-gradient(135deg, ${GOLD}, #9a7610)`,
+                background: `#E8603C`,
                 border: "none", borderRadius: 8, color: "#000",
                 fontSize: 16, fontWeight: 900, cursor: loading ? "wait" : "pointer",
-                letterSpacing: 2, fontFamily: "'Barlow Condensed'",
+                letterSpacing: 2, fontFamily: "var(--font-main), sans-serif",
                 boxShadow: `0 4px 30px ${GOLD}44`
               }}
             >
@@ -158,7 +158,7 @@ export default function JoinPage() {
                 background: "#0b1220",
                 border: `1px solid ${BORDER}`, borderRadius: 8, color: "#cbd5e1",
                 fontSize: 16, fontWeight: 900, cursor: loading ? "wait" : "pointer",
-                letterSpacing: 2, fontFamily: "'Barlow Condensed'",
+                letterSpacing: 2, fontFamily: "var(--font-main), sans-serif",
               }}
             >
               {loading ? "JOINING..." : "WATCH AS SPECTATOR"}

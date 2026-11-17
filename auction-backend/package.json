@@ -3,10 +3,12 @@
     "version": "1.0.0",
     "type": "module",
     "scripts": {
-        "start": "node index.js"
+        "start": "node index.js",
+        "dev": "node --env-file=.env index.js"
     },
     "dependencies": {
         "@upstash/redis": "^1.37.0",
+        "compression": "^1.8.1",
         "express": "^5.2.1",
         "socket.io": "^4.8.3"
     }
