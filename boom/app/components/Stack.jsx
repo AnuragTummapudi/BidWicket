@@ -83,8 +83,6 @@ export default function Stack({
 
   useEffect(() => {
     setStack(buildStack(cards));
-    // rebuild only when card identities change, not on every new cards array
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardSignature]);
 
   const shouldDisableDrag = mobileClickOnly && isMobile;

@@ -22,8 +22,8 @@ export default function SeoLandingPage({ page }) {
         <h1>{page.h1}</h1>
         <p>{page.intro}</p>
         <div className="seo-actions">
-          <Link href="/room?action=create">Start free auction</Link>
-          <Link href="/how-to-play">How to play</Link>
+          <Link href="/room?action=create">Start Free Auction</Link>
+          <Link href="/how-to-play">How to Play</Link>
         </div>
       </section>
 

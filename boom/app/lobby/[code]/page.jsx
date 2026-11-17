@@ -5,7 +5,7 @@ import { useRouter, useParams, useSearchParams } from 'next/navigation';
 
 export default function LobbyPage() {
   return (
-    <Suspense fallback={<div style={{ minHeight: "100vh", background: "#11141c" }} />}>
+    <Suspense fallback={<div style={{ minHeight: "100vh", background: "#05070D" }} />}>
       <LobbyContent />
     </Suspense>
   );
@@ -33,6 +33,6 @@ function LobbyContent() {
   }, [router, urlCode, mode, isPublic]);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#11141c" }} />
+    <div style={{ minHeight: "100vh", background: "#05070D" }} />
   );
 }

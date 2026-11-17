@@ -2,18 +2,17 @@
 
 import { useState, useEffect, useRef, Suspense, useCallback, useMemo, memo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ArrowLeft, ArrowUp, Check, MessageSquare, X } from 'lucide-react';
 import { useGame } from '../GameContext';
 import AppDialog from '../components/AppDialog';
 import BrandLink from '../components/BrandLink';
 import { getBackendUrl } from '../lib/backendUrl';
 
 const GOLD  = '#E8B84B';
-const CYAN  = '#a3a9b8';
-const GREEN = '#4cc38a';
-const BG    = '#0b0d14';
-const CARD  = '#11141c';
-const BORDER = '#1f2430';
+const CYAN  = '#22D3EE';
+const GREEN = '#4ade80';
+const BG    = '#080808';
+const CARD  = '#0d0d0d';
+const BORDER = '#1d2330';
 const DEFAULT_PURSE = 120;
 const EXTENDED_PURSE = 150;
 
@@ -36,14 +35,14 @@ const MODE_OPTIONS = [
   {
     id: 'mega',
     accentColor: GOLD,
-    title: 'Mega',
+    title: 'MEGA',
     eyebrow: null,
     sub: '500+ players',
   },
   {
     id: 'mini',
     accentColor: GREEN,
-    title: 'Mini',
+    title: 'MINI',
     eyebrow: null,
     sub: '200 players',
   },
@@ -120,6 +119,7 @@ const MATCHMAKING_LINES = [
 
 // ── Global styles ───────────────────────────────────────────────────────────
 const globalStyles = `
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Rajdhani:wght@500;600;700&family=Courier+Prime:wght@400;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; background: ${BG}; }
 
@@ -136,7 +136,7 @@ const globalStyles = `
   @keyframes rivalsLeftIn { 0%{opacity:0;transform:translateX(-120px) scale(.88)} 100%{opacity:1;transform:translateX(0) scale(1)} }
   @keyframes rivalsRightIn { 0%{opacity:0;transform:translateX(120px) scale(.88)} 100%{opacity:1;transform:translateX(0) scale(1)} }
 
-  .rp-particles { display:none; position:fixed; top:0;left:0;right:0;bottom:0; overflow:hidden; pointer-events:none; z-index:0; }
+  .rp-particles { position:fixed; top:0;left:0;right:0;bottom:0; overflow:hidden; pointer-events:none; z-index:0; }
   .particle { position:absolute; border-radius:50%; background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.8),rgba(232,184,75,.4) 40%,rgba(0,0,0,0) 80%); opacity:0; animation:floatOrb linear infinite; }
   .p1{left:10%;width:12px;height:12px;animation-duration:15s}
   .p2{left:30%;width:8px;height:8px;animation-duration:22s;animation-delay:3s;filter:hue-rotate(180deg)}
@@ -147,22 +147,23 @@ const globalStyles = `
   .rp-nav {
     position:fixed; top:0;left:0;right:0; z-index:100;
     display:flex; align-items:center; justify-content:space-between;
-    padding:14px 24px; border-bottom:1px solid #1a1e28;
+    padding:14px 24px; border-bottom:1px solid #111;
     background:${BG}ee; backdrop-filter:blur(10px);
   }
-  .rp-brand { font-family:var(--font-display); font-size:1.1rem; letter-spacing:0; color:#7a8296; }
+  .rp-brand { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:.3em; color:#333; }
   .rp-brand span { color:${GOLD}; }
-  .rp-back { background:none; border:1px solid #242936; color:#7a8296; font-family:var(--font-display); font-weight:600; font-size:12px; letter-spacing:0; padding:7px 14px; cursor:pointer; transition:color .2s,border-color .2s; border-radius:4px; }
+  .rp-back { background:none; border:1px solid #222; color:#555; font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:12px; letter-spacing:.15em; padding:7px 14px; cursor:pointer; transition:color .2s,border-color .2s; border-radius:4px; }
   .rp-back:hover { color:#fff; border-color:#555; }
 
   .rp-eyebrow {
-    font-family:var(--font-ui); font-weight:500; font-size:14px; letter-spacing:0; display:block; margin-bottom:12px;
-    color:${GOLD};
+    font-family:'Courier Prime',monospace; font-weight:700; font-size:11px; letter-spacing:4px; text-transform:uppercase; display:block; margin-bottom:10px;
+    background:linear-gradient(90deg,${GOLD} 0%,#fff 50%,${GOLD} 100%); background-size:200% auto;
+    color:transparent; -webkit-background-clip:text; background-clip:text; animation:shimmer 3s linear infinite;
   }
-  .rp-h1 { font-family:var(--font-display); font-weight:500; font-size:clamp(2.5rem,6vw,4rem); letter-spacing:-.02em; line-height:1.02; color:var(--text-1); }
-  .rp-h1 span { color:inherit; }
-  .rp-live-counter { display:inline-flex; align-items:center; gap:8px; font-size:14px; color:var(--text-2); margin:16px 0 24px; }
-  .rp-live-dot { width:6px; height:6px; border-radius:50%; background:var(--good); box-shadow:0 0 0 transparent; }
+  .rp-h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(2.5rem,7vw,4.5rem); letter-spacing:-.02em; line-height:.9; color:#fff; }
+  .rp-h1 span { color:${GOLD}; }
+  .rp-live-counter { display:inline-flex; align-items:center; gap:8px; font-family:'Barlow Condensed',sans-serif; font-size:12px; letter-spacing:1px; color:${CYAN}; background:rgba(34,211,238,.1); padding:4px 10px; border-radius:4px; border:1px solid rgba(34,211,238,.2); margin:10px 0 22px; font-weight:700; }
+  .rp-live-dot { width:6px; height:6px; border-radius:50%; background:${CYAN}; box-shadow:0 0 8px ${CYAN}; animation:pulse 1.5s ease-in-out infinite; }
   .rivals-screen {
     min-height:100vh;
     display:flex;
@@ -195,8 +196,8 @@ const globalStyles = `
   .rivals-team-entry {
     padding:22px 18px;
     border-radius:22px;
-    border:1px solid #242936;
-    background:var(--ink-2);
+    border:1px solid #222;
+    background:linear-gradient(160deg, rgba(255,255,255,0.06), rgba(8,8,8,0.94));
     display:flex;
     align-items:center;
     gap:14px;
@@ -213,27 +214,29 @@ const globalStyles = `
     display:flex;
     align-items:center;
     justify-content:center;
-    background:var(--ink-3);
+    background:radial-gradient(circle, rgba(232,184,75,0.24), rgba(34,211,238,0.12), transparent 72%);
+    box-shadow:0 0 48px rgba(232,184,75,0.2);
     animation:rivalsVsPop .9s ease .25s both;
   }
   .rivals-search-card {
-    border:1px solid var(--line);
-    border-radius:18px;
+    border:1px solid rgba(232,184,75,0.18);
+    border-radius:26px;
     padding:28px 24px;
-    background:var(--ink-2);
+    background:linear-gradient(160deg, rgba(232,184,75,0.10), rgba(8,8,8,0.96));
+    box-shadow:0 24px 60px rgba(0,0,0,0.24);
   }
   .rivals-search-line {
     min-height:32px;
     color:#fff;
-    font-family:var(--font-display);
+    font-family:'Bebas Neue',sans-serif;
     font-size:clamp(28px, 5vw, 42px);
-    letter-spacing:0;
+    letter-spacing:1.2px;
   }
   .rivals-search-progress {
     width:100%;
     height:10px;
     border-radius:999px;
-    background:#242936;
+    background:#111827;
     overflow:hidden;
     border:1px solid #1f2937;
   }
@@ -241,8 +244,8 @@ const globalStyles = `
     display:block;
     height:100%;
     border-radius:999px;
-    background:${GOLD};
-    animation:rivalsSweep 1.2s ease-in-out infinite alternate; /* live search progress */
+    background:linear-gradient(90deg, ${GOLD}, ${CYAN});
+    animation:rivalsSweep 1.2s ease-in-out infinite alternate;
   }
   @media (max-width: 768px) {
     .rivals-screen { padding:82px 16px 28px; }
@@ -255,55 +258,58 @@ const globalStyles = `
   .rp-choices { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; width:100%; }
   @media(max-width:768px){ .rp-choices{grid-template-columns:1fr 1fr} }
   @media(max-width:560px){ .rp-choices{grid-template-columns:1fr} }
-  .rp-choice { padding:24px 20px; border:1px solid #1a1e28; cursor:pointer; background:#0b0d14; transition:background-color .15s, border-color .15s, color .15s, opacity .15s cubic-bezier(.22,1,.36,1); position:relative; overflow:hidden; border-radius:10px; }
-  .rp-choice.create-card:hover {  border-color:${GOLD}; box-shadow:0 12px 32px rgba(232,184,75,.18); }
-  .rp-choice.join-card:hover   {  border-color:${CYAN}; box-shadow:0 12px 32px rgba(163,169,184,.18); }
-  .rp-choice.browse-card:hover {  border-color:#a3a9b8;  }
-  .rp-choice-label { font-size:13px; font-weight:500; margin-bottom:12px; }
-  .rp-choice-title { font-family:var(--font-display); font-weight:500; font-size:28px; line-height:1.1; color:var(--text-1); margin-bottom:8px; }
-  .rp-choice-desc  { font-size:14px; color:var(--text-2); line-height:1.5; }
+  .rp-choice { padding:22px 18px; border:1px solid #1a1a1a; cursor:pointer; background:#0a0a0a; transition:all .3s cubic-bezier(.175,.885,.32,1.275); position:relative; overflow:hidden; border-radius:10px; }
+  .rp-choice.create-card:hover { transform:translateY(-6px); border-color:${GOLD}; box-shadow:0 12px 32px rgba(232,184,75,.18); }
+  .rp-choice.join-card:hover   { transform:translateY(-6px); border-color:${CYAN}; box-shadow:0 12px 32px rgba(34,211,238,.18); }
+  .rp-choice.browse-card:hover { transform:translateY(-6px); border-color:#818cf8; box-shadow:0 12px 32px rgba(129,140,248,.18); }
+  .rp-choice-label { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:10px; letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; }
+  .rp-choice-title { font-family:'Bebas Neue',sans-serif; font-size:1.85rem; color:#fff; margin-bottom:6px; }
+  .rp-choice-desc  { font-family:'Courier Prime',monospace; font-size:11px; color:#94A3B8; line-height:1.6; }
 
   /* ── Form elements ── */
-  .rp-label { font-size:13px; font-weight:500; color:var(--text-2); margin-bottom:8px; margin-top:24px; display:block; }
-  .rp-input { width:100%; height:48px; padding:0 16px; background:#11141c; border-radius:6px; border:1px solid #1a1e28; color:var(--text-1); font-family:var(--font-ui); font-size:16px; letter-spacing:0; outline:none; transition:border-color .2s,box-shadow .2s; }
+  .rp-label { font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:3px; color:#94A3B8; text-transform:uppercase; margin-bottom:7px; margin-top:22px; display:block; }
+  .rp-input { width:100%; padding:15px 16px; background:#0c0c0c; border-radius:6px; border:1px solid #1e1e1e; color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:17px; letter-spacing:.06em; outline:none; transition:border-color .2s,box-shadow .2s; }
   .rp-input:focus { border-color:${GOLD}; box-shadow:0 0 0 1px ${GOLD} inset; }
-  .rp-input::placeholder { color:#7a8296; }
-  .rp-input.code-input { height:56px; letter-spacing:0.12em; font-family:var(--font-display); font-weight:500; font-size:28px; text-align:center; }
-  .rp-input.code-input:focus { border-color:${GOLD}; box-shadow:0 0 0 1px ${GOLD} inset; }
+  .rp-input::placeholder { color:#666; }
+  .rp-input.code-input { letter-spacing:.35em; font-family:'Bebas Neue',sans-serif; font-size:1.6rem; text-align:center; }
+  .rp-input.code-input:focus { border-color:${CYAN}; box-shadow:0 0 0 1px ${CYAN} inset; }
 
   /* ── Toggle cards (tactile selection) ── */
   .rp-toggle-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px; }
   @media(max-width:480px) { .rp-toggle-grid { grid-template-columns:1fr; } }
   .rp-toggle-card {
-    padding:16px 14px; border-radius:8px; cursor:pointer; border:1px solid #1a1e28;
-    background:#11141c; transition:background-color .15s, border-color .15s, color .15s, opacity .15s; position:relative; overflow:hidden;
+    padding:16px 14px; border-radius:8px; cursor:pointer; border:1px solid #1e1e1e;
+    background:#0c0c0c; transition:all .18s ease; position:relative; overflow:hidden;
     border-left:3px solid transparent;
     display:flex; flex-direction:column; gap:4px;
   }
-  .rp-toggle-card:hover { border-color:#333; background:#1a1e28; }
+  .rp-toggle-card:hover { border-color:#333; background:#111; }
   .rp-toggle-card.selected-gold { border-color:${GOLD}; border-left-color:${GOLD}; background:rgba(232,184,75,.07); }
-  .rp-toggle-card.selected-cyan { border-color:${GOLD}; border-left-color:${GOLD}; background:rgba(232,184,75,.07); }
-  .rp-toggle-card-title { font-family:var(--font-display); font-size:1.1rem; letter-spacing:0; color:#fff; }
-  .rp-toggle-card-sub   { font-family:var(--font-ui); font-size:12px; letter-spacing:0; color:#7a8296; }
-  .rp-toggle-check { position:absolute; top:8px; right:10px; width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; transition:background-color .15s, border-color .15s, color .15s, opacity .15s; }
+  .rp-toggle-card.selected-cyan { border-color:${GREEN}; border-left-color:${GREEN}; background:rgba(74,222,128,.07); }
+  .rp-toggle-card-title { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:.08em; color:#fff; }
+  .rp-toggle-card-sub   { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:1px; color:#888; }
+  .rp-toggle-check { position:absolute; top:8px; right:10px; width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; transition:all .18s; }
   .rp-toggle-card.mode-card {
     min-height: 104px;
     padding: 12px 14px;
     gap: 6px;
     border-radius: 10px;
-    border: 1px solid #242936;
+    border: 1px solid #242424;
     border-left-width: 1px;
   }
   .rp-toggle-card.mode-card::before {
     content: '';
     position: absolute;
     inset: 0;
-    display: none;
+    background:
+      radial-gradient(circle at top right, rgba(255,255,255,0.06), transparent 36%),
+      linear-gradient(180deg, rgba(255,255,255,0.03), transparent 56%);
+    opacity: 0;
     transition: opacity .18s ease;
     pointer-events: none;
   }
   .rp-toggle-card.mode-card:hover {
-    
+    transform: translateY(-3px);
     border-color: #3a3a3a;
   }
   .rp-toggle-card.mode-card:hover::before,
@@ -312,10 +318,12 @@ const globalStyles = `
     opacity: 1;
   }
   .rp-toggle-card.mode-card.selected-gold {
-    background: rgba(232,184,75,0.08);
+    background: linear-gradient(180deg, rgba(232,184,75,0.14), rgba(232,184,75,0.05));
+    box-shadow: 0 14px 36px rgba(232,184,75,0.16);
   }
   .rp-toggle-card.mode-card.selected-cyan {
-    background: rgba(232,184,75,0.08);
+    background: linear-gradient(180deg, rgba(74,222,128,0.14), rgba(74,222,128,0.05));
+    box-shadow: 0 14px 36px rgba(74,222,128,0.14);
   }
   .rp-toggle-card.mode-card .rp-toggle-check {
     top: 10px;
@@ -328,25 +336,25 @@ const globalStyles = `
     margin-bottom:2px;
   }
   .rp-toggle-mode-eyebrow {
-    font-family:var(--font-ui);
-    font-size:12px;
-    letter-spacing:0;
-    
+    font-family:'Courier Prime',monospace;
+    font-size:9px;
+    letter-spacing:2px;
+    text-transform:uppercase;
     color:#8892a6;
     line-height:1.5;
     margin-bottom:4px;
   }
   .rp-toggle-card.mode-card .rp-toggle-card-title {
     font-size: 1.45rem;
-    line-height: 1.05;
-    letter-spacing:0;
+    line-height: .9;
+    letter-spacing: .06em;
     max-width: 160px;
   }
   .rp-toggle-card.mode-card .rp-toggle-card-sub {
-    font-size:12px;
+    font-size: 11px;
     letter-spacing: .8px;
     line-height: 1.25;
-    color: #c9cdd6;
+    color: #a8b1bf;
     position: relative;
     z-index: 1;
   }
@@ -360,121 +368,121 @@ const globalStyles = `
       max-width: 140px;
     }
     .rp-toggle-card.mode-card .rp-toggle-card-sub {
-      font-size:12px;
+      font-size: 10px;
     }
   }
 
   /* ── Buttons ── */
-  .rp-btn { width:100%; height:48px; padding:0 20px; background:${GOLD}; border:none; border-radius:10px; font-family:var(--font-ui); font-weight:500; font-size:16px; letter-spacing:0; color:var(--gold-ink); cursor:pointer; margin-top:24px; transition:transform .2s,box-shadow .2s; display:flex; align-items:center; justify-content:center; gap:10px; }
-  .rp-btn:hover    {   }
+  .rp-btn { width:100%; padding:16px; background:${GOLD}; border:none; border-radius:6px; font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:.1em; color:#000; cursor:pointer; margin-top:24px; transition:transform .2s,box-shadow .2s; display:flex; align-items:center; justify-content:center; gap:10px; }
+  .rp-btn:hover    { transform:translateY(-3px); box-shadow:0 8px 24px rgba(232,184,75,.4); }
   .rp-btn:active   { transform:none; }
   .rp-btn:disabled { opacity:.35; pointer-events:none; }
-  .rp-btn.cyan-btn { background:var(--ink-3); color:var(--text-1); border:1px solid var(--line-strong); }
-  .rp-btn.cyan-btn:hover {  }
+  .rp-btn.cyan-btn { background:${CYAN}; }
+  .rp-btn.cyan-btn:hover { box-shadow:0 8px 24px rgba(34,211,238,.4); }
 
-  .rp-error { font-family:var(--font-ui); font-size:12px; color:#ef4444; margin-top:10px; padding:10px; background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); border-radius:4px; letter-spacing:0; }
-  .rp-hr { height:1px; background:#1a1e28; margin:20px 0; }
+  .rp-error { font-family:'Courier Prime',monospace; font-size:12px; color:#ef4444; margin-top:10px; padding:10px; background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); border-radius:4px; letter-spacing:.04em; }
+  .rp-hr { height:1px; background:#131313; margin:20px 0; }
 
   /* ── Room list items ── */
-  .rp-room-item { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; background:${CARD}; border:1px solid #1a1e28; margin-bottom:8px; border-radius:8px; transition:border-color .2s; }
+  .rp-room-item { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; background:${CARD}; border:1px solid #181818; margin-bottom:8px; border-radius:8px; transition:border-color .2s; }
   .rp-room-item:hover { border-color:#333; }
-  .rp-room-join-btn    { padding:8px 16px; background:rgba(163,169,184,.08); border:1px solid rgba(163,169,184,.3); color:${CYAN}; font-family:var(--font-display); font-weight:600; font-size:12px; letter-spacing:0; cursor:pointer; transition:background-color .15s, border-color .15s, color .15s, opacity .15s; border-radius:4px; }
+  .rp-room-join-btn    { padding:8px 16px; background:rgba(34,211,238,.08); border:1px solid rgba(34,211,238,.3); color:${CYAN}; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; cursor:pointer; transition:all .2s; border-radius:4px; }
   .rp-room-join-btn:hover { background:${CYAN}; color:#000; }
-  .rp-room-rejoin-btn  { padding:8px 16px; background:rgba(232,184,75,.08); border:1px solid rgba(232,184,75,.3); color:${GOLD}; font-family:var(--font-display); font-weight:600; font-size:12px; letter-spacing:0; cursor:pointer; transition:background-color .15s, border-color .15s, color .15s, opacity .15s; border-radius:4px; }
+  .rp-room-rejoin-btn  { padding:8px 16px; background:rgba(232,184,75,.08); border:1px solid rgba(232,184,75,.3); color:${GOLD}; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; cursor:pointer; transition:all .2s; border-radius:4px; }
   .rp-room-rejoin-btn:hover { background:${GOLD}; color:#000; }
 
   /* ── BROWSE ROOMS (mobile-native) ── */
   .rb-shell {
-    min-height: 100vh; background: #0b0d14;
+    min-height: 100vh; background: #0a0a0a;
     display: flex; flex-direction: column;
-    font-family:var(--font-display);
+    font-family: 'Barlow Condensed', sans-serif;
   }
   .rb-header {
     position: sticky; top: 0;
-    background: #0b0d14; border-bottom: 1px solid #1a1e28;
+    background: #0a0a0a; border-bottom: 1px solid #1a1a1a;
     z-index: 20; padding: 16px 24px 0;
   }
   .rb-header-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .rb-back-btn { background: none; border: none; color: #c9cdd6; font-size: 20px; cursor: pointer; padding: 0 4px; flex-shrink: 0; line-height:1; }
+  .rb-back-btn { background: none; border: none; color: #ccc; font-size: 20px; cursor: pointer; padding: 0 4px; flex-shrink: 0; line-height:1; }
   .rb-title-block { flex: 1; }
-  .rb-title { font-family:var(--font-display); font-size: 22px; color: #fff; letter-spacing:0; line-height: 1; }
-  .rb-subtitle { font-size: 12px; color: #7a8296; margin-top: 1px; }
-  .rb-icon-btn { background: none; border: 1px solid #1a1e28; color: #7a8296; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; flex-shrink: 0; transition:background-color .15s, border-color .15s, color .15s, opacity .15s; }
-  .rb-icon-btn:hover { border-color: #444; color: #c9cdd6; }
-  .rb-create-btn { background: ${GOLD}; border: none; border-radius: 8px; color: #000; font-family:var(--font-display); font-size: 14px; letter-spacing:0; padding: 8px 14px; cursor: pointer; display: flex; align-items: center; gap: 5px; flex-shrink: 0; transition: filter .2s; white-space:nowrap; }
+  .rb-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #fff; letter-spacing: 1px; line-height: 1; }
+  .rb-subtitle { font-size: 12px; color: #555; margin-top: 1px; }
+  .rb-icon-btn { background: none; border: 1px solid #1e1e1e; color: #888; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; flex-shrink: 0; transition: all .2s; }
+  .rb-icon-btn:hover { border-color: #444; color: #ccc; }
+  .rb-create-btn { background: ${GOLD}; border: none; border-radius: 8px; color: #000; font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 1px; padding: 8px 14px; cursor: pointer; display: flex; align-items: center; gap: 5px; flex-shrink: 0; transition: filter .2s; white-space:nowrap; }
   .rb-create-btn:hover { filter: brightness(1.1); }
 
   .rb-sport-pills { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
   .rb-sport-pills::-webkit-scrollbar { display: none; }
-  .rb-sport-pill { padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight:600; cursor: pointer; transition:background-color .15s, border-color .15s, color .15s, opacity .15s; letter-spacing: .5px; white-space: nowrap; border: 1px solid transparent; }
+  .rb-sport-pill { padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .18s; letter-spacing: .5px; white-space: nowrap; border: 1px solid transparent; }
   .rb-sport-pill.active { background: ${GOLD}; color: #000; }
-  .rb-sport-pill:not(.active) { background: #1a1e28; color: #7a8296; }
-  .rb-sport-pill:not(.active):hover { border-color: #333; color: #c9cdd6; }
+  .rb-sport-pill:not(.active) { background: #1a1a1a; color: #888; }
+  .rb-sport-pill:not(.active):hover { border-color: #333; color: #ccc; }
 
   .rb-tabs { display: flex; gap: 10px; margin: 0 0 12px; }
   .rb-tab {
-    flex: 1; padding: 14px 12px; text-align: center; font-size: 12px; font-weight:600; letter-spacing: .5px;
-    cursor: pointer; transition:background-color .15s, border-color .15s, color .15s, opacity .15s; display: flex; align-items: center; justify-content: center; gap: 6px;
-    background: #1a1e28; border: 1px solid #242936; border-bottom: 2px solid transparent; color: #7a8296;
+    flex: 1; padding: 14px 12px; text-align: center; font-size: 12px; font-weight: 700; letter-spacing: .5px;
+    cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: #111; border: 1px solid #242424; border-bottom: 2px solid transparent; color: #777;
     border-radius: 12px 12px 0 0; appearance: none; -webkit-appearance: none; box-shadow: none;
   }
-  .rb-tab.active { color: var(--text-1); border-bottom-color: ${GOLD}; background: var(--ink-3); }
-  .rb-tab.live-tab.active { border-bottom-color: var(--bad); background: var(--ink-3); }
-  .rb-tab:not(.active) { color: #7a8296; }
-  .rb-tab-count { background: #242936; color: #7a8296; font-size:12px; padding: 1px 6px; border-radius: 10px; }
+  .rb-tab.active { color: #fff; border-color: #3a3214; border-bottom-color: ${GOLD}; background: linear-gradient(180deg, #19150a 0%, #111 100%); }
+  .rb-tab.live-tab.active { border-color: #3a1818; border-bottom-color: #ef4444; background: linear-gradient(180deg, #1a1010 0%, #111 100%); }
+  .rb-tab:not(.active) { color: #666; }
+  .rb-tab-count { background: #222; color: #888; font-size: 11px; padding: 1px 6px; border-radius: 10px; }
   .rb-tab.active .rb-tab-count { background: ${GOLD}22; color: ${GOLD}; }
   .rb-tab.active.live-tab .rb-tab-count { background: #ef444422; color: #ef4444; }
 
   .rb-name-box { padding: 24px 32px; }
-  .rb-name-label { font-size:12px; letter-spacing:0; color: #7a8296;  margin-bottom: 6px; display: block; }
-  .rb-name-input { width: 100%; padding: 12px 14px; background: #1a1e28; border: 1px solid #1a1e28; border-radius: 10px; color: #fff; font-family:var(--font-display); font-size: 16px; letter-spacing:0; outline: none; transition: border-color .2s; }
+  .rb-name-label { font-size: 10px; letter-spacing: 2px; color: #555; text-transform: uppercase; margin-bottom: 6px; display: block; }
+  .rb-name-input { width: 100%; padding: 12px 14px; background: #141414; border: 1px solid #1e1e1e; border-radius: 10px; color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 16px; letter-spacing: .06em; outline: none; transition: border-color .2s; }
   .rb-name-input:focus { border-color: ${GOLD}; }
-  .rb-name-input::placeholder { color: #7a8296; }
+  .rb-name-input::placeholder { color: #444; }
 
   .rb-rooms-list { flex: 1; overflow-y: auto; padding: 32px 32px 60px; }
 
   .rb-room-card {
-    background: #1a1e28; border: 1px solid #1a1e28; border-radius: 14px;
+    background: #111; border: 1px solid #1c1c1c; border-radius: 14px;
     padding: 14px; margin-bottom: 12px; transition: border-color .2s;
   }
   .rb-room-card:hover { border-color: #333; }
 
   .rb-room-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; }
-  .rb-status-badge { display: flex; align-items: center; gap: 5px; font-size:12px; font-weight:600; letter-spacing:0; padding: 3px 8px; border-radius: 5px; }
+  .rb-status-badge { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 3px 8px; border-radius: 5px; }
   .rb-status-badge.live { background: #ef444415; color: #ef4444; border: 1px solid #ef444430; }
   .rb-status-badge.waiting { background: #22c55e15; color: #22c55e; border: 1px solid #22c55e30; }
   .rb-status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .rb-status-dot.live { background: var(--bad); }
+  .rb-status-dot.live { background: #ef4444; animation: pulse .8s ease-in-out infinite; }
   .rb-status-dot.waiting { background: #22c55e; }
 
-  .rb-room-code { font-family:var(--font-ui); font-size:12px; color: #7a8296; letter-spacing:0; }
-  .rb-team-count { font-family:var(--font-display); font-size: 20px; color: #fff; line-height: 1; }
-  .rb-team-count span { font-size: 13px; color: #7a8296; }
-  .rb-team-label { font-size:12px; letter-spacing:0; color: #7a8296;  }
+  .rb-room-code { font-family: 'Courier Prime', monospace; font-size: 10px; color: #444; letter-spacing: 2px; }
+  .rb-team-count { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: #fff; line-height: 1; }
+  .rb-team-count span { font-size: 13px; color: #555; }
+  .rb-team-label { font-size: 9px; letter-spacing: 2px; color: #555; text-transform: uppercase; }
 
-  .rb-room-name { font-family:var(--font-display); font-size: 22px; color: #fff; letter-spacing:0; line-height: 1.1; margin-bottom: 2px; }
-  .rb-room-desc { font-size: 12px; color: #7a8296; margin-bottom: 10px; }
+  .rb-room-name { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #fff; letter-spacing: 1px; line-height: 1.1; margin-bottom: 2px; }
+  .rb-room-desc { font-size: 12px; color: #555; margin-bottom: 10px; }
 
   .rb-team-bubbles { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-  .rb-team-bubble { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family:var(--font-display); font-size:12px; letter-spacing: .5px; flex-shrink: 0; cursor: default; }
+  .rb-team-bubble { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 9px; letter-spacing: .5px; flex-shrink: 0; cursor: default; }
 
   .rb-join-btn {
     width: 100%; padding: 13px; background: ${GOLD}; border: none; border-radius: 10px;
-    font-family:var(--font-display); font-size: 16px; letter-spacing:0; color: #000;
+    font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; color: #000;
     cursor: pointer; transition: filter .18s, transform .12s; display: flex; align-items: center; justify-content: center; gap: 8px;
   }
-  .rb-join-btn:hover { filter: brightness(1.1);  }
+  .rb-join-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
   .rb-join-btn:active { transform: scale(.97); }
   .rb-join-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
 
   .rb-spectate-btn {
-    width: 100%; padding: 11px; background: transparent; border: 1px solid #242936; border-radius: 10px;
-    font-family:var(--font-display); font-size: 14px; font-weight:600; letter-spacing:0; color: #7a8296;
-    cursor: pointer; transition:background-color .15s, border-color .15s, color .15s, opacity .15s; display: flex; align-items: center; justify-content: center; gap: 6px;
+    width: 100%; padding: 11px; background: transparent; border: 1px solid #282828; border-radius: 10px;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #888;
+    cursor: pointer; transition: all .18s; display: flex; align-items: center; justify-content: center; gap: 6px;
   }
-  .rb-spectate-btn:hover { border-color: #555; color: #c9cdd6; }
+  .rb-spectate-btn:hover { border-color: #555; color: #ccc; }
 
-  .rb-empty { text-align: center; padding: 60px 20px; color: #7a8296; font-size: 14px; letter-spacing:0; }
+  .rb-empty { text-align: center; padding: 60px 20px; color: #666; font-size: 14px; letter-spacing: 1px; }
 
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
   @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
@@ -494,24 +502,24 @@ const globalStyles = `
   @media(max-width:900px){  .lobby-shell{grid-template-columns:1fr; padding:60px 14px 88px} }
 
   .lobby-col { padding:24px; height:100%; }
-  .lobby-col-left  { border-right:1px solid #1a1e28; }
-  .lobby-col-right { border-left:1px solid #1a1e28; }
+  .lobby-col-left  { border-right:1px solid #111; }
+  .lobby-col-right { border-left:1px solid #111; }
   .lobby-col-center { padding:24px 20px; }
 
-  .lobby-section-label { font-family:var(--font-ui); font-size:12px; letter-spacing:0; color:#7a8296;  margin-bottom:12px; }
+  .lobby-section-label { font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:3px; color:#888; text-transform:uppercase; margin-bottom:12px; }
 
   /* ── Code block ── */
-  .lobby-code-chip { font-family:var(--font-display); font-weight:500; font-size:2.4rem; letter-spacing:0.08em; color:var(--gold); background:var(--ink-3); border:1px solid var(--line-strong); padding:8px 18px; border-radius:8px; cursor:pointer; transition:background .2s,box-shadow .2s; display:inline-block; }
-  .lobby-code-chip:hover { background:rgba(163,169,184,.12); }
-  .lobby-copy-btn { padding:9px 16px; background:rgba(163,169,184,.1); border:1px solid rgba(163,169,184,.3); border-radius:6px; color:${CYAN}; font-family:var(--font-display); font-weight:600; font-size:12px; letter-spacing:0; cursor:pointer; transition:background-color .15s, border-color .15s, color .15s, opacity .15s; }
-  .lobby-copy-btn:hover { background:var(--ink-4); color:var(--text-1); }
-  .lobby-wa-btn { padding:9px 16px; background:rgba(37,211,102,.1); border:1px solid rgba(37,211,102,.3); border-radius:6px; color:#25D366; font-family:var(--font-display); font-weight:600; font-size:12px; letter-spacing:0; cursor:pointer; transition:background-color .15s, border-color .15s, color .15s, opacity .15s; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
+  .lobby-code-chip { font-family:'Bebas Neue',sans-serif; font-size:2.4rem; letter-spacing:.28em; color:${CYAN}; background:rgba(34,211,238,.06); border:1px solid rgba(34,211,238,.2); padding:8px 18px; border-radius:8px; cursor:pointer; transition:background .2s,box-shadow .2s; display:inline-block; }
+  .lobby-code-chip:hover { background:rgba(34,211,238,.12); box-shadow:0 0 16px rgba(34,211,238,.2); }
+  .lobby-copy-btn { padding:9px 16px; background:rgba(34,211,238,.1); border:1px solid rgba(34,211,238,.3); border-radius:6px; color:${CYAN}; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; cursor:pointer; transition:all .2s; }
+  .lobby-copy-btn:hover { background:${CYAN}; color:#000; }
+  .lobby-wa-btn { padding:9px 16px; background:rgba(37,211,102,.1); border:1px solid rgba(37,211,102,.3); border-radius:6px; color:#25D366; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; cursor:pointer; transition:all .2s; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
   .lobby-wa-btn:hover { background:#25D366; color:#000; }
 
   /* ── Player list ── */
-  .lobby-player-row { display:flex; align-items:center; gap:10px; padding:10px 12px; background:${CARD}; border:1px solid #1a1e28; border-radius:8px; margin-bottom:6px; animation:slideIn .3s ease both; }
+  .lobby-player-row { display:flex; align-items:center; gap:10px; padding:10px 12px; background:${CARD}; border:1px solid #181818; border-radius:8px; margin-bottom:6px; animation:slideIn .3s ease both; }
   .lobby-player-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-  .lobby-player-badge { font-family:var(--font-display); font-size:.8rem; padding:2px 6px; border-radius:3px; letter-spacing:0; }
+  .lobby-player-badge { font-family:'Bebas Neue',sans-serif; font-size:.8rem; padding:2px 6px; border-radius:3px; letter-spacing:.05em; }
 
   /* ── Franchise grid ── */
   .franchise-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
@@ -519,12 +527,12 @@ const globalStyles = `
   @media(max-width:560px){ .franchise-grid{ grid-template-columns:repeat(3,1fr) } }
 
   .franchise-tile {
-    border-radius:10px; border:2px solid #1a1e28; cursor:pointer; padding:16px 8px;
+    border-radius:10px; border:2px solid #1c1c1c; cursor:pointer; padding:16px 8px;
     text-align:center; position:relative; overflow:hidden;
     transition:transform .2s, border-color .2s, box-shadow .2s;
     display:flex; flex-direction:column; align-items:center; gap:5px;
   }
-  .franchise-tile:not(.ft-taken):hover {  }
+  .franchise-tile:not(.ft-taken):hover { transform:translateY(-6px); }
   .franchise-tile.ft-mine  { transform:translateY(-4px); }
   .franchise-tile.ft-taken { cursor:not-allowed; opacity:.88; filter:saturate(.72); }
   .franchise-tile .taken-overlay {
@@ -540,34 +548,34 @@ const globalStyles = `
     z-index:1;
   }
 
-  .franchise-short { font-family:var(--font-display); font-size:1.4rem; letter-spacing:0; }
-  .franchise-name  { font-family:var(--font-ui); font-size:12px; line-height:1.3; color:#a3a9b8; }
-  .franchise-mine-badge { font-family:var(--font-ui); font-size:12px; letter-spacing:0; font-weight:600; }
+  .franchise-short { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:.04em; }
+  .franchise-name  { font-family:'Courier Prime',monospace; font-size:7px; line-height:1.3; color:#94A3B8; }
+  .franchise-mine-badge { font-family:'Courier Prime',monospace; font-size:8px; letter-spacing:1px; font-weight:700; }
 
   /* ── RIGHT col stats ── */
-  .lobby-stat-card { background:${CARD}; border:1px solid #1a1e28; border-radius:10px; padding:16px; margin-bottom:10px; }
-  .lobby-stat-val  { font-family:var(--font-display); font-size:1.8rem; letter-spacing:0; line-height:1; }
-  .lobby-stat-lbl  { font-family:var(--font-ui); font-size:12px; letter-spacing:0; color:#7a8296; margin-top:3px; }
+  .lobby-stat-card { background:${CARD}; border:1px solid #181818; border-radius:10px; padding:16px; margin-bottom:10px; }
+  .lobby-stat-val  { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:.05em; line-height:1; }
+  .lobby-stat-lbl  { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:2px; color:#888; margin-top:3px; }
 
   /* ── Fixed bottom start bar ── */
   .lobby-bottom-bar {
     position:fixed; bottom:0; left:0; right:0; z-index:50;
-    background:${BG}f0; border-top:1px solid #1a1e28; backdrop-filter:blur(12px);
+    background:${BG}f0; border-top:1px solid #111; backdrop-filter:blur(12px);
     padding:12px 24px; display:flex; align-items:center; justify-content:center; gap:16px;
   }
   .lobby-start-btn {
-    padding:14px 48px; border:none; border-radius:6px; font-family:var(--font-display);
-    font-size:1.3rem; letter-spacing:0; cursor:pointer; color:#000; background:${GOLD};
+    padding:14px 48px; border:none; border-radius:6px; font-family:'Bebas Neue',sans-serif;
+    font-size:1.3rem; letter-spacing:.1em; cursor:pointer; color:#000; background:${GOLD};
     transition:transform .2s, box-shadow .2s; min-width:240px;
   }
-  .lobby-start-btn:hover:not(:disabled) {   }
+  .lobby-start-btn:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 8px 24px rgba(232,184,75,.4); }
   .lobby-start-btn:disabled { opacity:.4; cursor:not-allowed; }
-  .lobby-waiting { font-family:var(--font-ui); font-size:13px; color:#7a8296; letter-spacing:0; text-align:center; padding:14px 32px; border:1px dashed #242936; border-radius:6px; }
+  .lobby-waiting { font-family:'Courier Prime',monospace; font-size:13px; color:#888; letter-spacing:.1em; text-align:center; padding:14px 32px; border:1px dashed #222; border-radius:6px; animation:pulse 2.5s ease-in-out infinite; }
 
   /* ── LOBBY CHAT ── */
   .lc-panel {
-    background: #11141c;
-    border: 1px solid #242936;
+    background: #080b10;
+    border: 1px solid #1a1d27;
     border-radius: 14px;
     overflow: hidden;
     display: flex;
@@ -578,7 +586,7 @@ const globalStyles = `
   }
   .lc-header {
     padding: 8px 13px;
-    border-bottom: 1px solid #242936;
+    border-bottom: 1px solid #171a24;
     display: flex;
     align-items: center;
     gap: 7px;
@@ -586,11 +594,11 @@ const globalStyles = `
   }
   .lc-dot {
     width: 6px; height: 6px; border-radius: 50%;
-    background: var(--good);
+    background: ${CYAN}; animation: pulse 2.2s ease-in-out infinite;
   }
   .lc-title {
-    font-family:var(--font-ui);
-    font-size:12px; letter-spacing:0; color: ${CYAN}; 
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px; letter-spacing: 3px; color: ${CYAN}; text-transform: uppercase;
   }
   .lc-messages {
     flex: 1; overflow-y: auto; padding: 10px 12px;
@@ -601,18 +609,18 @@ const globalStyles = `
   .lc-messages::-webkit-scrollbar-track { background: transparent; }
   .lc-messages::-webkit-scrollbar-thumb { background: #1f2430; border-radius: 2px; }
   .lc-msg { display: flex; flex-direction: column; animation: fadeUp .2s ease both; }
-  .lc-sender { font-size:12px; font-weight:600; letter-spacing: .3px; margin-bottom: 2px; }
+  .lc-sender { font-size: 9px; font-weight: 700; letter-spacing: .3px; margin-bottom: 2px; }
   .lc-bubble {
     max-width: 88%; padding: 5px 9px;
     border-radius: 10px 10px 10px 3px;
-    font-size: 12px; color: #c9cdd6; line-height: 1.4;
+    font-size: 12px; color: #d1d5db; line-height: 1.4;
     word-break: break-word;
-    background: #242936; border: 1px solid #222a36;
+    background: #141720; border: 1px solid #222a36;
   }
   .lc-bubble.own {
     align-self: flex-end;
     border-radius: 10px 10px 3px 10px;
-    background: ${CYAN}14; border-color: ${CYAN}30; color: #c9cdd6;
+    background: ${CYAN}14; border-color: ${CYAN}30; color: #e5e7eb;
   }
   .lc-empty {
     flex: 1; display: flex; flex-direction: column;
@@ -621,18 +629,18 @@ const globalStyles = `
   }
   .lc-input-row {
     display: flex; gap: 6px; padding: 8px 10px;
-    border-top: 1px solid #242936; flex-shrink: 0;
+    border-top: 1px solid #171a24; flex-shrink: 0;
   }
   .lc-input {
-    flex: 1; background: #1a1e28; border: 1px solid #1e2433;
-    color: #c9cdd6; padding: 7px 11px; border-radius: 9px;
+    flex: 1; background: #0e1118; border: 1px solid #1e2433;
+    color: #e5e7eb; padding: 7px 11px; border-radius: 9px;
     font-size: 12px; outline: none; min-width: 0; font-family: inherit;
   }
   .lc-input::placeholder { color: #374151; }
   .lc-send {
-    background: ${GOLD}; color: var(--gold-ink); border: none;
+    background: ${CYAN}; color: #000; border: none;
     min-width: 34px; border-radius: 9px;
-    font-weight:600; cursor: pointer; font-size: 15px;
+    font-weight: 900; cursor: pointer; font-size: 15px;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0; transition: opacity .15s;
   }
@@ -642,10 +650,10 @@ const globalStyles = `
   .lc-fab {
     position: fixed; right: 16px;
     bottom: calc(74px + env(safe-area-inset-bottom, 0px));
-    width: 48px; height: 48px; border-radius: 50%;
-    background: var(--ink-3);
-    color: var(--text-1); border: none;
-    box-shadow: 0 6px 20px rgba(0,0,0,.4);
+    width: 46px; height: 46px; border-radius: 50%;
+    background: linear-gradient(135deg, ${CYAN}, #0891b2);
+    color: #000; border: none;
+    box-shadow: 0 6px 22px ${CYAN}55;
     font-size: 20px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     z-index: 120; transition: transform .2s;
@@ -659,7 +667,7 @@ const globalStyles = `
     position: fixed; left: 0; right: 0;
     bottom: calc(72px + env(safe-area-inset-bottom, 0px));
     height: 58vh; z-index: 140;
-    background: #1a1e28; border: 1px solid #242936;
+    background: #080b12; border: 1px solid #1a1d27;
     border-radius: 20px 20px 0 0;
     display: flex; flex-direction: column;
     box-shadow: 0 -12px 48px rgba(0,0,0,.6);
@@ -671,14 +679,14 @@ const globalStyles = `
   }
   .lc-drawer-header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 13px 16px 10px; border-bottom: 1px solid #242936; flex-shrink: 0;
+    padding: 13px 16px 10px; border-bottom: 1px solid #171a24; flex-shrink: 0;
   }
   .lc-drawer-title {
-    font-family:var(--font-display);
-    font-size: 17px; letter-spacing:0; color: ${CYAN};
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px; letter-spacing: 2.5px; color: ${CYAN};
   }
   .lc-drawer-close {
-    background: none; border: none; color: #7a8296;
+    background: none; border: none; color: #555;
     font-size: 20px; cursor: pointer; line-height: 1; padding: 2px 6px;
   }
   /* Desktop: show panel, hide FAB/drawer. Mobile: hide panel, show FAB */
@@ -686,10 +694,10 @@ const globalStyles = `
   @media (max-width: 900px)  { .lc-panel { display: none !important; } }
 
   /* ── Marquee ── */
-  .rp-marquee-container { position:fixed; bottom:0; left:0; width:100%; overflow:hidden; background:var(--ink-0); border-top:1px solid #1a1e28; z-index:10; padding:8px 0; }
-  .rp-marquee-track { display:flex; align-items:center; white-space:nowrap; width:max-content; justify-content:center; margin:0 auto; }
-  .rp-marquee-item { width:54px; height:54px; margin:0 20px; display:flex; align-items:center; justify-content:center; border-radius:12px; background:var(--ink-2); border:1px solid var(--line); }
-  .rp-marquee-logo { width:36px; height:36px; object-fit:contain; }
+  .rp-marquee-container { position:fixed; bottom:0; left:0; width:100%; overflow:hidden; background:rgba(0,0,0,.96); border-top:1px solid #0d0d0d; z-index:10; padding:8px 0; }
+  .rp-marquee-track { display:flex; align-items:center; white-space:nowrap; width:max-content; animation:scrollMq 34s linear infinite; }
+  .rp-marquee-item { width:54px; height:54px; margin:0 20px; display:flex; align-items:center; justify-content:center; border-radius:999px; background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01)); border:1px solid #161616; box-shadow:0 10px 24px rgba(0,0,0,.22); animation:logoBob 3.8s ease-in-out infinite; }
+  .rp-marquee-logo { width:36px; height:36px; object-fit:contain; filter:drop-shadow(0 6px 10px rgba(0,0,0,.35)); opacity:.96; }
 
   .rb-room-grid {
     display:grid;
@@ -718,20 +726,20 @@ const globalStyles = `
     border:1px solid #1e2632;
     border-radius:14px;
     padding:12px 12px 10px;
-    background:#1a1e28;
+    background:#0b0f14;
     min-width:0;
   }
   .create-room-summary-label {
-    color:#7a8296;
-    font-size:12px;
-    letter-spacing:0;
-    
+    color:#64748B;
+    font-size:9px;
+    letter-spacing:1.8px;
+    text-transform:uppercase;
   }
   .create-room-summary-value {
     color:#F8FAFC;
-    font-family:var(--font-display);
+    font-family:'Bebas Neue',sans-serif;
     font-size:22px;
-    letter-spacing:0;
+    letter-spacing:1.4px;
     margin-top:6px;
     line-height:1;
     overflow-wrap:anywhere;
@@ -758,9 +766,9 @@ const globalStyles = `
     margin-top:auto;
   }
   .rb-room-meta {
-    font-size:12px;
-    color:#7a8296;
-    letter-spacing:0;
+    font-size:11px;
+    color:#555;
+    letter-spacing:1px;
     min-width:0;
     overflow-wrap:anywhere;
   }
@@ -843,21 +851,21 @@ const globalStyles = `
 
   @media(max-width:600px){
     .rp-h1 { font-size:3rem; }
-    .lobby-section-label { font-size:12px; }
+    .lobby-section-label { font-size:9px; }
     .franchise-grid { gap:6px; }
     .franchise-tile { padding:12px 4px; }
     .franchise-short { font-size:1.1rem; }
     .lobby-bottom-bar { padding:10px 14px; }
     .lobby-start-btn { padding:12px 20px; min-width:0; font-size:1.1rem; width:100%; }
-    .lobby-waiting { padding:12px 14px; font-size:12px; width:100%; }
+    .lobby-waiting { padding:12px 14px; font-size:11px; width:100%; }
   }
 `;
 
 // ─── Check icon ─────────────────────────────────────────────────────────────
 function CheckIcon({ color = GOLD }) {
   return (
-    <div style={{ width:16, height:16, borderRadius:'50%', background:`${color}25`, border:`1px solid ${color}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize: 12 }}>
-      <Check size={10} strokeWidth={2} />
+    <div style={{ width:16, height:16, borderRadius:'50%', background:`${color}25`, border:`1px solid ${color}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:9 }}>
+      ✓
     </div>
   );
 }
@@ -887,8 +895,8 @@ function ToggleCard({ selected, onSelect, accentColor = GOLD, title, sub, icon, 
         </>
       ) : (
         <>
-          {icon && <div style={{ marginBottom: 6, opacity: selected ? 1 : 0.4, transition: 'opacity 0.2s', color: selected ? accentColor : '#7a8296' }}>{icon}</div>}
-          <div className="rp-toggle-card-title" style={{ color: selected ? accentColor : '#a3a9b8' }}>{title}</div>
+          {icon && <div style={{ marginBottom: 6, opacity: selected ? 1 : 0.4, transition: 'opacity 0.2s', color: selected ? accentColor : '#666' }}>{icon}</div>}
+          <div className="rp-toggle-card-title" style={{ color: selected ? accentColor : '#bbb' }}>{title}</div>
           <div className="rp-toggle-card-sub">{sub}</div>
         </>
       )}
@@ -953,18 +961,18 @@ const LobbyChatBox = memo(function LobbyChatBox({ chatLog, emit, roomCode, myNam
     <>
       <div className="lc-header">
         <span className="lc-dot" />
-        <span className="lc-title">Lobby chat</span>
+        <span className="lc-title">Lobby Chat</span>
       </div>
       <div className="lc-messages" ref={listRef} onScroll={handleScroll}>
         {visible.length === 0 ? (
           <div className="lc-empty">
-            <MessageSquare size={20} strokeWidth={1.5} />
-            <span style={{ fontSize: 12, letterSpacing: 0 }}>No messages yet</span>
+            <span style={{ fontSize: 22 }}>💬</span>
+            <span style={{ fontSize: 10, letterSpacing: 1 }}>Be the first to say hi!</span>
           </div>
         ) : (
           visible.map(m => {
             const isOwn = m.senderName === myName;
-            const clr = TEAM_CLRS[m.senderTeamId] || '#a3a9b8';
+            const clr = TEAM_CLRS[m.senderTeamId] || '#22D3EE';
             return (
               <div key={m.id} className="lc-msg" style={{ alignItems: isOwn ? 'flex-end' : 'flex-start' }}>
                 <span className="lc-sender" style={{ color: clr }}>{m.senderName}</span>
@@ -990,11 +998,11 @@ const LobbyChatBox = memo(function LobbyChatBox({ chatLog, emit, roomCode, myNam
               autoComplete="off"
               autoCorrect="off"
             />
-            <button type="submit" className="lc-send" disabled={!msg.trim()} aria-label="Send"><ArrowUp size={16} strokeWidth={1.5} /></button>
+            <button type="submit" className="lc-send" disabled={!msg.trim()}>↑</button>
           </form>
         ) : (
-          <div style={{ fontSize: 12, color: '#7a8296', letterSpacing: 0, padding: '4px 2px', width: '100%', textAlign: 'center' }}>
-            Spectating
+          <div style={{ fontSize: 10, color: '#4b5563', letterSpacing: 1, padding: '4px 2px', width: '100%', textAlign: 'center' }}>
+            👁 Spectator mode
           </div>
         )}
       </div>
@@ -1002,7 +1010,7 @@ const LobbyChatBox = memo(function LobbyChatBox({ chatLog, emit, roomCode, myNam
   );
 });
 
-function BrowseRooms({ name, setName, nameRef, serverRooms, completedRooms, fetchRooms, loading, error, doJoin, onViewCompleted, liveStats, onBack, onCreate }) {
+function BrowseRooms({ name, setName, nameRef, serverRooms, completedRooms, fetchRooms, loading, error, doJoin, onViewCompleted, liveStats, onBack, onCreate, GOLD }) {
   const [activeTab, setActiveTab] = useState('waiting'); // Show joinable rooms first!
   const privateActivity = getPrivateActivityEstimate(liveStats.rooms, liveStats.players);
 
@@ -1036,25 +1044,25 @@ function BrowseRooms({ name, setName, nameRef, serverRooms, completedRooms, fetc
   return (
     <div className="rb-shell" style={{ position: 'relative', zIndex: 5, animation: 'fadeIn .4s ease' }}>
       {/* ── Header ── */}
-      <div className="rb-header" style={{ borderBottom: '1px solid #1a1e28', background: '#0a0a0aee', backdropFilter: 'blur(12px)' }}>
+      <div className="rb-header" style={{ borderBottom: '1px solid #111', background: '#0a0a0aee', backdropFilter: 'blur(12px)' }}>
         <div className="rb-header-row" style={{ marginBottom: 16 }}>
-          <button className="rb-back-btn" onClick={onBack} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, letterSpacing: 0 }}>
-            <ArrowLeft size={16} strokeWidth={1.5} /> Back
+          <button className="rb-back-btn" onClick={onBack} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 700, letterSpacing: 1 }}>
+            <span style={{ fontSize: 18 }}>←</span> BACK
           </button>
           <div className="rb-title-block">
-            <div className="rb-title" style={{ fontSize: 26, letterSpacing: 0 }}>Browsing <span style={{ color: GOLD }}>Rooms</span></div>
-            <div className="rb-subtitle" style={{ fontSize: 12, letterSpacing: 0, color: '#7a8296' }}>{liveStats.rooms} PUBLIC LOBBIES ACTIVE</div>
-            <div className="rb-subtitle" style={{ fontSize: 12, letterSpacing: 0, color: '#7a8296', marginTop: 4 }}>
+            <div className="rb-title" style={{ fontSize: 26, letterSpacing: 2 }}>BROWSING <span style={{ color: GOLD }}>ROOMS</span></div>
+            <div className="rb-subtitle" style={{ fontSize: 10, letterSpacing: 2, color: '#444' }}>{liveStats.rooms} PUBLIC LOBBIES ACTIVE</div>
+            <div className="rb-subtitle" style={{ fontSize: 10, letterSpacing: 2, color: '#5b6472', marginTop: 4 }}>
               PRIVATE ACTIVITY: {privateActivity.rooms}+ ROOMS · {privateActivity.players}+ PLAYERS
             </div>
           </div>
           <div className="rb-header-actions">
             <BrandLink compact={true} />
-            <button className="rb-icon-btn" onClick={fetchRooms} title="Refresh" disabled={loading} style={{ background: '#1a1e28', opacity: loading ? 0.55 : 1 }}>
+            <button className="rb-icon-btn" onClick={fetchRooms} title="Refresh" disabled={loading} style={{ background: '#111', opacity: loading ? 0.55 : 1 }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
             </button>
             <button className="rb-create-btn" onClick={onCreate} style={{ height: 36, padding: '0 18px' }}>
-              New room
+              NEW ROOM
             </button>
           </div>
         </div>
@@ -1064,65 +1072,66 @@ function BrowseRooms({ name, setName, nameRef, serverRooms, completedRooms, fetc
           <button className={`rb-tab${activeTab === 'waiting' ? ' active' : ''}`} 
             onClick={() => setActiveTab('waiting')}
             style={{ paddingBottom: 14 }}>
-            <span style={{ fontFamily: 'var(--font-display)', fontSize: 18, letterSpacing: 0 }}>Joinable</span>
+            <span style={{ fontFamily: "'Bebas Neue'", fontSize: 18, letterSpacing: 1 }}>JOINABLE</span>
             <span className="rb-tab-count" style={{ marginLeft: 6 }}>{waitingRooms.length}</span>
           </button>
           <button className={`rb-tab live-tab${activeTab === 'live' ? ' active' : ''}`} 
             onClick={() => setActiveTab('live')}
             style={{ paddingBottom: 14 }}>
-            <span style={{ fontFamily: 'var(--font-display)', fontSize: 18, letterSpacing: 0 }}>In progress</span>
-            <span className="rb-tab-count" style={{ marginLeft: 6, background: '#ef444422', color: '#e5484d' }}>{liveRooms.length}</span>
+            <span style={{ fontFamily: "'Bebas Neue'", fontSize: 18, letterSpacing: 1 }}>IN PROGRESS</span>
+            <span className="rb-tab-count" style={{ marginLeft: 6, background: '#ef444422', color: '#ef4444' }}>{liveRooms.length}</span>
           </button>
           <button className={`rb-tab${activeTab === 'completed' ? ' active' : ''}`} 
             onClick={() => setActiveTab('completed')}
             style={{ paddingBottom: 14 }}>
-            <span style={{ fontFamily: 'var(--font-display)', fontSize: 18, letterSpacing: 0 }}>Completed rooms</span>
+            <span style={{ fontFamily: "'Bebas Neue'", fontSize: 18, letterSpacing: 1 }}>COMPLETED ROOMS</span>
             <span className="rb-tab-count" style={{ marginLeft: 6, background: '#22c55e22', color: '#22c55e' }}>{archivedRooms.length}</span>
           </button>
         </div>
       </div>
 
       {/* ── Name input ── */}
-      <div className="rb-name-box" style={{ background: '#11141c', borderBottom: '1px solid #1a1e28' }}>
+      <div className="rb-name-box" style={{ background: '#0d0d0d', borderBottom: '1px solid #111' }}>
         <div style={{ maxWidth: 600, margin: '0 auto' }}>
-          <label className="rb-name-label" style={{ color: '#7a8296', fontSize: 12 }}>Your identity</label>
+          <label className="rb-name-label" style={{ color: '#555', fontSize: 9 }}>YOUR IDENTITY</label>
           <input
             ref={nameRef}
             className="rb-name-input"
             value={name}
             onChange={e => setName(e.target.value)}
             placeholder="What should we call you?"
-            style={{ background: '#0b0d14', padding: '16px 20px', fontSize: 18, borderRadius: 8 }}
+            style={{ background: '#080808', padding: '16px 20px', fontSize: 18, borderRadius: 8 }}
           />
-          {error && <div style={{ color: '#e5484d', fontSize: 12, marginTop: 8, letterSpacing: 0, paddingLeft: 4 }}>{error}</div>}
+          {error && <div style={{ color: '#ef4444', fontSize: 11, marginTop: 8, letterSpacing: 1, paddingLeft: 4 }}>⚠️ {error}</div>}
         </div>
       </div>
 
       {/* ── Rooms list ── */}
-      <div className="rb-rooms-list" style={{ background: '#0b0d14' }}>
+      <div className="rb-rooms-list" style={{ background: '#080808' }}>
         <div style={{ maxWidth: 1440, margin: '0 auto' }}>
           {loading && displayRooms.length === 0 ? (
             <div className="rb-room-grid">
               {[0, 1, 2, 3].map((item) => (
-                <div key={item} style={{ background: '#11141c', border: '1px solid #1a1e28', borderRadius: 16, padding: 24, minHeight: 180, overflow: 'hidden', position: 'relative' }}>
-                  <div style={{ width: '55%', height: 18, background: '#1a1e28', borderRadius: 6, marginBottom: 18 }} />
-                  <div style={{ width: '82%', height: 10, background: '#1a1e28', borderRadius: 6, marginBottom: 10 }} />
-                  <div style={{ width: '64%', height: 10, background: '#1a1e28', borderRadius: 6 }} />
+                <div key={item} style={{ background: '#0d0d0d', border: '1px solid #1a1a1a', borderRadius: 16, padding: 24, minHeight: 180, overflow: 'hidden', position: 'relative' }}>
+                  <div style={{ width: '55%', height: 18, background: '#171717', borderRadius: 6, marginBottom: 18 }} />
+                  <div style={{ width: '82%', height: 10, background: '#121212', borderRadius: 6, marginBottom: 10 }} />
+                  <div style={{ width: '64%', height: 10, background: '#121212', borderRadius: 6 }} />
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)', animation: 'shimmer 1.1s linear infinite' }} />
                 </div>
               ))}
             </div>
           ) : displayRooms.length === 0 ? (
-            <div className="rb-empty" style={{ padding: '80px 20px', border: '1px dashed #242936', borderRadius: 20 }}>
-                              <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, letterSpacing: 0, color: '#7a8296' }}>
-                {activeTab === 'live' ? 'No live matches' : activeTab === 'completed' ? 'No completed rooms yet' : 'No public lobbies'}
+            <div className="rb-empty" style={{ padding: '80px 20px', border: '1px dashed #222', borderRadius: 20 }}>
+               <div style={{ fontSize: 40, marginBottom: 16 }}>{activeTab === 'live' ? '🍿' : activeTab === 'completed' ? '🏁' : '🏟️'}</div>
+               <div style={{ fontFamily: "'Bebas Neue'", fontSize: 24, letterSpacing: 2, color: '#444' }}>
+                {activeTab === 'live' ? 'NO LIVE MATCHES' : activeTab === 'completed' ? 'NO COMPLETED ROOMS YET' : 'NO PUBLIC LOBBIES'}
                </div>
-               <div style={{ fontSize: 12, color: '#222', marginTop: 8, letterSpacing: 0 }}>
-                {activeTab === 'completed' ? 'Finished public auctions stay here for 48 hours' : 'Be the first to start the excitement'}
+               <div style={{ fontSize: 11, color: '#222', marginTop: 8, letterSpacing: 2 }}>
+                {activeTab === 'completed' ? 'FINISHED PUBLIC AUCTIONS STAY HERE FOR 48 HOURS' : 'BE THE FIRST TO START THE EXCITEMENT'}
                </div>
                {activeTab !== 'completed' && (
                  <button className="rp-btn" onClick={onCreate} style={{ maxWidth: 200, margin: '24px auto 0', height: 44, fontSize: 16 }}>
-                  Create lobby
+                  CREATE LOBBY
                  </button>
                )}
             </div>
@@ -1139,8 +1148,8 @@ function BrowseRooms({ name, setName, nameRef, serverRooms, completedRooms, fetc
                   <div key={room.code} className="rb-room-card" 
                     style={{ 
                       animation: 'fadeUp .34s ease both',
-                      background: '#11141c',
-                      border: '1px solid #1a1e28',
+                      background: '#0d0d0d',
+                      border: '1px solid #1a1a1a',
                       borderRadius: 16,
                       padding: 24,
                       display: 'flex',
@@ -1154,21 +1163,21 @@ function BrowseRooms({ name, setName, nameRef, serverRooms, completedRooms, fetc
                         <div className="rb-card-topline">
                           <span className={`rb-status-dot ${isActive ? 'live' : 'waiting'}`} />
                           <div className="rb-room-code" style={{ fontSize: 12, color: GOLD, background: `${GOLD}11`, padding: '2px 8px', borderRadius: 4 }}>{room.code}</div>
-                        <div style={{ fontSize: 12, color: '#7a8296', letterSpacing: 0 }}>{(room.mode || 'mega').toLowerCase() === 'mini' ? 'Mini' : 'Mega'}</div>
-                        {isRivals && <div style={{ fontSize: 12, color: '#f97316', letterSpacing: 0, border: '1px solid #f9731640', background: '#f9731614', padding: '2px 6px', borderRadius: 999 }}>Rivals</div>}
-                        {isCompleted && <div style={{ fontSize: 12, color: '#22c55e', letterSpacing: 0 }}>Results ready</div>}
+                        <div style={{ fontSize: 9, color: '#444', letterSpacing: 1, textTransform: 'uppercase' }}>{(room.mode || 'MEGA').toUpperCase()}</div>
+                        {isRivals && <div style={{ fontSize: 9, color: '#f97316', letterSpacing: 1, textTransform: 'uppercase', border: '1px solid #f9731640', background: '#f9731614', padding: '2px 6px', borderRadius: 999 }}>RIVALS</div>}
+                        {isCompleted && <div style={{ fontSize: 9, color: '#22c55e', letterSpacing: 1, textTransform: 'uppercase' }}>RESULTS READY</div>}
                         </div>
-                        <div className="rb-room-name" style={{ fontSize: 28, letterSpacing: 0 }}>{room.name || 'Mega Auction'}</div>
+                        <div className="rb-room-name" style={{ fontSize: 28, letterSpacing: 1 }}>{room.name || 'Mega Auction'}</div>
                         {isRivals && room.rivalsMatch && (
-                        <div style={{ marginTop: 8, fontSize: 12, color: '#a3a9b8', letterSpacing: 0 }}>
+                        <div style={{ marginTop: 8, fontSize: 11, color: '#94A3B8', letterSpacing: 1 }}>
                             {room.rivalsMatch.homeTeam} VS {room.rivalsMatch.awayTeam}
                           </div>
                         )}
                       </div>
                       
                       <div style={{ textAlign: 'right' }}>
-                        <div className="rb-team-count" style={{ color: teamCount >= teamLimit ? '#e5484d' : '#fff' }}>{teamCount}<span>/{teamLimit}</span></div>
-                        <div className="rb-team-label" style={{ fontSize: 12 }}>Participants</div>
+                        <div className="rb-team-count" style={{ color: teamCount >= teamLimit ? '#ef4444' : '#fff' }}>{teamCount}<span>/{teamLimit}</span></div>
+                        <div className="rb-team-label" style={{ fontSize: 8 }}>PARTICIPANTS</div>
                       </div>
                     </div>
 
@@ -1176,7 +1185,7 @@ function BrowseRooms({ name, setName, nameRef, serverRooms, completedRooms, fetc
                        <div className="rb-room-meta">
                           {isCompleted
                             ? <>Finished {room.finishedAt ? new Date(room.finishedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : 'recently'}</>
-                            : <>Hosted by <span style={{ color: '#7a8296', fontWeight: 600 }}>{room.host}</span></>
+                            : <>Hosted by <span style={{ color: '#888', fontWeight: 700 }}>{room.host}</span></>
                           }
                        </div>
                        <div className="rb-room-actions">
@@ -1185,20 +1194,20 @@ function BrowseRooms({ name, setName, nameRef, serverRooms, completedRooms, fetc
                             className="rb-join-btn" 
                             onClick={() => onViewCompleted(room)}
                             style={{ width: 'auto', padding: '10px 24px', borderRadius: 8, background:'#22c55e18', color:'#22c55e', border:'1px solid #22c55e40' }}>
-                            View results
+                            VIEW RESULTS
                           </button>
                         ) : (
                           <>
                             <button 
                               className="rb-join-btn" 
                               onClick={() => doJoin(room.code, 'player')}
-                              style={{ width: 'auto', padding: '10px 18px', borderRadius: 8, background: isActive ? '#22D3EE15' : GOLD, color: isActive ? '#a3a9b8' : '#000', border: isActive ? '1px solid #22D3EE40' : 'none' }}>
-                              {isActive ? 'Play live' : 'Join lobby'}
+                              style={{ width: 'auto', padding: '10px 18px', borderRadius: 8, background: isActive ? '#22D3EE15' : GOLD, color: isActive ? '#22D3EE' : '#000', border: isActive ? '1px solid #22D3EE40' : 'none' }}>
+                              {isActive ? 'PLAY LIVE' : 'JOIN LOBBY'}
                             </button>
                             <button
                               className="rb-join-btn"
                               onClick={() => doJoin(room.code, 'spectator')}
-                              style={{ width:'auto', padding:'10px 16px', borderRadius:8, background:'#242936', color:'#c9cdd6', border:'1px solid #334155' }}
+                              style={{ width:'auto', padding:'10px 16px', borderRadius:8, background:'#111827', color:'#cbd5e1', border:'1px solid #334155' }}
                             >
                               WATCH
                             </button>
@@ -1449,12 +1458,11 @@ function RoomContent() {
 
   useEffect(() => {
     if (phase === 'home' || phase === 'join') {
-      // Socket pushes 'public-rooms-updated' on changes; the slow poll is only a fallback,
-      // and nothing is fetched while the tab is hidden.
-      const refreshIfVisible = () => { if (document.visibilityState === 'visible') fetchRooms(); };
       fetchRooms();
+      // Socket pushes 'public-rooms-updated' on changes; the slow poll is only a fallback while the tab is visible.
+      const refreshIfVisible = () => { if (document.visibilityState === 'visible') fetchRooms(); };
       const t = setInterval(refreshIfVisible, 30000);
-      const off = on('public-rooms-updated', refreshIfVisible);
+      const off = on('public-rooms-updated', fetchRooms);
       document.addEventListener('visibilitychange', refreshIfVisible);
       return () => {
         clearInterval(t);
@@ -1472,7 +1480,7 @@ function RoomContent() {
       recents = [{ code, name: roomName }, ...recents.filter(r => r.code !== code)].slice(0, 3);
       localStorage.setItem('ipl_recent_rooms', JSON.stringify(recents));
       setRecentRooms(recents);
-    } catch { /* storage unavailable */ }
+    } catch { /* ignore */ }
   };
 
   const viewCompletedRoom = useCallback((room) => {
@@ -1717,14 +1725,14 @@ function RoomContent() {
       actions: [
         { label: 'Cancel', variant: 'secondary', onClick: closeDialog },
         {
-          label: 'Kick player',
+          label: 'Kick Player',
           variant: 'danger',
           onClick: () => {
             closeDialog();
             emit('kick-player', { targetPlayerId: player.id }, (res) => {
               if (!res?.ok) {
                 setDialog({
-                  title: 'Could not kick player',
+                  title: 'Could Not Kick Player',
                   message: res?.error || 'Something went wrong while removing this player.',
                   tone: 'info',
                   actions: [{ label: 'OK', onClick: closeDialog }],
@@ -1775,7 +1783,7 @@ function RoomContent() {
     startMultiAuction({
       onError: (message) => {
         setDialog({
-          title: 'Cannot start auction',
+          title: 'Cannot Start Auction',
           message,
           tone: 'info',
           actions: [{ label: 'OK', onClick: closeDialog }],
@@ -1789,7 +1797,7 @@ function RoomContent() {
     const activePlayers = lobbyPlayers.filter(p => !p.isSpectator && !p.offline);
     if (activePlayers.length === 0) {
       setDialog({
-        title: 'More players needed',
+        title: 'More Players Needed',
         message: 'At least 1 active player must join the room before the auction can start.',
         tone: 'info',
         actions: [{ label: 'OK', onClick: closeDialog }],
@@ -1806,7 +1814,7 @@ function RoomContent() {
         actions: [
           { label: 'Cancel', variant: 'secondary', onClick: closeDialog },
           {
-            label: 'Start auction',
+            label: 'Start Auction',
             onClick: () => {
               closeDialog();
               runStartAuction();
@@ -1850,7 +1858,7 @@ function RoomContent() {
             else if (phase === 'rivals-searching') setPhase('rivals');
             else if (phase === 'rivals') router.push('/');
             else router.push('/');
-          }}><ArrowLeft size={16} strokeWidth={1.5} /> Back</button>
+          }}>← Back</button>
           <BrandLink compact={true} />
         </nav>
       )}
@@ -1859,18 +1867,18 @@ function RoomContent() {
         <div className="rivals-screen">
           <div className="rivals-shell">
             <div className="rivals-search-card">
-              <div style={{ color: GOLD, fontSize: 12, letterSpacing: 0, fontWeight: 600, marginBottom: 10 }}>Matchmaking</div>
-              <div className="rivals-search-line">{matchmakingTimedOut ? 'No rival found right now' : MATCHMAKING_LINES[matchmakingLineIndex]}</div>
+              <div style={{ color: GOLD, fontSize: 11, letterSpacing: 3, fontWeight: 800, marginBottom: 10 }}>MATCHMAKING</div>
+              <div className="rivals-search-line">{matchmakingTimedOut ? 'NO RIVAL FOUND RIGHT NOW' : MATCHMAKING_LINES[matchmakingLineIndex]}</div>
 
               {activeRivalsMatch && (
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:18, flexWrap:'wrap', margin:'18px 0 20px' }}>
                   <div style={{ display:'flex', alignItems:'center', gap:12 }}>
                     <img src={`/assets/${activeRivalsMatch.homeTeam}.png`} alt={activeRivalsMatch.homeTeam} style={{ width:64, height:64, objectFit:'contain' }} />
-                    <div style={{ fontFamily: 'var(--font-display)', fontSize:32, color:'#fff', letterSpacing: 0 }}>{activeRivalsMatch.homeTeam}</div>
+                    <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:32, color:'#fff', letterSpacing:1 }}>{activeRivalsMatch.homeTeam}</div>
                   </div>
-                  <div style={{ fontFamily: 'var(--font-display)', fontSize:38, color:'#a3a9b8', letterSpacing: 0 }}>VS</div>
+                  <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:38, color:'#94A3B8', letterSpacing:4 }}>VS</div>
                   <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-                    <div style={{ fontFamily: 'var(--font-display)', fontSize:32, color:'#fff', letterSpacing: 0 }}>{activeRivalsMatch.awayTeam}</div>
+                    <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:32, color:'#fff', letterSpacing:1 }}>{activeRivalsMatch.awayTeam}</div>
                     <img src={`/assets/${activeRivalsMatch.awayTeam}.png`} alt={activeRivalsMatch.awayTeam} style={{ width:64, height:64, objectFit:'contain' }} />
                   </div>
                 </div>
@@ -1881,22 +1889,22 @@ function RoomContent() {
                   <div className="rivals-search-progress" style={{ marginBottom: 14 }}>
                     <span style={{ width: `${Math.max(8, ((60 - matchmakingElapsed) / 60) * 100)}%` }} />
                   </div>
-                  <div style={{ display:'flex', justifyContent:'space-between', gap:12, flexWrap:'wrap', color:'#a3a9b8', fontSize:12, letterSpacing: 0 }}>
+                  <div style={{ display:'flex', justifyContent:'space-between', gap:12, flexWrap:'wrap', color:'#94A3B8', fontSize:12, letterSpacing:1 }}>
                     <span>Waiting for one more player to join the duel...</span>
                     <span>{String(matchmakingElapsed).padStart(2, '0')}s left</span>
                   </div>
                 </>
               ) : (
                 <>
-                  <div style={{ color:'#a3a9b8', fontSize:14, lineHeight:1.7, marginTop:10 }}>
+                  <div style={{ color:'#94A3B8', fontSize:14, lineHeight:1.7, marginTop:10 }}>
                     No player is online currently for this Rivals match. Try creating a room and invite a friend, or keep waiting in the public queue.
                   </div>
                   <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:14, marginTop:22 }}>
                     <button className="rp-btn" onClick={() => setPhase('rivals-create')}>
-                      Create room
+                      CREATE ROOM
                     </button>
                     <button className="rp-btn cyan-btn" onClick={() => { setMatchmakingTimedOut(false); setMatchmakingLineIndex(0); setMatchmakingCycle((prev) => prev + 1); }}>
-                      Keep waiting
+                      KEEP WAITING
                     </button>
                   </div>
                 </>
@@ -1909,36 +1917,36 @@ function RoomContent() {
       {phase === 'rivals-found' && activeRivalsMatch && (
         <div className="rivals-screen">
           <div className="rivals-found-shell">
-            <div style={{ color: GOLD, fontSize: 12, letterSpacing: 0, fontWeight: 600 }}>Opponent found</div>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize:'clamp(38px, 8vw, 74px)', color:'#fff', letterSpacing: 0, lineHeight:.9 }}>
-              The auction begins
+            <div style={{ color: GOLD, fontSize: 11, letterSpacing: 3, fontWeight: 800 }}>OPPONENT FOUND</div>
+            <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:'clamp(38px, 8vw, 74px)', color:'#fff', letterSpacing:1.5, lineHeight:.9 }}>
+              THE AUCTION <span style={{ color: CYAN }}>BEGINS</span>
             </div>
             <div className="rivals-found-arena">
               <div className="rivals-team-entry left" style={{ borderColor: `${TEAMS.find((team) => team.id === activeRivalsMatch.homeTeam)?.color || GOLD}50` }}>
                 <img src={`/assets/${activeRivalsMatch.homeTeam}.png`} alt={activeRivalsMatch.homeTeam} style={{ width:88, height:88, objectFit:'contain' }} />
                 <div>
-                  <div style={{ color: TEAMS.find((team) => team.id === activeRivalsMatch.homeTeam)?.color || GOLD, fontSize: 12, fontWeight: 600, letterSpacing: 0 }}>Home</div>
-                  <div style={{ fontFamily: 'var(--font-display)', fontSize:42, letterSpacing: 0 }}>{activeRivalsMatch.homeTeam}</div>
-                  <div style={{ color:'#a3a9b8', fontSize:13, letterSpacing: 0, marginTop:6 }}>
+                  <div style={{ color: TEAMS.find((team) => team.id === activeRivalsMatch.homeTeam)?.color || GOLD, fontSize: 12, fontWeight: 800, letterSpacing: 2 }}>HOME</div>
+                  <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:42, letterSpacing:1.4 }}>{activeRivalsMatch.homeTeam}</div>
+                  <div style={{ color:'#94A3B8', fontSize:13, letterSpacing:1.2, marginTop:6 }}>
                     {formatDuelLabel(activeRivalsMatch.homeTeam, rivalsHomePlayer)}
                   </div>
                 </div>
               </div>
               <div className="rivals-vs-burst">
-                <div style={{ fontFamily: 'var(--font-display)', fontSize:44, color:'#fff', letterSpacing: 0 }}>VS</div>
+                <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:44, color:'#fff', letterSpacing:4 }}>VS</div>
               </div>
               <div className="rivals-team-entry right" style={{ borderColor: `${TEAMS.find((team) => team.id === activeRivalsMatch.awayTeam)?.color || CYAN}50` }}>
                 <div>
-                  <div style={{ color: TEAMS.find((team) => team.id === activeRivalsMatch.awayTeam)?.color || CYAN, fontSize: 12, fontWeight: 600, letterSpacing: 0 }}>Away</div>
-                  <div style={{ fontFamily: 'var(--font-display)', fontSize:42, letterSpacing: 0 }}>{activeRivalsMatch.awayTeam}</div>
-                  <div style={{ color:'#a3a9b8', fontSize:13, letterSpacing: 0, marginTop:6 }}>
+                  <div style={{ color: TEAMS.find((team) => team.id === activeRivalsMatch.awayTeam)?.color || CYAN, fontSize: 12, fontWeight: 800, letterSpacing: 2 }}>AWAY</div>
+                  <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:42, letterSpacing:1.4 }}>{activeRivalsMatch.awayTeam}</div>
+                  <div style={{ color:'#94A3B8', fontSize:13, letterSpacing:1.2, marginTop:6 }}>
                     {formatDuelLabel(activeRivalsMatch.awayTeam, rivalsAwayPlayer)}
                   </div>
                 </div>
                 <img src={`/assets/${activeRivalsMatch.awayTeam}.png`} alt={activeRivalsMatch.awayTeam} style={{ width:88, height:88, objectFit:'contain' }} />
               </div>
             </div>
-            <div style={{ color:'#a3a9b8', fontSize:14, letterSpacing: 0 }}>
+            <div style={{ color:'#94A3B8', fontSize:14, letterSpacing:1.2 }}>
               Loading the live auction room...
             </div>
           </div>
@@ -1948,9 +1956,9 @@ function RoomContent() {
       {phase === 'rivals' && (
         <div className="rivals-screen">
           <div className="rivals-shell">
-            <span className="rp-eyebrow">Daily Rivals auction</span>
-            <h1 className="rp-h1">Play today&apos;s<br /><span>Rivals match</span></h1>
-            <p style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color:'#a3a9b8', margin:'10px 0 22px', lineHeight:1.8 }}>
+            <span className="rp-eyebrow">Daily Rivals Auction</span>
+            <h1 className="rp-h1">PLAY TODAY&apos;S<br /><span>RIVALS MATCH</span></h1>
+            <p style={{ fontFamily:"'Courier Prime',monospace", fontSize:11, color:'#94A3B8', margin:'10px 0 22px', lineHeight:1.8 }}>
               Jump straight into today&apos;s 1v1 duel. We&apos;ll assign one of the two teams automatically and start the auction as soon as both rivals are in.
             </p>
 
@@ -1959,17 +1967,17 @@ function RoomContent() {
               const countdown = formatCountdown(new Date(selectedRivalsMatch.startAt).getTime() - nowMs);
               const homeTeam = TEAMS.find((team) => team.id === selectedRivalsMatch.homeTeam);
               const awayTeam = TEAMS.find((team) => team.id === selectedRivalsMatch.awayTeam);
-              const timerLabel = state === 'locked' ? 'Match live' : state === 'open' ? 'Auction locks in' : 'Match starts in';
+              const timerLabel = state === 'locked' ? 'MATCH LIVE' : state === 'open' ? 'AUCTION LOCKS IN' : 'MATCH STARTS IN';
               return (
                 <div style={{ background:'linear-gradient(160deg, rgba(232,184,75,0.1), rgba(8,8,8,0.96))', border:'1px solid rgba(232,184,75,0.18)', borderRadius:24, padding:'24px 22px', boxShadow:'0 24px 60px rgba(0,0,0,0.22)' }}>
                   <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:18, flexWrap:'wrap', marginBottom:18 }}>
                     <div>
-                      <div style={{ color:'#E8B84B', fontSize: 12, letterSpacing: 0, fontWeight: 600, marginBottom:6 }}>Today&apos;s fixture</div>
-                      <div style={{ color:'#a3a9b8', fontSize:12, letterSpacing: 0 }}>{formatRivalsMeta(selectedRivalsMatch.startAt)} IST • {selectedRivalsMatch.venue}</div>
+                      <div style={{ color:'#E8B84B', fontSize:11, letterSpacing:2.5, fontWeight:800, marginBottom:6 }}>TODAY&apos;S FIXTURE</div>
+                      <div style={{ color:'#94A3B8', fontSize:12, letterSpacing:1.4 }}>{formatRivalsMeta(selectedRivalsMatch.startAt)} IST • {selectedRivalsMatch.venue}</div>
                     </div>
                     <div style={{ textAlign:'right' }}>
-                      <div style={{ color:'#a3a9b8', fontSize: 12, letterSpacing: 0, fontWeight: 600 }}>{timerLabel}</div>
-                      <div style={{ color: state === 'locked' ? '#e5484d' : state === 'open' ? '#4cc38a' : CYAN, fontFamily: 'var(--font-display)', fontSize:34, letterSpacing: 0 }}>
+                      <div style={{ color:'#94A3B8', fontSize:10, letterSpacing:2, fontWeight:800 }}>{timerLabel}</div>
+                      <div style={{ color: state === 'locked' ? '#ef4444' : state === 'open' ? '#4ade80' : CYAN, fontFamily:"'Bebas Neue',sans-serif", fontSize:34, letterSpacing:1.5 }}>
                         {state === 'locked' ? 'LIVE' : countdown}
                       </div>
                     </div>
@@ -1979,21 +1987,21 @@ function RoomContent() {
                     <div style={{ display:'flex', alignItems:'center', gap:14 }}>
                       <img src={`/assets/${selectedRivalsMatch.homeTeam}.png`} alt={homeTeam?.short} style={{ width:72, height:72, objectFit:'contain' }} />
                       <div>
-                        <div style={{ color:homeTeam?.color || GOLD, fontSize:12, fontWeight: 600, letterSpacing: 0 }}>{homeTeam?.short}</div>
-                        <div style={{ color:'#fff', fontFamily: 'var(--font-display)', fontSize:30, letterSpacing: 0 }}>{homeTeam?.name}</div>
+                        <div style={{ color:homeTeam?.color || GOLD, fontSize:12, fontWeight:800, letterSpacing:1.5 }}>{homeTeam?.short}</div>
+                        <div style={{ color:'#fff', fontFamily:"'Bebas Neue',sans-serif", fontSize:30, letterSpacing:1 }}>{homeTeam?.name}</div>
                       </div>
                     </div>
-                    <div style={{ fontFamily: 'var(--font-display)', fontSize:42, color:'#a3a9b8', letterSpacing: 0 }}>VS</div>
+                    <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:42, color:'#94A3B8', letterSpacing:4 }}>VS</div>
                     <div style={{ display:'flex', alignItems:'center', gap:14 }}>
                       <div style={{ textAlign:'right' }}>
-                        <div style={{ color:awayTeam?.color || CYAN, fontSize:12, fontWeight: 600, letterSpacing: 0 }}>{awayTeam?.short}</div>
-                        <div style={{ color:'#fff', fontFamily: 'var(--font-display)', fontSize:30, letterSpacing: 0 }}>{awayTeam?.name}</div>
+                        <div style={{ color:awayTeam?.color || CYAN, fontSize:12, fontWeight:800, letterSpacing:1.5 }}>{awayTeam?.short}</div>
+                        <div style={{ color:'#fff', fontFamily:"'Bebas Neue',sans-serif", fontSize:30, letterSpacing:1 }}>{awayTeam?.name}</div>
                       </div>
                       <img src={`/assets/${selectedRivalsMatch.awayTeam}.png`} alt={awayTeam?.short} style={{ width:72, height:72, objectFit:'contain' }} />
                     </div>
                   </div>
 
-                  <label className="rp-label">Your name</label>
+                  <label className="rp-label">Your Name</label>
                   <input
                     ref={nameRef}
                     className="rp-input"
@@ -2006,23 +2014,23 @@ function RoomContent() {
 
                   <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:14, marginTop:20 }}>
                     <button className="rp-btn cyan-btn" onClick={handleFindOnline} disabled={loading || state === 'locked' || state === 'completed'}>
-                      {loading ? 'Finding rival…' : 'Find online'}
+                      {loading ? 'FINDING RIVAL…' : 'FIND ONLINE'}
                     </button>
                     <button className="rp-btn" onClick={() => { setError(''); setPhase('rivals-create'); }} disabled={!selectedRivalsMatch || state === 'locked' || state === 'completed'}>
-                      Create room
+                      CREATE ROOM
                     </button>
                   </div>
 
                   <div style={{ display:'flex', gap:10, flexWrap:'wrap', marginTop:16 }}>
-                    <button className="lobby-copy-btn" onClick={() => router.push('/room?action=browse')}>Live auction rooms</button>
-                    <button className="lobby-copy-btn" onClick={() => router.push('/room?action=join-code')}>Join with code</button>
+                    <button className="lobby-copy-btn" onClick={() => router.push('/room?action=browse')}>LIVE AUCTION ROOMS</button>
+                    <button className="lobby-copy-btn" onClick={() => router.push('/room?action=join-code')}>JOIN WITH CODE</button>
                   </div>
 
                   {error && <div className="rp-error" style={{ marginTop:16 }}>{error}</div>}
                 </div>
               );
             })() : (
-              <div style={{ border:'1px solid #1f2937', borderRadius:18, padding:'24px 22px', background:'#0b0d14', color:'#a3a9b8', lineHeight:1.8 }}>
+              <div style={{ border:'1px solid #1f2937', borderRadius:18, padding:'24px 22px', background:'#0a0a0a', color:'#94A3B8', lineHeight:1.8 }}>
                 No joinable Rivals match is available right now. The card on the homepage will automatically switch to the next daily team matchup.
               </div>
             )}
@@ -2035,33 +2043,33 @@ function RoomContent() {
         <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', padding:'80px 24px 60px', position:'relative', zIndex:5 }}>
           <div style={{ width:'100%', maxWidth:780, animation:'fadeUp .4s ease both' }}>
             <span className="rp-eyebrow">Multiplayer</span>
-            <h1 className="rp-h1">Start or join an<br /><span>auction room</span></h1>
+            <h1 className="rp-h1">JOIN THE<br /><span>AUCTION ROOM</span></h1>
             <div className="rp-live-counter">
               <div className="rp-live-dot" />
               {liveStats.rooms > 0
-                ? `${liveStats.rooms} room${liveStats.rooms !== 1 ? 's' : ''} active · ${liveStats.players} player${liveStats.players !== 1 ? 's' : ''} online`
-                : 'No active public rooms, create one'}
+                ? `${liveStats.rooms} ROOM${liveStats.rooms !== 1 ? 'S' : ''} ACTIVE • ${liveStats.players} PLAYER${liveStats.players !== 1 ? 'S' : ''} ONLINE`
+                : 'NO ACTIVE ROOMS — CREATE ONE!'}
             </div>
-            <div style={{ color:'#7a8296', fontSize: 13, marginTop:-12, marginBottom:24 }}>
-              Private rooms run in parallel, typically {privateActivity.rooms}+ lobbies with {privateActivity.players}+ players
+            <div style={{ color:'#667085', fontSize:11, letterSpacing:2, marginTop:-10, marginBottom:18 }}>
+              PRIVATE ROOMS ALSO RUN IN PARALLEL • TYPICALLY {privateActivity.rooms}+ PRIVATE LOBBIES WITH {privateActivity.players}+ PLAYERS
             </div>
 
             <div className="rp-choices">
               <div className="rp-choice create-card" onClick={() => { setError(''); setPhase('create-form'); }}>
-                <div className="rp-choice-label" style={{ color: GOLD }}>Host</div>
-                <div className="rp-choice-title">Create room</div>
+                <div className="rp-choice-label" style={{ color: GOLD }}>HOST</div>
+                <div className="rp-choice-title">CREATE ROOM</div>
                 <div className="rp-choice-desc">Set up a private or public room. Invite friends with a code.</div>
               </div>
               <div className="rp-choice join-card" onClick={() => { setError(''); setPhase('join-code'); }}>
-                <div className="rp-choice-label" style={{ color: CYAN }}>Player</div>
-                <div className="rp-choice-title">Join room</div>
+                <div className="rp-choice-label" style={{ color: CYAN }}>PLAYER</div>
+                <div className="rp-choice-title">JOIN ROOM</div>
                 <div className="rp-choice-desc">Enter a private room code to join an ongoing auction.</div>
               </div>
               <div className="rp-choice browse-card" onClick={() => { setError(''); setPhase('join'); }} style={{ position: 'relative' }}>
-                <div className="rp-choice-label" style={{ color: '#a3a9b8' }}>Explore</div>
-                <div className="rp-choice-title">Browse rooms</div>
+                <div className="rp-choice-label" style={{ color: '#818cf8' }}>EXPLORE</div>
+                <div className="rp-choice-title">BROWSE ROOMS</div>
                 {liveStats.rooms > 0 && (
-                   <div style={{ position: 'absolute', top: -8, right: -8, background: '#a3a9b8', color: '#fff', fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 20, boxShadow: '0 4px 12px rgba(163,169,184, 0.4)', animation: 'pulse 2s infinite' }}>
+                   <div style={{ position: 'absolute', top: -8, right: -8, background: '#818cf8', color: '#fff', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 20, boxShadow: '0 4px 12px rgba(129, 140, 248, 0.4)', animation: 'pulse 2s infinite' }}>
                     {liveStats.rooms} Lobbies
                    </div>
                 )}
@@ -2072,12 +2080,12 @@ function RoomContent() {
             {/* Public lobbies preview */}
             {serverRooms.length > 0 && (
               <div style={{ marginTop:28 }}>
-                <div style={{ fontFamily: 'var(--font-ui)', fontSize: 12, letterSpacing: 0, color:'#7a8296', marginBottom:10, borderBottom:'1px solid #1a1e28', paddingBottom:8 }}>Public lobbies</div>
+                <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:10, letterSpacing:3, color:'#888', textTransform:'uppercase', marginBottom:10, borderBottom:'1px solid #111', paddingBottom:8 }}>PUBLIC LOBBIES</div>
                 {serverRooms.slice(0,3).map((r, i) => (
                   <div key={i} className="rp-room-item">
                     <div>
-                      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize:16, color:'#c9cdd6' }}>{r.name}</div>
-                      <div style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color:'#a3a9b8', marginTop:2 }}>Host: {r.host} · {r.players}/10</div>
+                      <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, fontSize:16, color:'#eee' }}>{r.name}</div>
+                      <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:10, color:'#94A3B8', marginTop:2 }}>Host: {r.host} · {r.players}/10</div>
                     </div>
                     <button className="rp-room-join-btn" onClick={() => {
                       if (!name.trim()) {
@@ -2086,7 +2094,7 @@ function RoomContent() {
                         return;
                       }
                       doJoin(r.code, 'player');
-                    }}>Play</button>
+                    }}>PLAY</button>
                   </div>
                 ))}
               </div>
@@ -2095,12 +2103,12 @@ function RoomContent() {
             {/* Recent rooms */}
             {recentRooms.length > 0 && (
               <div style={{ marginTop:24 }}>
-                <div style={{ fontFamily: 'var(--font-ui)', fontSize: 12, letterSpacing: 0, color:'#7a8296', marginBottom:10, borderBottom:'1px solid #1a1e28', paddingBottom:8 }}>Recent rooms</div>
+                <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:10, letterSpacing:3, color:'#888', textTransform:'uppercase', marginBottom:10, borderBottom:'1px solid #111', paddingBottom:8 }}>RECENT ROOMS</div>
                 {recentRooms.map((r, i) => (
                   <div key={i} className="rp-room-item">
                     <div>
-                      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize:16, color:'#a3a9b8' }}>{r.name}</div>
-                      <div style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color:'#a3a9b8', marginTop:2 }}>Code: {r.code}</div>
+                      <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, fontSize:16, color:'#aaa' }}>{r.name}</div>
+                      <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:10, color:'#94A3B8', marginTop:2 }}>Code: {r.code}</div>
                     </div>
                     <button className="rp-room-rejoin-btn" onClick={() => {
                       if (!name.trim()) {
@@ -2109,7 +2117,7 @@ function RoomContent() {
                         return;
                       }
                       doJoin(r.code, 'player');
-                    }}>Rejoin</button>
+                    }}>REJOIN</button>
                   </div>
                 ))}
               </div>
@@ -2133,9 +2141,9 @@ function RoomContent() {
               <div style={{ border:`1px solid ${BORDER}`, borderRadius:22, padding:'24px clamp(18px,3vw,30px)', background:'linear-gradient(180deg, rgba(13,15,20,0.98), rgba(8,10,14,0.98))' }}>
                 <span className="rp-eyebrow">{phase === 'rivals-create' ? 'Create Rivals Room' : 'Create Room'}</span>
                 <h1 className="rp-h1" style={{ fontSize:'clamp(2.3rem,6vw,4.6rem)', marginBottom:8 }}>
-                  {phase === 'rivals-create' ? <>Set up the<br /><span>duel</span></> : <>Set up your<br /><span>room</span></>}
+                  {phase === 'rivals-create' ? <>SET UP THE<br /><span>DUEL</span></> : <>SET UP YOUR<br /><span>ROOM</span></>}
                 </h1>
-                <p style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color:'#a3a9b8', margin:'10px 0 0', lineHeight:1.8, maxWidth:420 }}>
+                <p style={{ fontFamily:"'Courier Prime',monospace", fontSize:11, color:'#94A3B8', margin:'10px 0 0', lineHeight:1.8, maxWidth:420 }}>
                   {phase === 'rivals-create'
                     ? `${selectedRivalsMatch?.homeTeam || ''} vs ${selectedRivalsMatch?.awayTeam || ''} will be locked in automatically. Invite one friend or keep it public and let another rival join.`
                     : 'Configure your auction room, choose the format, set the squad size, and share the room with up to 10 friends.'}
@@ -2144,7 +2152,7 @@ function RoomContent() {
                   <div className="create-room-summary-grid">
                     {[
                       { label: 'Visibility', value: isPrivate ? 'Private' : 'Public' },
-                      { label: 'Mode', value: String(aMode || 'mega').toLowerCase() === 'mini' ? 'Mini' : 'Mega' },
+                      { label: 'Mode', value: String(aMode || 'mega').toUpperCase() },
                       { label: 'Squad', value: `${squadLimit} Players` },
                       { label: 'Purse', value: `₹${squadLimit === 25 ? purse : DEFAULT_PURSE} Cr` },
                     ].map((item) => (
@@ -2157,8 +2165,8 @@ function RoomContent() {
                 )}
               </div>
 
-              <div style={{ border:`1px solid ${BORDER}`, borderRadius:22, padding:'24px clamp(18px,3vw,30px)', background:'#1a1e28' }}>
-                <label className="rp-label" style={{ marginTop:0 }}>Your name</label>
+              <div style={{ border:`1px solid ${BORDER}`, borderRadius:22, padding:'24px clamp(18px,3vw,30px)', background:'#0b0d12' }}>
+                <label className="rp-label" style={{ marginTop:0 }}>Your Name</label>
                 <input
                   ref={nameRef}
                   className="rp-input"
@@ -2173,36 +2181,36 @@ function RoomContent() {
                 <div className="rp-toggle-grid">
                   <ToggleCard
                     selected={!isPrivate} onSelect={() => setIsPrivate(false)}
-                    accentColor={GOLD} title="Public" sub="Open to all players"
+                    accentColor={GOLD} title="PUBLIC" sub="Open to all players"
                     icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>}
                   />
                   <ToggleCard
                     selected={isPrivate} onSelect={() => setIsPrivate(true)}
-                    accentColor={GOLD} title="Private" sub="Invite code only"
+                    accentColor={GOLD} title="PRIVATE" sub="Invite code only"
                     icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>}
                   />
                 </div>
 
                 {phase !== 'rivals-create' && (
                   <>
-                    <label className="rp-label">Auction mode</label>
+                    <label className="rp-label">Auction Mode</label>
                     <div className="rp-toggle-grid">
                       <ToggleCard
                         selected={aMode === 'mega'}
                         onSelect={() => { setAMode('mega'); setSquadLimit(15); setPurse(DEFAULT_PURSE); }}
                         accentColor={GOLD}
-                        title="Mega"
+                        title="MEGA"
                         sub="500+ players · Full season"
                       />
                       <ToggleCard
                         selected={aMode === 'mini'}
                         onSelect={() => { setAMode('mini'); setSquadLimit(15); setPurse(DEFAULT_PURSE); }}
                         accentColor={CYAN}
-                        title="Mini"
+                        title="MINI"
                         sub="~200 players · Fast format"
                       />
                     </div>
-                    <label className="rp-label" style={{ marginTop: 16 }}>Squad limit</label>
+                    <label className="rp-label" style={{ marginTop: 16 }}>Squad Limit</label>
                     <div style={{ display:'grid', gridTemplateColumns:'repeat(3, minmax(0, 1fr))', gap:10 }}>
                       {[15, 20, 25].map((limit) => (
                         <button
@@ -2215,12 +2223,12 @@ function RoomContent() {
                           style={{
                             padding:'13px 0',
                             borderRadius:12,
-                            border:`1px solid ${squadLimit === limit ? GOLD : '#242936'}`,
+                            border:`1px solid ${squadLimit === limit ? GOLD : '#262626'}`,
                             background:squadLimit === limit ? `${GOLD}12` : '#111',
-                            color:squadLimit === limit ? GOLD : '#c9cdd6',
-                            fontFamily: 'var(--font-display)',
+                            color:squadLimit === limit ? GOLD : '#cbd5e1',
+                            fontFamily:"'Bebas Neue',sans-serif",
                             fontSize:24,
-                            letterSpacing: 0,
+                            letterSpacing:2,
                             cursor:'pointer',
                           }}
                         >
@@ -2240,12 +2248,12 @@ function RoomContent() {
                               style={{
                                 padding:'13px 0',
                                 borderRadius:12,
-                                border:`1px solid ${purse === amount ? GOLD : '#242936'}`,
+                                border:`1px solid ${purse === amount ? GOLD : '#262626'}`,
                                 background:purse === amount ? `${GOLD}12` : '#111',
-                                color:purse === amount ? GOLD : '#c9cdd6',
-                                fontFamily: 'var(--font-display)',
+                                color:purse === amount ? GOLD : '#cbd5e1',
+                                fontFamily:"'Bebas Neue',sans-serif",
                                 fontSize:24,
-                                letterSpacing: 0,
+                                letterSpacing:2,
                                 cursor:'pointer',
                               }}
                             >
@@ -2260,7 +2268,7 @@ function RoomContent() {
 
                 {error && <div className="rp-error">{error}</div>}
                 <button className="rp-btn" onClick={phase === 'rivals-create' ? handleCreateRivalsRoom : handleCreate} disabled={loading}>
-                  {loading ? (phase === 'rivals-create' ? 'Creating rivals room…' : 'Creating room…') : (phase === 'rivals-create' ? 'Create rivals room' : 'Create room')}
+                  {loading ? (phase === 'rivals-create' ? 'CREATING RIVALS ROOM…' : 'CREATING ROOM…') : (phase === 'rivals-create' ? 'CREATE RIVALS ROOM →' : 'CREATE ROOM →')}
                 </button>
               </div>
             </div>
@@ -2272,10 +2280,10 @@ function RoomContent() {
       {phase === 'join-code' && (
         <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', padding:'80px 24px 40px', position:'relative', zIndex:5 }}>
           <div style={{ width:'100%', maxWidth:480, animation:'fadeUp .35s ease both' }}>
-            <span className="rp-eyebrow">Private room</span>
-            <h1 className="rp-h1" style={{ fontSize:'clamp(2rem,7vw,3.8rem)', marginBottom:4 }}>Join with<br /><span>Code</span></h1>
+            <span className="rp-eyebrow">Private Room</span>
+            <h1 className="rp-h1" style={{ fontSize:'clamp(2rem,7vw,3.8rem)', marginBottom:4 }}>JOIN WITH<br /><span>CODE</span></h1>
             
-            <label className="rp-label">Your name</label>
+            <label className="rp-label">Your Name</label>
             <input
               ref={nameRef}
               className="rp-input"
@@ -2285,7 +2293,7 @@ function RoomContent() {
               maxLength={20}
             />
 
-            <label className="rp-label">Room code</label>
+            <label className="rp-label">Room Code</label>
             <input
               className="rp-input code-input"
               value={joinCode}
@@ -2298,10 +2306,10 @@ function RoomContent() {
             {error && <div className="rp-error">{error}</div>}
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))', gap:12 }}>
               <button className="rp-btn cyan-btn" onClick={() => doJoin(joinCode, 'player')} disabled={loading}>
-                {loading ? 'Joining…' : 'Play if a slot is open'}
+                {loading ? 'JOINING…' : 'PLAY IF SLOT OPEN →'}
               </button>
               <button className="rp-btn" onClick={() => doJoin(joinCode, 'spectator')} disabled={loading}>
-                {loading ? 'Joining…' : 'Watch as spectator'}
+                {loading ? 'JOINING…' : 'WATCH AS SPECTATOR'}
               </button>
             </div>
           </div>
@@ -2339,38 +2347,38 @@ function RoomContent() {
           <div className="lobby-col lobby-col-left">
             <div style={{ animation:'fadeUp .35s ease both' }}>
               {/* Room code */}
-              <div className="lobby-section-label">Room code</div>
+              <div className="lobby-section-label">ROOM CODE</div>
               <div style={{ marginBottom:10 }}>
                 <div className="lobby-code-chip" onClick={copyCode} title="Click to copy code">{roomCode}</div>
               </div>
               <div style={{ display:'flex', gap:8, flexWrap:'wrap', marginBottom:16 }}>
-                <button className="lobby-copy-btn" onClick={copyCode}>{copiedCode ? 'Copied' : 'Copy code'}</button>
-                <button className="lobby-copy-btn" onClick={copyUrl}>{copiedLink ? 'Copied' : 'Copy link'}</button>
+                <button className="lobby-copy-btn" onClick={copyCode}>{copiedCode ? '✓ COPIED' : 'COPY CODE'}</button>
+                <button className="lobby-copy-btn" onClick={copyUrl}>{copiedLink ? '✓ COPIED' : 'COPY LINK'}</button>
                 <a className="lobby-wa-btn"
-                   href={`https://wa.me/?text=${encodeURIComponent(`Join my IPL auction\n\nLink: ${shareUrl}\nCode: ${roomCode}`)}`}
+                   href={`https://wa.me/?text=${encodeURIComponent(`Join my IPL Auction! 🏏\n\nLink: ${shareUrl}\nCode: ${roomCode}`)}`}
                    target="_blank" rel="noreferrer">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: 2 }}>
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
                   </svg> SHARE
                 </a>
               </div>
-              <div style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color:'#7a8296', wordBreak:'break-all', marginBottom:20 }}>{shareUrl}</div>
+              <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:10, color:'#666', wordBreak:'break-all', marginBottom:20 }}>{shareUrl}</div>
 
               <div className="rp-hr" />
 
               {/* Auction mode */}
               {isRivalsLobby ? (
                 <div style={{ marginBottom: 18 }}>
-                  <div className="lobby-section-label">Rivals match</div>
-                  <div style={{ display:'flex', alignItems:'center', gap:10, padding:'12px 14px', border:'1px solid #242936', borderRadius:12, background:'#1a1e28' }}>
+                  <div className="lobby-section-label">RIVALS MATCH</div>
+                  <div style={{ display:'flex', alignItems:'center', gap:10, padding:'12px 14px', border:'1px solid #1b2030', borderRadius:12, background:'#0b0d12' }}>
                     <img src={`/assets/${rivalsHomeTeam}.png`} alt="" style={{ width:32, height:32, objectFit:'contain' }} />
-                    <div style={{ fontFamily: 'var(--font-display)', fontSize:24, letterSpacing: 0, color:'#fff' }}>{rivalsHomeTeam} VS {rivalsAwayTeam}</div>
+                    <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:24, letterSpacing:1.5, color:'#fff' }}>{rivalsHomeTeam} VS {rivalsAwayTeam}</div>
                     <img src={`/assets/${rivalsAwayTeam}.png`} alt="" style={{ width:32, height:32, objectFit:'contain' }} />
                   </div>
                 </div>
               ) : isHost ? (
                 <>
-                  <div className="lobby-section-label">Auction mode</div>
+                  <div className="lobby-section-label">AUCTION MODE</div>
                   <div className="rp-toggle-grid" style={{ marginBottom:20 }}>
                     {MODE_OPTIONS.map(mode => (
                       <ToggleCard
@@ -2388,10 +2396,10 @@ function RoomContent() {
                       ))}
                   </div>
 
-                  <div className="lobby-section-label">Player ratings</div>
+                  <div className="lobby-section-label">PLAYER RATINGS</div>
                   <div style={{ display:'grid', gridTemplateColumns:'repeat(2, minmax(0, 1fr))', gap:8, marginBottom:18 }}>
                     {[
-                      { id: 'hidden', label: 'HIDDEN', active: !showPlayerRatings, color: '#a3a9b8' },
+                      { id: 'hidden', label: 'HIDDEN', active: !showPlayerRatings, color: '#94A3B8' },
                       { id: 'shown', label: 'SHOWN', active: showPlayerRatings, color: GOLD },
                     ].map((option) => (
                       <button
@@ -2401,12 +2409,12 @@ function RoomContent() {
                         style={{
                           padding:'10px 0',
                           borderRadius:10,
-                          border:`1px solid ${option.active ? option.color : '#7a8296'}`,
+                          border:`1px solid ${option.active ? option.color : '#232323'}`,
                           background:option.active ? `${option.color}14` : '#101010',
-                          color:option.active ? option.color : '#c9cdd6',
-                          fontFamily: 'var(--font-display)',
+                          color:option.active ? option.color : '#cbd5e1',
+                          fontFamily:"'Bebas Neue',sans-serif",
                           fontSize:20,
-                          letterSpacing: 0,
+                          letterSpacing:2,
                           cursor:'pointer',
                         }}
                       >
@@ -2415,7 +2423,7 @@ function RoomContent() {
                     ))}
                   </div>
 
-                  <div className="lobby-section-label">Squad limit</div>
+                  <div className="lobby-section-label">SQUAD LIMIT</div>
                   <div style={{ display:'grid', gridTemplateColumns:'repeat(3, minmax(0, 1fr))', gap:8, marginBottom:18 }}>
                     {[15, 20, 25].map((limit) => (
                       <button
@@ -2425,12 +2433,12 @@ function RoomContent() {
                         style={{
                           padding:'10px 0',
                           borderRadius:10,
-                          border:`1px solid ${squadLimit === limit ? GOLD : '#242936'}`,
+                          border:`1px solid ${squadLimit === limit ? GOLD : '#232323'}`,
                           background:squadLimit === limit ? `${GOLD}14` : '#101010',
-                          color:squadLimit === limit ? GOLD : '#c9cdd6',
-                          fontFamily: 'var(--font-display)',
+                          color:squadLimit === limit ? GOLD : '#cbd5e1',
+                          fontFamily:"'Bebas Neue',sans-serif",
                           fontSize:20,
-                          letterSpacing: 0,
+                          letterSpacing:2,
                           cursor:'pointer',
                         }}
                       >
@@ -2440,7 +2448,7 @@ function RoomContent() {
                   </div>
                   {squadLimit === 25 && (
                     <>
-                      <div className="lobby-section-label">Purse</div>
+                      <div className="lobby-section-label">PURSE</div>
                       <div style={{ display:'grid', gridTemplateColumns:'repeat(2, minmax(0, 1fr))', gap:8, marginBottom:18 }}>
                         {[DEFAULT_PURSE, EXTENDED_PURSE].map((amount) => (
                           <button
@@ -2450,12 +2458,12 @@ function RoomContent() {
                             style={{
                               padding:'10px 0',
                               borderRadius:10,
-                              border:`1px solid ${purse === amount ? GOLD : '#242936'}`,
+                              border:`1px solid ${purse === amount ? GOLD : '#232323'}`,
                               background:purse === amount ? `${GOLD}14` : '#101010',
-                              color:purse === amount ? GOLD : '#c9cdd6',
-                              fontFamily: 'var(--font-display)',
+                              color:purse === amount ? GOLD : '#cbd5e1',
+                              fontFamily:"'Bebas Neue',sans-serif",
                               fontSize:20,
-                              letterSpacing: 0,
+                              letterSpacing:2,
                               cursor:'pointer',
                             }}
                           >
@@ -2467,12 +2475,12 @@ function RoomContent() {
                   )}
                 </>
               ) : (
-                <div style={{ fontFamily: 'var(--font-ui)', fontSize:12, color:'#7a8296', marginBottom:16 }}>
+                <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:12, color:'#888', marginBottom:16 }}>
                   Mode: <span style={{ color: (lobbyMode || aMode) === 'mega' ? GOLD : CYAN }}>{(lobbyMode || aMode || 'mega') === 'mega' ? 'IPL MEGA Auction' : 'IPL MINI Auction'}</span>
                   <br />
-                  Player Ratings: <span style={{ color: showPlayerRatings ? GOLD : '#a3a9b8' }}>{showPlayerRatings ? 'Shown during auction' : 'Hidden during auction'}</span>
+                  Player Ratings: <span style={{ color: showPlayerRatings ? GOLD : '#94A3B8' }}>{showPlayerRatings ? 'Shown during auction' : 'Hidden during auction'}</span>
                   <br />
-                  Squad limit: <span style={{ color: GOLD }}>{squadLimit}</span> players
+                  Squad Limit: <span style={{ color: GOLD }}>{squadLimit}</span> players
                   <br />
                   Purse: <span style={{ color: GOLD }}>₹{squadLimit === 25 ? purse : DEFAULT_PURSE} Cr</span>
                 </div>
@@ -2488,10 +2496,10 @@ function RoomContent() {
                   return (
                     <div key={p.id || i} className="lobby-player-row" style={{ animationDelay:`${i * 0.04}s` }}>
                       <div className="lobby-player-dot" style={{ background: team?.color || '#333' }} />
-                      <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize:15, color: team?.color || '#c9cdd6', flex:1, letterSpacing: 0 }}>
+                      <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, fontSize:15, color: team?.color || '#ddd', flex:1, letterSpacing:'.04em' }}>
                         {p.name}
-                        {p.isHost && <span style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color:GOLD, marginLeft:6, letterSpacing: 0 }}>Host</span>}
-                        {p.isSpectator && <span style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color:'#a3a9b8', marginLeft:6, letterSpacing: 0 }}>Spec</span>}
+                        {p.isHost && <span style={{ fontFamily:"'Courier Prime',monospace", fontSize:8, color:GOLD, marginLeft:6, letterSpacing:'2px' }}>HOST</span>}
+                        {p.isSpectator && <span style={{ fontFamily:"'Courier Prime',monospace", fontSize:8, color:'#94A3B8', marginLeft:6, letterSpacing:'2px' }}>SPEC</span>}
                       </span>
                       {team && (
                         <span className="lobby-player-badge" style={{ background:`${team.color}18`, color:team.color, border:`1px solid ${team.color}50` }}>
@@ -2502,7 +2510,7 @@ function RoomContent() {
                         <button
                           type="button"
                           onClick={() => requestKickPlayer(p)}
-                          style={{ marginLeft:8, padding:'6px 10px', borderRadius:8, border:'1px solid #7f1d1d', background:'#2a0d0d', color:'#fca5a5', fontSize: 12, fontWeight: 600, letterSpacing: 0, cursor:'pointer' }}
+                          style={{ marginLeft:8, padding:'6px 10px', borderRadius:8, border:'1px solid #7f1d1d', background:'#2a0d0d', color:'#fca5a5', fontSize:11, fontWeight:800, letterSpacing:1, cursor:'pointer' }}
                         >
                           KICK
                         </button>
@@ -2512,7 +2520,7 @@ function RoomContent() {
                 })}
                 {/* Placeholder slots */}
                 {Array.from({ length: Math.max(0, (isRivalsLobby ? 2 : 1) - lobbyPlayers.length) }).map((_, i) => (
-                  <div key={`empty-${i}`} style={{ padding:'10px 12px', border:'1px dashed #1a1e28', borderRadius:8, height:42 }} />
+                  <div key={`empty-${i}`} style={{ padding:'10px 12px', border:'1px dashed #111', borderRadius:8, height:42 }} />
                 ))}
               </div>
             </div>
@@ -2522,14 +2530,14 @@ function RoomContent() {
           <div className="lobby-col lobby-col-center">
             <div style={{ animation:'fadeUp .4s ease both' }}>
               <div style={{ marginBottom:4 }}>
-                <span className="rp-eyebrow" style={{ fontSize: 12 }}>Lobby · {roomCode}</span>
+                <span className="rp-eyebrow" style={{ fontSize:10 }}>Lobby · {roomCode}</span>
               </div>
               {isRivalsLobby ? (
                 <>
-                  <h2 style={{ fontFamily: 'var(--font-display)', fontSize:'clamp(1.6rem,4vw,2.8rem)', color:'#fff', letterSpacing: 0, marginBottom:6 }}>
-                    RIVALS <span style={{ color:GOLD }}>Showdown</span>
+                  <h2 style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:'clamp(1.6rem,4vw,2.8rem)', color:'#fff', letterSpacing:2, marginBottom:6 }}>
+                    RIVALS <span style={{ color:GOLD }}>SHOWDOWN</span>
                   </h2>
-                  <p style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color:'#7a8296', marginBottom:24, lineHeight:1.6 }}>
+                  <p style={{ fontFamily:"'Courier Prime',monospace", fontSize:11, color:'#888', marginBottom:24, lineHeight:1.6 }}>
                     Teams are assigned automatically for this 1v1 match. Once the second player joins, the duel starts immediately.
                     {myTeamId && <span style={{ color:GOLD }}> You are playing as <strong>{TEAMS.find(t=>t.id===myTeamId)?.name}</strong>.</span>}
                   </p>
@@ -2542,18 +2550,18 @@ function RoomContent() {
                       return (
                         <div key={teamId} style={{
                           border:`1px solid ${team?.color || '#333'}40`,
-                          background: '#11141c',
+                          background:`linear-gradient(160deg, ${team?.color || '#fff'}18, rgba(8,8,8,0.96))`,
                           borderRadius:18,
                           padding:'18px 16px',
-                          boxShadow:'none'
+                          boxShadow:isMine ? `0 0 28px ${team?.color || '#fff'}22` : 'none'
                         }}>
                           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:10, marginBottom:14 }}>
                             <img src={`/assets/${teamId}.png`} alt={team?.short} style={{ width:48, height:48, objectFit:'contain' }} />
-                            {isMine && <div style={{ fontSize: 12, letterSpacing: 0, color:team?.color, fontWeight: 600 }}>Your team</div>}
+                            {isMine && <div style={{ fontSize:10, letterSpacing:2, color:team?.color, fontWeight:800 }}>YOUR TEAM</div>}
                           </div>
-                          <div style={{ color:team?.color, fontFamily: 'var(--font-display)', fontSize:28, letterSpacing: 0 }}>{team?.short}</div>
+                          <div style={{ color:team?.color, fontFamily:"'Bebas Neue',sans-serif", fontSize:28, letterSpacing:1.2 }}>{team?.short}</div>
                           <div style={{ color:'#fff', fontSize:14, marginTop:4 }}>{team?.name}</div>
-                          <div style={{ color:'#a3a9b8', fontSize: 12, marginTop:12, letterSpacing: 0 }}>
+                          <div style={{ color:'#94A3B8', fontSize:11, marginTop:12, letterSpacing:1 }}>
                             {owner ? `Assigned to ${owner}` : 'Waiting for rival'}
                           </div>
                         </div>
@@ -2563,10 +2571,10 @@ function RoomContent() {
                 </>
               ) : (
                 <>
-                  <h2 style={{ fontFamily: 'var(--font-display)', fontSize:'clamp(1.6rem,4vw,2.8rem)', color:'#fff', letterSpacing: 0, marginBottom:6 }}>
-                    Pick your franchise
+                  <h2 style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:'clamp(1.6rem,4vw,2.8rem)', color:'#fff', letterSpacing:2, marginBottom:6 }}>
+                    PICK YOUR <span style={{ color:GOLD }}>FRANCHISE</span>
                   </h2>
-                  <p style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color:'#7a8296', marginBottom:24, lineHeight:1.6 }}>
+                  <p style={{ fontFamily:"'Courier Prime',monospace", fontSize:11, color:'#888', marginBottom:24, lineHeight:1.6 }}>
                     Select the IPL team you want to bid for. Each franchise can only be claimed by one player.
                     {myTeamId && <span style={{ color:GOLD }}> You picked <strong>{TEAMS.find(t=>t.id===myTeamId)?.name}</strong>.</span>}
                   </p>
@@ -2585,11 +2593,11 @@ function RoomContent() {
                           key={t.id}
                           className={cls}
                           style={{
-                            borderColor: isMine ? t.color : taken ? '#1a1e28' : '#7a8296',
+                            borderColor: isMine ? t.color : taken ? '#1c1c1c' : '#242424',
                             background: isMine
                               ? `linear-gradient(160deg, ${t.color}18, ${t.color}08)`
                               : taken ? '#0a0a0a' : `${t.color}06`,
-                            boxShadow: isMine ? `0 0 0 transparent, inset 0 0 0 transparent` : 'none',
+                            boxShadow: isMine ? `0 0 20px ${t.color}28, inset 0 0 20px ${t.color}08` : 'none',
                           }}
                           onClick={() => !taken && selectTeam(t.id)}
                         >
@@ -2601,20 +2609,20 @@ function RoomContent() {
                             alt={`${t.name} logo`}
                             loading="lazy"
                           />
-                          <div className="franchise-short" style={{ color: isMine ? t.color : taken ? '#7a8296' : t.color }}>
+                          <div className="franchise-short" style={{ color: isMine ? t.color : taken ? '#6b7280' : t.color }}>
                             {t.short}
                           </div>
-                          <div className="franchise-name" style={{ color: isMine ? '#dbe5f1' : taken ? '#a3a9b8' : '#a3a9b8' }}>
+                          <div className="franchise-name" style={{ color: isMine ? '#dbe5f1' : taken ? '#8b95a3' : '#94A3B8' }}>
                             {t.name}
                           </div>
 
                           {isMine && (
                             <div className="franchise-mine-badge" style={{ color: t.color, marginTop:4 }}>
-                              Your pick
+                              ✓ YOUR PICK
                             </div>
                           )}
                           {taken && (
-                            <div className="franchise-mine-badge" style={{ color:'#a3a9b8', marginTop:4 }}>
+                            <div className="franchise-mine-badge" style={{ color:'#9ca3af', marginTop:4 }}>
                               TAKEN
                             </div>
                           )}
@@ -2632,20 +2640,20 @@ function RoomContent() {
           {/* ── RIGHT: Live stats ── */}
           <div className="lobby-col lobby-col-right">
             <div style={{ animation:'fadeUp .45s ease both' }}>
-              <div className="lobby-section-label">Lobby stats</div>
+              <div className="lobby-section-label">LOBBY STATS</div>
 
               <div className="lobby-stat-card">
                 <div className="lobby-stat-val" style={{ color:GOLD }}>
                   {lobbyPlayers.filter(p => p.teamId).length}/{isRivalsLobby ? 2 : lobbyPlayers.length}
                 </div>
-                <div className="lobby-stat-lbl">{isRivalsLobby ? 'Rivals ready' : 'Players with team'}</div>
+                <div className="lobby-stat-lbl">{isRivalsLobby ? 'RIVALS READY' : 'PLAYERS WITH TEAM'}</div>
               </div>
 
               <div className="lobby-stat-card">
                 <div className="lobby-stat-val" style={{ color:CYAN }}>
                   {Math.max(0, (isRivalsLobby ? 2 : 10) - lobbyPlayers.length)}
                 </div>
-                <div className="lobby-stat-lbl">{isRivalsLobby ? 'Duel slots left' : 'Slots remaining'}</div>
+                <div className="lobby-stat-lbl">{isRivalsLobby ? 'DUEL SLOTS LEFT' : 'SLOTS REMAINING'}</div>
               </div>
 
               <div className="lobby-stat-card">
@@ -2654,15 +2662,15 @@ function RoomContent() {
                     ? (multiGS ? 'LIVE' : lobbyPlayers.length >= 2 ? 'STARTING' : 'MATCHING')
                     : (lobbyPlayers.length >= 1 && lobbyPlayers.every(p => p.teamId) ? 'READY' : 'WAITING')}
                 </div>
-                <div className="lobby-stat-lbl">Room status</div>
+                <div className="lobby-stat-lbl">ROOM STATUS</div>
               </div>
 
               <div className="rp-hr" />
 
               {/* Claimed franchises summary */}
-              <div className="lobby-section-label">Claimed franchises</div>
+              <div className="lobby-section-label">CLAIMED FRANCHISES</div>
               {Object.entries(takenMap).length === 0 ? (
-                <div style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color:'#7a8296', lineHeight:1.8 }}>
+                <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:10, color:'#666', lineHeight:1.8 }}>
                   {isRivalsLobby ? 'Waiting for the first team assignment to appear.' : <>No franchise selected yet.<br />Be the first!</>}
                 </div>
               ) : (
@@ -2670,8 +2678,8 @@ function RoomContent() {
                   <div key={t.id} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6, padding:'8px 12px', background:`${t.color}08`, border:`1px solid ${t.color}25`, borderRadius:6 }}>
                     <div style={{ width:8, height:8, borderRadius:'50%', background:t.color, flexShrink:0 }} />
                     <div style={{ flex:1 }}>
-                      <div style={{ fontFamily: 'var(--font-display)', fontSize:'1rem', color:t.color, letterSpacing: 0 }}>{t.short}</div>
-                      <div style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color:'#7a8296' }}>{takenMap[t.id]}</div>
+                      <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:'1rem', color:t.color, letterSpacing:1 }}>{t.short}</div>
+                      <div style={{ fontFamily:"'Courier Prime',monospace", fontSize:9, color:'#888' }}>{takenMap[t.id]}</div>
                     </div>
                   </div>
                 ))
@@ -2699,17 +2707,16 @@ function RoomContent() {
             className="lc-fab"
             onClick={() => setShowLobbyChatMobile(v => !v)}
             aria-label="Open lobby chat"
-            aria-label="Open lobby chat"
           >
-            <MessageSquare size={18} strokeWidth={1.5} />
+            💬
           </button>
           {showLobbyChatMobile && (
             <>
               <div className="lc-drawer-bg" onClick={() => setShowLobbyChatMobile(false)} />
               <div className="lc-drawer">
                 <div className="lc-drawer-header">
-                  <span className="lc-drawer-title">Lobby chat</span>
-                  <button className="lc-drawer-close" onClick={() => setShowLobbyChatMobile(false)} aria-label="Close chat"><X size={16} strokeWidth={1.5} /></button>
+                  <span className="lc-drawer-title">LOBBY CHAT</span>
+                  <button className="lc-drawer-close" onClick={() => setShowLobbyChatMobile(false)}>✕</button>
                 </div>
                 <LobbyChatBox
                   chatLog={chatLog}
@@ -2729,7 +2736,7 @@ function RoomContent() {
         <div className="lobby-bottom-bar">
           {isRivalsLobby ? (
             <div style={{ display:'flex', flexDirection:'column', gap:10, width:'100%', alignItems:'center' }}>
-              <span style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color:'#7a8296', letterSpacing: 0, textAlign:'center' }}>
+              <span style={{ fontFamily:"'Courier Prime',monospace", fontSize:11, color:'#888', letterSpacing:2, textAlign:'center' }}>
                 {multiGS
                   ? 'Both rivals are locked in. Enter the auction room.'
                   : lobbyPlayers.length >= 2
@@ -2743,7 +2750,7 @@ function RoomContent() {
                   className="lobby-start-btn"
                   onClick={() => router.push(`/auction?room=${roomCode}${isSpectator?'&spectator=1':''}&mode=RIVALS`)}
                 >
-                  Enter auction
+                  ENTER AUCTION →
                 </button>
               ) : (
                 <div className="lobby-waiting">
@@ -2753,7 +2760,7 @@ function RoomContent() {
             </div>
           ) : isHost ? (
             <>
-              <span style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color:'#7a8296', letterSpacing: 0 }}>
+              <span style={{ fontFamily:"'Courier Prime',monospace", fontSize:11, color:'#888', letterSpacing:2 }}>
                 {multiGS ? 'Auction is ongoing' : (canStart ? 'Ready to go!' : 'Waiting for players…')}
               </span>
               <button
@@ -2761,7 +2768,7 @@ function RoomContent() {
                 onClick={multiGS ? () => router.push(`/auction?room=${roomCode}`) : handleStart}
                 disabled={!multiGS && !canStart}
               >
-                {multiGS ? 'Enter auction' : 'Start auction'}
+                {multiGS ? 'ENTER AUCTION →' : 'START AUCTION →'}
               </button>
             </>
           ) : (
@@ -2775,7 +2782,7 @@ function RoomContent() {
                    className="lobby-start-btn"
                    onClick={() => router.push(`/auction?room=${roomCode}${isSpectator?'&spectator=1':''}`)}
                  >
-                   Enter auction
+                   ENTER AUCTION →
                  </button>
                )}
             </div>
@@ -2787,10 +2794,11 @@ function RoomContent() {
       {phase !== 'lobby' && (
         <div className="rp-marquee-container">
           <div className="rp-marquee-track">
-            {TEAMS.map((t, i) => (
+            {[...TEAMS, ...TEAMS].map((t, i) => (
               <div
                 key={`${t.id}-${i}`}
                 className="rp-marquee-item"
+                style={{ animationDelay: `${(i % TEAMS.length) * 0.18}s` }}
                 title={t.name}
               >
                 <img className="rp-marquee-logo" src={TEAM_LOGOS[t.id]} alt={`${t.name} logo`} loading="lazy" />
@@ -2805,7 +2813,7 @@ function RoomContent() {
 
 export default function RoomPage() {
   return (
-    <Suspense fallback={<div style={{ background:'#0b0d14', height:'100vh' }} />}>
+    <Suspense fallback={<div style={{ background:'#080808', height:'100vh' }} />}>
       <RoomContent />
     </Suspense>
   );

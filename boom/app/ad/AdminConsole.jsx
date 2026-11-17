@@ -2,13 +2,13 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-const BG = '#0b0d14';
-const CARD = '#11141c';
-const BORDER = '#1f2430';
+const BG = '#06070b';
+const CARD = '#10131a';
+const BORDER = '#232834';
 const GOLD = '#e8b84b';
-const CYAN = '#a3a9b8';
-const RED = '#e5484d';
-const GREEN = '#4cc38a';
+const CYAN = '#22d3ee';
+const RED = '#ef4444';
+const GREEN = '#4ade80';
 
 function formatTime(value) {
   if (!value) return '—';
@@ -30,9 +30,9 @@ function StatusPill({ children, color }) {
         border: `1px solid ${color}55`,
         background: `${color}14`,
         color,
-        fontSize: 12,
-        letterSpacing: 0,
-        fontWeight: 600,
+        fontSize: 11,
+        letterSpacing: 1,
+        fontWeight: 700,
       }}
     >
       {children}
@@ -56,8 +56,8 @@ function RoomCard({ room, busyCode, onDelete }) {
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
         <div>
-          <div style={{ fontSize: 20, fontWeight: 600, color: '#fff', letterSpacing: 0 }}>{room.code}</div>
-          <div style={{ color: '#a3a9b8', fontSize: 13, marginTop: 4 }}>{room.name || 'Untitled room'}</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: '#fff', letterSpacing: 1 }}>{room.code}</div>
+          <div style={{ color: '#9aa4b2', fontSize: 13, marginTop: 4 }}>{room.name || 'Untitled room'}</div>
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <StatusPill color={room.isPrivate ? RED : CYAN}>{room.isPrivate ? 'PRIVATE' : 'PUBLIC'}</StatusPill>
@@ -66,7 +66,7 @@ function RoomCard({ room, busyCode, onDelete }) {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gap: 8, color: '#c9cdd6', fontSize: 13 }}>
+      <div style={{ display: 'grid', gap: 8, color: '#cbd5e1', fontSize: 13 }}>
         <div>Host: <span style={{ color: '#fff' }}>{room.host || 'Unknown'}</span></div>
         <div>Type: <span style={{ color: '#fff' }}>{room.roomType || 'standard'}</span></div>
         <div>Players: <span style={{ color: '#fff' }}>{room.playerCount || 0}</span> · Spectators: <span style={{ color: '#fff' }}>{room.spectatorCount || 0}</span></div>
@@ -94,11 +94,11 @@ function RoomCard({ room, busyCode, onDelete }) {
             borderRadius: 6,
             padding: '10px 14px',
             cursor: deleting ? 'wait' : 'pointer',
-            fontWeight: 600,
-            letterSpacing: 0,
+            fontWeight: 800,
+            letterSpacing: 1,
           }}
         >
-          {deleting ? 'DELETING...' : 'Delete room'}
+          {deleting ? 'DELETING...' : 'DELETE ROOM'}
         </button>
       </div>
     </div>
@@ -221,8 +221,8 @@ export default function AdminConsole({ initialAuthenticated }) {
       <div style={{ maxWidth: 1120, margin: '0 auto', display: 'grid', gap: 20 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
           <div>
-            <div style={{ color: GOLD, fontSize: 14, letterSpacing: 0, fontWeight: 600 }}>Secret admin</div>
-            <h1 style={{ marginTop: 8, fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1 }}>Room control</h1>
+            <div style={{ color: GOLD, fontSize: 14, letterSpacing: 4, fontWeight: 800 }}>SECRET ADMIN</div>
+            <h1 style={{ marginTop: 8, fontSize: 'clamp(28px, 4vw, 44px)', lineHeight: 1 }}>Room Control</h1>
           </div>
           {authenticated ? (
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
@@ -236,7 +236,7 @@ export default function AdminConsole({ initialAuthenticated }) {
                   borderRadius: 6,
                   padding: '10px 14px',
                   cursor: 'pointer',
-                  fontWeight: 600,
+                  fontWeight: 800,
                 }}
               >
                 REFRESH
@@ -246,15 +246,15 @@ export default function AdminConsole({ initialAuthenticated }) {
                 onClick={handleLogout}
                 style={{
                   border: `1px solid ${BORDER}`,
-                  background: '#242936',
+                  background: '#181c24',
                   color: '#fff',
                   borderRadius: 6,
                   padding: '10px 14px',
                   cursor: 'pointer',
-                  fontWeight: 600,
+                  fontWeight: 800,
                 }}
               >
-                Log out
+                LOG OUT
               </button>
             </div>
           ) : null}
@@ -280,14 +280,14 @@ export default function AdminConsole({ initialAuthenticated }) {
             }}
           >
             <label style={{ display: 'grid', gap: 8 }}>
-              <span style={{ color: '#c9cdd6', fontSize: 13 }}>Username</span>
+              <span style={{ color: '#cbd5e1', fontSize: 13 }}>Username</span>
               <input
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
                 autoComplete="username"
                 style={{
                   border: `1px solid ${BORDER}`,
-                  background: '#1a1e28',
+                  background: '#0b0e14',
                   color: '#fff',
                   borderRadius: 6,
                   padding: '12px 14px',
@@ -295,7 +295,7 @@ export default function AdminConsole({ initialAuthenticated }) {
               />
             </label>
             <label style={{ display: 'grid', gap: 8 }}>
-              <span style={{ color: '#c9cdd6', fontSize: 13 }}>Password</span>
+              <span style={{ color: '#cbd5e1', fontSize: 13 }}>Password</span>
               <input
                 type="password"
                 value={password}
@@ -303,7 +303,7 @@ export default function AdminConsole({ initialAuthenticated }) {
                 autoComplete="current-password"
                 style={{
                   border: `1px solid ${BORDER}`,
-                  background: '#1a1e28',
+                  background: '#0b0e14',
                   color: '#fff',
                   borderRadius: 6,
                   padding: '12px 14px',
@@ -315,16 +315,16 @@ export default function AdminConsole({ initialAuthenticated }) {
               disabled={loading}
               style={{
                 border: 'none',
-                background: `${GOLD}`,
+                background: `linear-gradient(135deg, ${GOLD}, #b78412)`,
                 color: '#000',
                 borderRadius: 6,
                 padding: '12px 14px',
                 cursor: loading ? 'wait' : 'pointer',
-                fontWeight: 600,
-                letterSpacing: 0,
+                fontWeight: 900,
+                letterSpacing: 1,
               }}
             >
-              {loading ? 'Signing in' : 'Sign in'}
+              {loading ? 'SIGNING IN...' : 'SIGN IN'}
             </button>
           </form>
         ) : (
@@ -344,11 +344,11 @@ export default function AdminConsole({ initialAuthenticated }) {
                   style={{
                     border: `1px solid ${filter === value ? GOLD : BORDER}`,
                     background: filter === value ? `${GOLD}14` : CARD,
-                    color: filter === value ? GOLD : '#c9cdd6',
+                    color: filter === value ? GOLD : '#cbd5e1',
                     borderRadius: 6,
                     padding: '8px 12px',
                     cursor: 'pointer',
-                    fontWeight: 600,
+                    fontWeight: 800,
                   }}
                 >
                   {label}
@@ -362,7 +362,7 @@ export default function AdminConsole({ initialAuthenticated }) {
                   <RoomCard key={`${room.source}-${room.code}`} room={room} busyCode={busyCode} onDelete={handleDelete} />
                 ))
               ) : (
-                <div style={{ border: `1px solid ${BORDER}`, background: CARD, borderRadius: 8, padding: 20, color: '#a3a9b8' }}>
+                <div style={{ border: `1px solid ${BORDER}`, background: CARD, borderRadius: 8, padding: 20, color: '#94a3b8' }}>
                   No rooms matched this filter.
                 </div>
               )}

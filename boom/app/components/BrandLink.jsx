@@ -5,7 +5,6 @@ export default function BrandLink({ href = '/', className = '', compact = false 
 
   return (
     <Link href={href} className={classes} aria-label="Go to iplauction.fun homepage">
-      <span className="site-brand-mark" aria-hidden="true" />
       <span className="site-brand-domain">iplauction.fun</span>
     </Link>
   );

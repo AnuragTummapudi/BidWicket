@@ -88,7 +88,7 @@ export default function PlayerFlipCard({ player }) {
                    <>
                      <div className="p-stat-box">
                        <div className="p-stat-val">{stats.runs || 0}</div>
-                       <div className="p-stat-lbl">Runs</div>
+                       <div className="p-stat-lbl">RUNS</div>
                      </div>
                      <div className="p-stat-box">
                        <div className="p-stat-val">{stats.avg || 0}</div>
@@ -100,11 +100,11 @@ export default function PlayerFlipCard({ player }) {
                    <>
                      <div className="p-stat-box">
                        <div className="p-stat-val">{stats.wickets || 0}</div>
-                       <div className="p-stat-lbl">Wkts</div>
+                       <div className="p-stat-lbl">WKTS</div>
                      </div>
                      <div className="p-stat-box">
                        <div className="p-stat-val">{stats.econ || 0}</div>
-                       <div className="p-stat-lbl">Econ</div>
+                       <div className="p-stat-lbl">ECON</div>
                      </div>
                    </>
                  )}
@@ -182,7 +182,7 @@ export default function PlayerFlipCard({ player }) {
                
                <div className="p-back-footer">
                  <div className="p-price-large">₹{priceCr}</div>
-                 <div className="p-back-footer-lbl">Base price</div>
+                 <div className="p-back-footer-lbl">BASE PRICE</div>
                </div>
              </div>
           </BorderGlow>

@@ -17,8 +17,7 @@ async function getRoom(code) {
 }
 
 export async function generateMetadata({ params }) {
-  const routeParams = await params;
-  const code = String(routeParams.code || '').toUpperCase();
+  const code = String((await params).code || '').toUpperCase();
   const room = await getRoom(code);
   const isIndexable = room && !room.isPrivate;
 
@@ -34,26 +33,25 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function PublicAuctionRoomPage({ params }) {
-  const routeParams = await params;
-  const code = String(routeParams.code || '').toUpperCase();
+  const code = String((await params).code || '').toUpperCase();
   const room = await getRoom(code);
 
   if (!room || room.isPrivate) {
     return (
-      <main style={{ minHeight: '100vh', background: '#0b0d14', color: '#fff', padding: '100px 24px', fontFamily: 'var(--font-ui)', textAlign: 'center' }}>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '4rem', letterSpacing: 0 }}>Auction room not public</h1>
-        <p style={{ color: '#c9cdd6' }}>This room is private, expired, or unavailable for search indexing.</p>
-        <Link href="/room?action=browse" style={{ display: 'inline-block', marginTop: 24, background: '#E8B84B', color: '#000', padding: '12px 16px', textDecoration: 'none', fontWeight: 600 }}>Browse live rooms</Link>
+      <main style={{ minHeight: '100vh', background: '#080808', color: '#fff', padding: '100px 24px', fontFamily: "'Rajdhani', sans-serif", textAlign: 'center' }}>
+        <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '4rem', letterSpacing: 0 }}>Auction Room Not Public</h1>
+        <p style={{ color: '#c7d0db' }}>This room is private, expired, or unavailable for search indexing.</p>
+        <Link href="/room?action=browse" style={{ display: 'inline-block', marginTop: 24, background: '#E8B84B', color: '#000', padding: '12px 16px', textDecoration: 'none', fontWeight: 800 }}>Browse Live Rooms</Link>
       </main>
     );
   }
 
   return (
-    <main style={{ minHeight: '100vh', background: '#0b0d14', color: '#fff', padding: '100px 24px', fontFamily: 'var(--font-ui)' }}>
+    <main style={{ minHeight: '100vh', background: '#080808', color: '#fff', padding: '100px 24px', fontFamily: "'Rajdhani', sans-serif" }}>
       <section style={{ maxWidth: 820, margin: '0 auto' }}>
-        <p style={{ color: '#E8B84B', letterSpacing: 0, fontWeight: 600 }}>Public IPL Auction Room</p>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 8vw, 6rem)', lineHeight: 0.9, margin: '8px 0', letterSpacing: 0 }}>{room.name || `Room ${code}`}</h1>
-        <p style={{ color: '#c9cdd6', fontSize: '1.1rem', lineHeight: 1.65 }}>
+        <p style={{ color: '#E8B84B', letterSpacing: 3, textTransform: 'uppercase', fontWeight: 800 }}>Public IPL Auction Room</p>
+        <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(3rem, 8vw, 6rem)', lineHeight: 0.9, margin: '8px 0', letterSpacing: 0 }}>{room.name || `Room ${code}`}</h1>
+        <p style={{ color: '#c7d0db', fontSize: '1.1rem', lineHeight: 1.65 }}>
           This public IPL auction simulator room is available for live bidding and fantasy squad building.
         </p>
         <dl style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14, margin: '30px 0' }}>
@@ -63,12 +61,12 @@ export default async function PublicAuctionRoomPage({ params }) {
             ['Players', room.playerCount ?? room.players ?? 0],
           ].map(([label, value]) => (
             <div key={label} style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: 18, background: 'rgba(12,16,24,0.86)' }}>
-              <dt style={{ color: '#a3a9b8', fontSize: 12, letterSpacing: 0 }}>{label}</dt>
-              <dd style={{ margin: '8px 0 0', fontSize: '1.2rem', fontWeight: 600 }}>{value}</dd>
+              <dt style={{ color: '#94A3B8', fontSize: 12, letterSpacing: 2, textTransform: 'uppercase' }}>{label}</dt>
+              <dd style={{ margin: '8px 0 0', fontSize: '1.2rem', fontWeight: 800 }}>{value}</dd>
             </div>
           ))}
         </dl>
-        <Link href={`/join/${code}`} style={{ background: '#E8B84B', color: '#000', padding: '12px 16px', textDecoration: 'none', fontWeight: 600 }}>Join auction room</Link>
+        <Link href={`/join/${code}`} style={{ background: '#E8B84B', color: '#000', padding: '12px 16px', textDecoration: 'none', fontWeight: 800 }}>Join Auction Room</Link>
       </section>
     </main>
   );

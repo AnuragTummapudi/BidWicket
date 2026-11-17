@@ -83,15 +83,15 @@ export default function JoinPage() {
   };
 
   const inputStyle = {
-    width: "100%", padding: "16px 18px", background: "#1a1e28",
+    width: "100%", padding: "16px 18px", background: "#0a0c14",
     border: `1px solid ${BORDER}`, borderRadius: 10, color: "#fff",
-    fontSize: 18, fontFamily: 'var(--font-ui)', letterSpacing: 0,
+    fontSize: 18, fontFamily: "'Rajdhani'", letterSpacing: 2,
     outline: "none", boxSizing: "border-box", textAlign: "center"
   };
 
   return (
     <div style={{
-      minHeight: "100vh", background: BG, fontFamily: 'var(--font-ui)',
+      minHeight: "100vh", background: BG, fontFamily: "'Rajdhani',sans-serif",
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"
     }}>
       <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}`}</style>
@@ -99,11 +99,11 @@ export default function JoinPage() {
       <div style={{ animation: "fadeUp .4s ease-out", textAlign: "center", maxWidth: 400, width: "90%" }}>
         {/* Header */}
         <div style={{ marginBottom: 40 }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: "clamp(28px,4vw,48px)", color: GOLD, letterSpacing: 0 }}>
-            Join auction
+          <div style={{ fontFamily: "'Bebas Neue'", fontSize: "clamp(28px,4vw,48px)", color: GOLD, letterSpacing: 6 }}>
+            JOIN AUCTION
           </div>
-          <div style={{ color: "#7a8296", fontSize: 12, letterSpacing: 0, marginTop: 8 }}>
-            You&apos;ve been invited to a room
+          <div style={{ color: "#555", fontSize: 12, letterSpacing: 3, marginTop: 8 }}>
+            YOU&apos;VE BEEN INVITED TO A ROOM
           </div>
         </div>
 
@@ -112,10 +112,10 @@ export default function JoinPage() {
           background: CARD, border: `1px solid #22D3EE40`, borderRadius: 12,
           padding: "20px", marginBottom: 28
         }}>
-          <div style={{ fontSize: 12, color: "#7a8296", letterSpacing: 0, marginBottom: 8 }}>Room code</div>
+          <div style={{ fontSize: 10, color: "#888", letterSpacing: 3, marginBottom: 8 }}>ROOM CODE</div>
           <div style={{
-            fontFamily: 'var(--font-display)', fontSize: 48, color: '#a3a9b8',
-            letterSpacing: 0, lineHeight: 1
+            fontFamily: "'Bebas Neue'", fontSize: 48, color: "#22D3EE",
+            letterSpacing: 10, lineHeight: 1
           }}>
             {code}
           </div>
@@ -141,33 +141,33 @@ export default function JoinPage() {
               disabled={loading}
               style={{
                 width: "100%", padding: "16px",
-                background: `${GOLD}`,
+                background: `linear-gradient(135deg, ${GOLD}, #9a7610)`,
                 border: "none", borderRadius: 8, color: "#000",
-                fontSize: 16, fontWeight: 600, cursor: loading ? "wait" : "pointer",
-                letterSpacing: 0, fontFamily: 'var(--font-display)',
+                fontSize: 16, fontWeight: 900, cursor: loading ? "wait" : "pointer",
+                letterSpacing: 2, fontFamily: "'Barlow Condensed'",
                 boxShadow: `0 4px 30px ${GOLD}44`
               }}
             >
-              {loading ? "JOINING..." : "Play if slot open"}
+              {loading ? "JOINING..." : "PLAY IF SLOT OPEN"}
             </button>
             <button
               onClick={() => handleJoin('spectator')}
               disabled={loading}
               style={{
                 width: "100%", padding: "16px",
-                background: "#242936",
-                border: `1px solid ${BORDER}`, borderRadius: 8, color: "#c9cdd6",
-                fontSize: 16, fontWeight: 600, cursor: loading ? "wait" : "pointer",
-                letterSpacing: 0, fontFamily: 'var(--font-display)',
+                background: "#0b1220",
+                border: `1px solid ${BORDER}`, borderRadius: 8, color: "#cbd5e1",
+                fontSize: 16, fontWeight: 900, cursor: loading ? "wait" : "pointer",
+                letterSpacing: 2, fontFamily: "'Barlow Condensed'",
               }}
             >
-              {loading ? "JOINING..." : "Watch as spectator"}
+              {loading ? "JOINING..." : "WATCH AS SPECTATOR"}
             </button>
           </div>
         </div>
 
         {/* Link to create own room */}
-        <div style={{ marginTop: 28, color: "#7a8296", fontSize: 12 }}>
+        <div style={{ marginTop: 28, color: "#444", fontSize: 12 }}>
           Or{' '}
           <span
             onClick={() => router.push("/room")}

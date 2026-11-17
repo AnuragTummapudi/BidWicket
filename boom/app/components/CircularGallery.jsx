@@ -460,24 +460,15 @@ export default function CircularGallery({
   bend = 3,
   textColor = '#ffffff',
   borderRadius = 0.05,
-  font = '500 30px var(--font-display)',
+  font = 'bold 30px Bebas Neue',
   scrollSpeed = 2,
   scrollEase = 0.05
 }) {
   const containerRef = useRef(null);
   useEffect(() => {
-    let app = null;
-    let cancelled = false;
-    // canvas text cannot read CSS variables, so resolve var(--x) font tokens first
-    const styles = getComputedStyle(containerRef.current);
-    const resolvedFont = font.replace(/var\((--[\w-]+)\)/g, (_, name) => styles.getPropertyValue(name).trim() || 'sans-serif');
-    (document.fonts?.ready ?? Promise.resolve()).then(() => {
-      if (cancelled || !containerRef.current) return;
-      app = new App(containerRef.current, { items, bend, textColor, borderRadius, font: resolvedFont, scrollSpeed, scrollEase });
-    });
+    const app = new App(containerRef.current, { items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase });
     return () => {
-      cancelled = true;
-      app?.destroy();
+      app.destroy();
     };
   }, [items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase]);
   return <div className="circular-gallery" ref={containerRef} />;

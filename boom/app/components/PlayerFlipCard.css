@@ -49,7 +49,7 @@
   padding: 16px;
   height: 100%;
   justify-content: space-between;
-  font-family:var(--font-ui);
+  font-family: 'Inter', sans-serif;
   color: #fff;
 }
 
@@ -61,7 +61,7 @@
 
 .p-role-pill {
   font-size: 0.70rem;
-  font-weight:600;
+  font-weight: 700;
   padding: 2px 6px;
   border-radius: 4px;
   border: 1px solid;
@@ -70,7 +70,7 @@
 
 .p-price {
   color: #E8B84B;
-  font-weight:600;
+  font-weight: 700;
   font-size: 0.9rem;
 }
 
@@ -98,7 +98,7 @@
 
 .p-name {
   font-size: 1.25rem;
-  font-weight:600;
+  font-weight: 700;
   text-align: center;
   margin-top: 8px;
 }
@@ -106,16 +106,16 @@
 .p-subtitle {
   font-size: 0.75rem;
   text-align: center;
-  color: #7a8296;
+  color: #888;
   margin-bottom: 24px;
 }
 
 .p-team {
-  font-weight:600;
+  font-weight: 700;
 }
 
 .p-sub-role {
-  color: #7a8296;
+  color: #888;
 }
 
 .p-stats-row {
@@ -132,12 +132,12 @@
 
 .p-stat-val {
   font-size: 1rem;
-  font-weight:600;
+  font-weight: 700;
 }
 
 .p-stat-lbl {
   font-size: 0.6rem;
-  color: #7a8296;
+  color: #888;
   margin-top: 4px;
   letter-spacing: 0.5px;
 }
@@ -162,7 +162,7 @@
 
 .p-bar-lbl {
   width: 28px;
-  color: #a3a9b8;
+  color: #aaa;
   font-weight: 600;
   text-align: left;
 }
@@ -170,7 +170,7 @@
 .p-bar-track {
   flex: 1;
   height: 6px;
-  background: #242936;
+  background: #2a2a2a;
   border-radius: 3px;
   overflow: hidden;
 }
@@ -184,8 +184,8 @@
 .p-bar-val {
   width: 36px;
   text-align: right;
-  font-weight:600;
-  color: #c9cdd6;
+  font-weight: 700;
+  color: #ddd;
 }
 
 .p-back-footer {
@@ -196,12 +196,12 @@
 
 .p-price-large {
   font-size: 1.8rem;
-  font-weight:600;
+  font-weight: 700;
   color: #E8B84B;
 }
 
 .p-back-footer-lbl {
   font-size: 0.65rem;
-  color: #7a8296;
-  letter-spacing:0;
+  color: #888;
+  letter-spacing: 1px;
 }

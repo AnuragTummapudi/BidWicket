@@ -12,9 +12,9 @@ export const seoPages = {
       'Use it for IPL mega auction practice, fantasy league preparation, or a casual auction game with friends before match day.',
     ],
     features: [
-      { title: 'Live bidding', body: 'Bid in real time with private room codes and multiplayer auction rooms.' },
-      { title: 'Purse strategy', body: 'Track every buy and protect enough budget for finishers, bowlers, and backups.' },
-      { title: 'Squad results', body: 'Review final teams, player strength, and squad balance after the auction.' },
+      { title: 'Live Bidding', body: 'Bid in real time with private room codes and multiplayer auction rooms.' },
+      { title: 'Purse Strategy', body: 'Track every buy and protect enough budget for finishers, bowlers, and backups.' },
+      { title: 'Squad Results', body: 'Review final teams, player strength, and squad balance after the auction.' },
     ],
   },
   '/play-ipl-auction-online': {
@@ -32,9 +32,9 @@ export const seoPages = {
       'It works as a quick IPL auction game for friends and as a practice tool for serious fantasy cricket auction prep.',
     ],
     features: [
-      { title: 'Private rooms', body: 'Share a room code and keep your IPL auction limited to your group.' },
-      { title: 'Public rooms', body: 'Find live auction rooms when you want to play immediately.' },
-      { title: 'Mobile friendly', body: 'Join and bid from desktop or mobile browsers.' },
+      { title: 'Private Rooms', body: 'Share a room code and keep your IPL auction limited to your group.' },
+      { title: 'Public Rooms', body: 'Find live auction rooms when you want to play immediately.' },
+      { title: 'Mobile Friendly', body: 'Join and bid from desktop or mobile browsers.' },
     ],
   },
   '/ipl-auction-with-friends': {
@@ -52,9 +52,9 @@ export const seoPages = {
       'The auction room tracks budgets and squads automatically, reducing confusion and keeping the game moving.',
     ],
     features: [
-      { title: 'Room codes', body: 'Invite friends with a simple code and start when everyone is ready.' },
-      { title: 'Franchise picks', body: 'Let each player manage an IPL-style team through the full auction.' },
-      { title: 'Final rankings', body: 'Compare squads once the auction ends.' },
+      { title: 'Room Codes', body: 'Invite friends with a simple code and start when everyone is ready.' },
+      { title: 'Franchise Picks', body: 'Let each player manage an IPL-style team through the full auction.' },
+      { title: 'Final Rankings', body: 'Compare squads once the auction ends.' },
     ],
   },
   '/mock-ipl-auction': {
@@ -72,9 +72,9 @@ export const seoPages = {
       'Use the simulator to rehearse a full mega auction or a smaller mini auction format with your group.',
     ],
     features: [
-      { title: 'Bidding practice', body: 'Test aggressive and conservative auction strategies.' },
-      { title: 'Role balance', body: 'Plan batters, wicketkeepers, all-rounders, and bowlers before the final squad.' },
-      { title: 'Auction learning', body: 'Understand how purse pressure changes player decisions.' },
+      { title: 'Bidding Practice', body: 'Test aggressive and conservative auction strategies.' },
+      { title: 'Role Balance', body: 'Plan batters, wicketkeepers, all-rounders, and bowlers before the final squad.' },
+      { title: 'Auction Learning', body: 'Understand how purse pressure changes player decisions.' },
     ],
   },
   '/ipl-mega-auction': {
@@ -92,9 +92,9 @@ export const seoPages = {
       'Track budget across the full auction and avoid getting trapped without enough purse for late-round needs.',
     ],
     features: [
-      { title: 'Large player pool', body: 'Use a deep player list for broad mock auction practice.' },
+      { title: 'Large Player Pool', body: 'Use a deep player list for broad mock auction practice.' },
       { title: 'Long-Term Planning', body: 'Balance stars with depth and future-proof squad roles.' },
-      { title: 'Friend groups', body: 'Turn the mega auction into a multiplayer game night.' },
+      { title: 'Friend Groups', body: 'Turn the mega auction into a multiplayer game night.' },
     ],
   },
   '/ipl-auction-rules': {
@@ -112,9 +112,9 @@ export const seoPages = {
       'The key rule is purse discipline: every winning bid reduces your remaining budget, so overspending can leave gaps in the final squad.',
     ],
     features: [
-      { title: 'Base prices', body: 'Players begin from a listed starting value.' },
-      { title: 'Highest bid wins', body: 'The last active bidder signs the player.' },
-      { title: 'Purse limit', body: 'Teams cannot buy beyond their available budget.' },
+      { title: 'Base Prices', body: 'Players begin from a listed starting value.' },
+      { title: 'Highest Bid Wins', body: 'The last active bidder signs the player.' },
+      { title: 'Purse Limit', body: 'Teams cannot buy beyond their available budget.' },
     ],
   },
   '/ipl-auction-purse-calculator': {
@@ -132,9 +132,9 @@ export const seoPages = {
       'Use the live simulator as a practical purse calculator: every bid updates your remaining budget automatically.',
     ],
     features: [
-      { title: 'Track spend', body: 'Watch remaining purse after each winning bid.' },
-      { title: 'Plan buckets', body: 'Separate marquee, core, specialist, and backup budgets.' },
-      { title: 'Avoid traps', body: 'Do not run out of budget before key roles are filled.' },
+      { title: 'Track Spend', body: 'Watch remaining purse after each winning bid.' },
+      { title: 'Plan Buckets', body: 'Separate marquee, core, specialist, and backup budgets.' },
+      { title: 'Avoid Traps', body: 'Do not run out of budget before key roles are filled.' },
     ],
   },
   '/ipl-team-builder': {
@@ -152,9 +152,9 @@ export const seoPages = {
       'Create a room to test how your team-building plan works when other managers compete for the same names.',
     ],
     features: [
-      { title: 'Role coverage', body: 'Plan every slot before the auction begins.' },
-      { title: 'Franchise squads', body: 'Browse IPL team pages for reference and inspiration.' },
-      { title: 'Player research', body: 'Use the player list to shortlist targets.' },
+      { title: 'Role Coverage', body: 'Plan every slot before the auction begins.' },
+      { title: 'Franchise Squads', body: 'Browse IPL team pages for reference and inspiration.' },
+      { title: 'Player Research', body: 'Use the player list to shortlist targets.' },
     ],
   },
   '/ipl-player-list': {
@@ -172,9 +172,9 @@ export const seoPages = {
       'Use the player directory for deeper browsing and individual player pages for search-friendly profiles.',
     ],
     features: [
-      { title: 'Player roles', body: 'Find batters, bowlers, wicketkeepers, and all-rounders.' },
-      { title: 'Base prices', body: 'Check starting values before the auction.' },
-      { title: 'Team codes', body: 'See IPL team associations where available.' },
+      { title: 'Player Roles', body: 'Find batters, bowlers, wicketkeepers, and all-rounders.' },
+      { title: 'Base Prices', body: 'Check starting values before the auction.' },
+      { title: 'Team Codes', body: 'See IPL team associations where available.' },
     ],
   },
 };

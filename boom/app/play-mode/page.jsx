@@ -19,6 +19,6 @@ import { useRouter } from 'next/navigation';
 
 export default function PlayModePage() {
   const router = useRouter();
-  useEffect(() => { router.replace('/room'); }, [router]);
+  useEffect(() => { router.replace('/room'); }, []);
   return null;
 }
