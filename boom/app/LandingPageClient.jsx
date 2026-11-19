@@ -341,15 +341,15 @@ export default function LandingPage() {
             <div className="l-stats-grid">
               <div className="l-stat-item">
                 <span className="l-stat-val">10</span>
-                <span className="l-stat-name" style={{ color: '#E8603C' }}>FRANCHISES</span>
+                <span className="l-stat-name">FRANCHISES</span>
               </div>
               <div className="l-stat-item">
                 <span className="l-stat-val">120CR</span>
-                <span className="l-stat-name" style={{ color: '#22D3EE' }}>PURSE</span>
+                <span className="l-stat-name">PURSE</span>
               </div>
               <div className="l-stat-item">
                 <span className="l-stat-val">520+</span>
-                <span className="l-stat-name" style={{ color: '#818CF8' }}>PLAYERS</span>
+                <span className="l-stat-name">PLAYERS</span>
               </div>
             </div>
           </div>

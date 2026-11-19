@@ -7,9 +7,11 @@ import { GameProvider } from './GameContext';
 import ClickSpark from './components/ClickSpark';
 import ChaiSupport from './components/ChaiSupport';
 import { createMetadata, SITE_URL } from './lib/seo';
-import { Archivo } from 'next/font/google';
+import { Bricolage_Grotesque, DM_Sans } from 'next/font/google';
 
-const archivo = Archivo({ subsets: ['latin'], variable: '--font-main', display: 'swap' });
+// Display: Bricolage Grotesque (headlines, big figures). Body/UI: DM Sans.
+const display = Bricolage_Grotesque({ subsets: ['latin'], variable: '--font-display', display: 'swap' });
+const body = DM_Sans({ subsets: ['latin'], variable: '--font-main', display: 'swap' });
 
 export const metadata = {
   ...createMetadata({
@@ -44,7 +46,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={archivo.variable} suppressHydrationWarning>
+    <html lang="en" className={`${display.variable} ${body.variable}`} suppressHydrationWarning>
       <head>
         <meta name="google-adsense-account" content="ca-pub-2556312199314107" />
         <link rel="dns-prefetch" href="https://images.icc-cricket.com" />
