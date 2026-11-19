@@ -17,7 +17,6 @@ const RIVALS_MAX_SQUAD_SIZE = 13;
 const RIVALS_MAX_OVERSEAS = 5;
 const MAX_PLAYING_XI_OVERSEAS = 4;
 const DEFAULT_PURSE = 120;
-const GIPHY_API_KEY = process.env.NEXT_PUBLIC_GIPHY_API_KEY || '';
 const WHATSAPP_COMMUNITY_URL = 'https://whatsapp.com/channel/0029VbCeqwJ90x2z9PRli10E';
 
 function getPlayerPhoto(name) {
@@ -3621,15 +3620,13 @@ const ChatBox = memo(function ChatBox({ chatLog, emit, currentRoom, isSpectator 
   }, [visibleMessages.length]);
 
   useEffect(() => {
-    if (!showGifPicker || isSpectator || !GIPHY_API_KEY) return undefined;
+    if (!showGifPicker || isSpectator) return undefined;
 
     const controller = new AbortController();
     const timer = window.setTimeout(async () => {
       setGifLoading(true);
       try {
-        const endpoint = gifQuery.trim()
-          ? `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&limit=18&rating=pg-13&q=${encodeURIComponent(gifQuery.trim())}`
-          : `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_API_KEY}&limit=18&rating=pg-13`;
+        const endpoint = `/api/giphy?q=${encodeURIComponent(gifQuery.trim())}`;
         const res = await fetch(endpoint, { signal: controller.signal });
         const data = await res.json();
         setGifResults(Array.isArray(data?.data) ? data.data : []);
