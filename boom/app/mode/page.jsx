@@ -98,7 +98,7 @@ export default function ModePage() {
           text-transform: uppercase; display: block; margin-bottom: 12px;
         }
         .mode-h1 {
-          font-family: var(--font-main), sans-serif;
+          font-family: var(--font-display), var(--font-main), sans-serif;
           font-size: clamp(2.8rem, 10vw, 5rem);
           letter-spacing: -0.02em; line-height: 0.9;
           color: #fff; margin: 0 0 16px;
@@ -159,7 +159,7 @@ export default function ModePage() {
         .mode-card:hover .card-icon { opacity: 1; }
 
         .card-title {
-          font-family: var(--font-main), sans-serif;
+          font-family: var(--font-display), var(--font-main), sans-serif;
           font-size: clamp(1.6rem, 5vw, 2rem);
           color: #fff; line-height: 1; margin-bottom: 4px;
         }

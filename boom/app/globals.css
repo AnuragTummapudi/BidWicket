@@ -125,7 +125,7 @@ a {
 }
 
 .site-brand-domain {
-  font-family: var(--font-main), sans-serif;
+  font-family: var(--font-display), var(--font-main), sans-serif;
   font-size: clamp(1.1rem, 2.4vw, 1.7rem);
   font-weight: 800;
   letter-spacing: 0.16em;

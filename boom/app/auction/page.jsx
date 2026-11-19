@@ -759,7 +759,7 @@ function AuctionContent() {
           width:48px; height:48px; border-radius:50%; overflow:hidden; flex-shrink:0;
           display:flex; align-items:center; justify-content:center;
         }
-        .ac-player-name { font-family:var(--font-main), sans-serif; font-size:clamp(17px,4vw,22px); color:#fff; letter-spacing:1px; line-height:1; }
+        .ac-player-name { font-family: var(--font-display), var(--font-main), sans-serif; font-size:clamp(17px,4vw,22px); color:#fff; letter-spacing:1px; line-height:1; }
         .ac-player-meta { font-size:11px; letter-spacing:1px; margin-top:2px; }
 
         /* Bid area */
@@ -888,7 +888,7 @@ function AuctionContent() {
           flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
           animation:sold .4s ease-out; width:100%;
         }
-        .ac-sold-text { font-family:var(--font-main), sans-serif; font-size:clamp(56px,14vw,96px); letter-spacing:8px; line-height:.9; }
+        .ac-sold-text { font-family: var(--font-display), var(--font-main), sans-serif; font-size:clamp(56px,14vw,96px); letter-spacing:8px; line-height:.9; }
         .ac-bidding-shell {
           display: contents;
         }
@@ -2711,7 +2711,7 @@ function TradeScreen({ gs, teams, myTeamId, isHost, isSpectator, emit, activeTea
         .trade-shell{max-width:1360px;margin:0 auto}
         .trade-hero{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;border:1px solid ${BORDER};background:#0b0d12;border-radius:22px;padding:20px 22px;margin-bottom:16px}
         .trade-kicker{margin:0 0 6px;color:${GOLD};font-size:12px;letter-spacing:2.4px;text-transform:uppercase;font-weight:800}
-        .trade-hero h1{margin:0;font-family:var(--font-main), sans-serif;font-size:clamp(38px,7vw,64px);letter-spacing:3px;color:#fff;line-height:.92}
+        .trade-hero h1 {margin:0;font-family: var(--font-display), var(--font-main), sans-serif;font-size:clamp(38px,7vw,64px);letter-spacing:3px;color:#fff;line-height:.92}
         .trade-hero-copy{margin:10px 0 0;color:#9aa8bc;font-size:13px;line-height:1.55;max-width:720px}
         .trade-hero-actions{display:grid;gap:10px;min-width:min(360px,36vw)}
         .trade-count-card{border:1px solid rgba(255,255,255,.08);border-radius:16px;background:rgba(255,255,255,.03);padding:12px 14px;text-align:right}
@@ -2732,7 +2732,7 @@ function TradeScreen({ gs, teams, myTeamId, isHost, isSpectator, emit, activeTea
         .trade-side-panel{position:sticky;top:14px}
         .trade-panel-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px}
         .trade-panel-head p{margin:0 0 3px;color:#64748b;font-size:10px;letter-spacing:1.8px;text-transform:uppercase;font-weight:800}
-        .trade-panel-head h2{margin:0;font-family:var(--font-main), sans-serif;font-size:28px;letter-spacing:2px;color:#fff}
+        .trade-panel-head h2 {margin:0;font-family: var(--font-display), var(--font-main), sans-serif;font-size:28px;letter-spacing:2px;color:#fff}
         .trade-panel-head span{color:${GOLD};font-weight:900;letter-spacing:1.3px;font-size:12px}
         .trade-player-list{display:grid;gap:9px;max-height:62vh;overflow:auto;overscroll-behavior:contain;padding-right:2px}
         .trade-player{width:100%;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:9px 10px;color:#fff;text-align:left;cursor:pointer;touch-action:manipulation}

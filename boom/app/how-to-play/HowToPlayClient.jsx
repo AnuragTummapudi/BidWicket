@@ -181,7 +181,7 @@ export default function HowToPlayClient({ faqSchemaJson }) {
           flex-wrap: wrap;
         }
         .htp-brand {
-          font-family: var(--font-main), sans-serif;
+          font-family: var(--font-display), var(--font-main), sans-serif;
           font-size: clamp(1.4rem, 3vw, 1.9rem);
           letter-spacing: .16em;
           text-decoration: none;
@@ -213,7 +213,7 @@ export default function HowToPlayClient({ faqSchemaJson }) {
         }
         .htp-title {
           margin-top: 12px;
-          font-family: var(--font-main), sans-serif;
+          font-family: var(--font-display), var(--font-main), sans-serif;
           font-size: clamp(3.2rem, 8vw, 6.2rem);
           line-height: .9;
           letter-spacing: .04em;

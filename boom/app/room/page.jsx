@@ -158,7 +158,7 @@ const globalStyles = `
     font-family:var(--font-main), sans-serif; font-weight:700; font-size:11px; letter-spacing:4px; text-transform:uppercase; display:block; margin-bottom:10px;
     color:;
   }
-  .rp-h1 { font-family:var(--font-main), sans-serif; font-size:clamp(2.5rem,7vw,4.5rem); letter-spacing:-.02em; line-height:.9; color:#fff; }
+  .rp-h1 { font-family: var(--font-display), var(--font-main), sans-serif; font-size:clamp(2.5rem,7vw,4.5rem); letter-spacing:-.02em; line-height:.9; color:#fff; }
   .rp-h1 span { color:${GOLD}; }
   .rp-live-counter { display:inline-flex; align-items:center; gap:8px; font-family:var(--font-main), sans-serif; font-size:12px; letter-spacing:1px; color:${CYAN}; background:rgba(34,211,238,.1); padding:4px 10px; border-radius:4px; border:1px solid rgba(34,211,238,.2); margin:10px 0 22px; font-weight:700; }
   .rp-live-dot { width:6px; height:6px; border-radius:50%; background:${CYAN}; box-shadow:0 0 8px ${CYAN}; animation:pulse 1.5s ease-in-out infinite; }
@@ -226,7 +226,7 @@ const globalStyles = `
   .rivals-search-line {
     min-height:32px;
     color:#fff;
-    font-family:var(--font-main), sans-serif;
+    font-family: var(--font-display), var(--font-main), sans-serif;
     font-size:clamp(28px, 5vw, 42px);
     letter-spacing:1.2px;
   }
@@ -261,7 +261,7 @@ const globalStyles = `
   .rp-choice.join-card:hover   { transform:translateY(-6px); border-color:${CYAN}; box-shadow:0 12px 32px rgba(34,211,238,.18); }
   .rp-choice.browse-card:hover { transform:translateY(-6px); border-color:#818cf8; box-shadow:0 12px 32px rgba(129,140,248,.18); }
   .rp-choice-label { font-family:var(--font-main), sans-serif; font-weight:700; font-size:10px; letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; }
-  .rp-choice-title { font-family:var(--font-main), sans-serif; font-size:1.85rem; color:#fff; margin-bottom:6px; }
+  .rp-choice-title { font-family: var(--font-display), var(--font-main), sans-serif; font-size:1.85rem; color:#fff; margin-bottom:6px; }
   .rp-choice-desc  { font-family:var(--font-main), sans-serif; font-size:11px; color:#94A3B8; line-height:1.6; }
 
   /* ── Form elements ── */
@@ -269,7 +269,7 @@ const globalStyles = `
   .rp-input { width:100%; padding:15px 16px; background:#0c0c0c; border-radius:6px; border:1px solid #1e1e1e; color:#fff; font-family:var(--font-main), sans-serif; font-size:17px; letter-spacing:.06em; outline:none; transition:border-color .2s,box-shadow .2s; }
   .rp-input:focus { border-color:${GOLD}; box-shadow:0 0 0 1px ${GOLD} inset; }
   .rp-input::placeholder { color:#666; }
-  .rp-input.code-input { letter-spacing:.35em; font-family:var(--font-main), sans-serif; font-size:1.6rem; text-align:center; }
+  .rp-input.code-input { letter-spacing:.35em; font-family: var(--font-display), var(--font-main), sans-serif; font-size:1.6rem; text-align:center; }
   .rp-input.code-input:focus { border-color:${CYAN}; box-shadow:0 0 0 1px ${CYAN} inset; }
 
   /* ── Toggle cards (tactile selection) ── */
@@ -552,7 +552,7 @@ const globalStyles = `
 
   /* ── RIGHT col stats ── */
   .lobby-stat-card { background:${CARD}; border:1px solid #181818; border-radius:10px; padding:16px; margin-bottom:10px; }
-  .lobby-stat-val  { font-family:var(--font-main), sans-serif; font-size:1.8rem; letter-spacing:.05em; line-height:1; }
+  .lobby-stat-val { font-family: var(--font-display), var(--font-main), sans-serif; font-size:1.8rem; letter-spacing:.05em; line-height:1; }
   .lobby-stat-lbl  { font-family:var(--font-main), sans-serif; font-size:9px; letter-spacing:2px; color:#888; margin-top:3px; }
 
   /* ── Fixed bottom start bar ── */
