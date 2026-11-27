@@ -236,6 +236,18 @@ function HeroStackCard({ player }) {
 }
 
 /* ── Page ── */
+const MINI_AUCTION_AT = Date.parse('2026-12-16T11:00:00+05:30');
+
+// Countdown label for the Goa mini auction banner; null hides the banner once the day is over.
+function getMiniAuctionStatus(now) {
+  const diff = MINI_AUCTION_AT - now;
+  if (diff <= -8 * 3600000) return null;
+  if (diff <= 0) return 'Live now';
+  const days = Math.floor(diff / 86400000);
+  if (days >= 1) return `${days} day${days === 1 ? '' : 's'} to go`;
+  return `${Math.max(1, Math.ceil(diff / 3600000))}h to go`;
+}
+
 export default function LandingPage() {
   const router = useRouter();
   const [rivalsMatches, setRivalsMatches] = useState([]);
@@ -275,6 +287,7 @@ export default function LandingPage() {
     };
   }, []);
 
+  const eventStatus = getMiniAuctionStatus(nowMs);
   const todayKey = getDateKey(new Date(nowMs));
   const todayRivals = useMemo(
     () => rivalsMatches.filter((match) => match.date === todayKey).sort((a, b) => new Date(a.startAt) - new Date(b.startAt)),
@@ -289,6 +302,25 @@ export default function LandingPage() {
 
   return (
     <div className="landing-root">
+
+      {eventStatus && (
+        <div className="l-banner" role="status">
+          <svg className="l-banner-palm" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <circle cx="17.5" cy="6.5" r="3" fill="#F5C443" />
+            <path d="M10 22c.4-5 1.2-9 2.6-12.4" />
+            <path d="M12.6 9.6C10.4 6.8 6.6 6.4 3.6 8.4M12.6 9.6c.3-3.2 2.6-5.4 5.6-5.6M12.6 9.6c3 -.6 5.8.8 7 3.4M12.6 9.6c-2.6.6-4.8 3-5.2 6" />
+            <path d="M3 22h18" />
+          </svg>
+          <strong className="l-banner-title">Goa Mini Auction</strong>
+          <span className="l-banner-when">
+            <span><span className="l-banner-dow">Wed, </span>16 Dec<span className="l-banner-dow"> 2026</span></span>
+            <span aria-hidden="true">·</span>
+            <span>11:00 AM IST</span>
+          </span>
+          <span className="l-banner-tail">Gear up for the special mini auction</span>
+          <span className="l-banner-count" suppressHydrationWarning>{eventStatus}</span>
+        </div>
+      )}
 
       {/* NAVBAR */}
       <nav className="l-nav">
